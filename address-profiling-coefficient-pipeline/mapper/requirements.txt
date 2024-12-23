@@ -1,0 +1,3 @@
+ies-tool==0.1.1
+telicent-lib==1.0.1
+python-dotenv

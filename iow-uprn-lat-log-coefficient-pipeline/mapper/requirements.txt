@@ -1,0 +1,4 @@
+telicent-lib==1.0.1
+ies-tool==0.1.1
+python-dotenv
+geohash-tools==0.2.0
