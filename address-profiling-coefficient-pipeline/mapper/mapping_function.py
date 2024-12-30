@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-import ies_tool as ies
+import ies_tool.ies_tool as ies_tool
 import hashlib
 import ndt_classes as ndt
 
@@ -32,8 +32,6 @@ data_ns = "http://nationaldigitaltwin.gov.uk/data#"
 epc_ns =  "http://gov.uk/government/organisations/department-for-levelling-up-housing-and-communities/ontology/epc#"
 
 geoplace_ns = "https://www.geoplace.co.uk/addresses-streets/location-data/the-uprn#"
-
-ndt_ns = "http://nationaldigitaltwin.gov.uk/ontology#"
 
 # declare QUDT namespaces
 qudt = "http://qudt.org/2.1/schema/qudt/"
@@ -89,22 +87,22 @@ def create_deterministic_uri(value, type, namespace):
 
 def add_qudt_quantity(value, unit_class, quantitykind_class, deterministic_uri_salt=""): #check
     quantity = ies.instantiate(      
-        qudt + "Quantity",
-        create_deterministic_uri(
+        uri=qudt + "Quantity",
+        instance_uri_context=create_deterministic_uri(
             f"{str(value)}{unit_class}{quantitykind_class}{deterministic_uri_salt}", "Quantity", data_ns
         ),
     )
     ies.add_to_graph(
-         quantity, qudt + "hasQuantityKind", quantitykind_class)
+         quantity.uri, qudt + "hasQuantityKind", quantitykind_class)
     
-    ies.add_to_graph( quantity, qudt + "unit", unit_class)
+    ies.add_to_graph(quantity.uri, qudt + "unit", unit_class)
     # need to handle if value is a greater than value e.g. 300+
     value_predicate = "value"
     if "+" in f"{value}": 
         value_predicate = "lowerBound"
         value = value.split("+")[0]
     
-    ies.add_to_graph(subject=quantity, predicate= f"{qudt}{value_predicate}", object= f"{value}", is_literal=True, literal_type="float")
+    ies.add_to_graph(subject=quantity.uri, predicate= f"{qudt}{value_predicate}", obj= f"{value}", is_literal=True, literal_type="float")
     
     return quantity
 
@@ -117,14 +115,13 @@ def add_fusion( fusion_of_class, part_of_string):
     fusion_of_class_string = fusion_of_class.split('#')[1]
     set_of_things_to_fuse_string = f"{fusion_of_class_string}At{part_of_string}"
     set_of_things_to_fuse = data_ns + set_of_things_to_fuse_string
-    ies.add_to_graph( set_of_things_to_fuse, rdfs_ns+"subClassOf", fusion_of_class)
+    ies.add_to_graph(set_of_things_to_fuse, rdfs_ns+"subClassOf", fusion_of_class)
 
     fusion = ies.instantiate(
-         
-        Fusion,
-        f"{data_ns}{set_of_things_to_fuse_string.lower()}_fusion")
+        uri=Fusion,
+        instance_uri_context=f"{data_ns}{set_of_things_to_fuse_string.lower()}_fusion")
     
-    ies.add_to_graph(set_of_things_to_fuse, fusedInto, fusion)
+    ies.add_to_graph(set_of_things_to_fuse, fusedInto, fusion.uri)
     return fusion
 
 def add_insulatable_fusion(thing_class, building_uprn, thing_insulation_class=None, ndt_formated_thickness = None):
@@ -140,8 +137,8 @@ def add_insulatable_fusion(thing_class, building_uprn, thing_insulation_class=No
         thing_insulation_thickness = parse_insultation_thickness(ndt_formated_thickness)
         if thing_insulation_thickness:
             thing_insulation_quantity = add_qudt_quantity(thing_insulation_thickness, mm, Thickness, building_uprn)
-            ies.add_to_graph( thing_insulation_fusion, ies_ns+"hasCharacteristic", thing_insulation_quantity)
-        ies.add_to_graph( thing_insulation_fusion, ies_ns+"isPartOf", thing_fusion)
+            ies.add_to_graph( thing_insulation_fusion.uri, ies_ns+"hasCharacteristic", thing_insulation_quantity.uri)
+        ies.add_to_graph(thing_insulation_fusion.uri, ies_ns+"isPartOf", thing_fusion.uri)
     return thing_fusion
 
 
@@ -149,7 +146,7 @@ def parse_insultation_thickness(thickness_string):
     if "mm" not in thickness_string: return None
     return thickness_string.split("mm")[0]
 
-ies = ies.IES_Tool(data_ns)
+ies = ies_tool.IESTool(data_ns)
 
 def map_func(item):
     ies.clear_graph()
@@ -173,16 +170,16 @@ def map_func(item):
     building_type_literal = building_object.get("PropertyType", "Building")
     building_type = property_type_lookup.get(building_type_literal, Building)
     building = ies.instantiate(
-        building_type,
-        instance=building_uri,
+        uri=building_type,
+        instance_uri_context=building_uri,
     )
 
     # first we build the actual world graph of the building..
-    ies.add_identifier(
+    ies_tool.ExchangedItem.add_identifier(
         building,
         building_uprn,
-        _class=Uprn,
-        id_uri=f"{data_ns}uprn_{building_uprn}"),
+        id_class=Uprn,
+        uri=f"{data_ns}uprn_{building_uprn}"),
     
     # address_value = building_object["Address"]
     # postcode_value = building_object["Postcode"]
@@ -221,26 +218,25 @@ def map_func(item):
         roof_class = ndt.roof_type_map.get(building_object["RoofConstruction"], None)
         built_form_type = building_object.get("BuiltForm", None)
         if built_form_type:
-            ies.instantiate(build_form_lookup[built_form_type.replace("-", "")], instance=building_uri)
+            ies.instantiate(uri=build_form_lookup[built_form_type.replace("-", "")], instance_uri_context=building_uri)
             
         # add state with EPC and SAP info associated to when it was inspected
         current_epc_rating = building_object["SAPBand"]
         state_id = building_object["LMK_KEY"]
         building_inspection_date = building_object["LodgementDate"] # taken from the filename of the data source
         
-        building_inspection_state = ies.instantiate(epc_rating_map[current_epc_rating], instance=data_ns + "state_" + state_id)
-        ies.add_to_graph(building_inspection_state, ies_ns+"isStateOf", building)
-        ies.put_in_period( building_inspection_state, building_inspection_date)
+        building_inspection_state = ies.instantiate(uri=epc_rating_map[current_epc_rating], instance_uri_context=data_ns + "state_" + state_id)
+        ies.add_to_graph(building_inspection_state.uri, ies_ns+"isStateOf", building)
+        ies_tool.Element.put_in_period(building_inspection_state, building_inspection_date)
 
         current_sap_points = int(float(building_object["SAPRating"]))
         current_sap_points_qudt = add_qudt_quantity(
-             
             current_sap_points, 
             Efficiency, 
             SAP_Point,
             building_uprn,
         )
-        ies.add_to_graph( building_inspection_state, ies_ns+"hasCharacteristic", current_sap_points_qudt)
+        ies.add_to_graph(building_inspection_state.uri, ies_ns+"hasCharacteristic", current_sap_points_qudt)
 
         # now add the parts of the building as fusions
         # walls
@@ -257,7 +253,7 @@ def map_func(item):
                 wall_insulation_class, 
                 building_object.get("WallInsulationThickness", None),
             )
-            ies.add_to_graph( wall_fusion, ies_ns+"isPartOf", building_inspection_state)
+            ies.add_to_graph(wall_fusion.uri, ies_ns+"isPartOf", building_inspection_state)
 
         # floors
         floor_class = ndt.floor_type_map.get(building_object["FloorConstruction"], None)
@@ -273,7 +269,7 @@ def map_func(item):
                 floor_insulation_class,
                 building_object.get("FloorInsulationThickness", None),
             )
-            ies.add_to_graph( floor_fusion, ies_ns+"isPartOf", building_inspection_state)
+            ies.add_to_graph(floor_fusion.uri, ies_ns+"isPartOf", building_inspection_state)
 
         # roofs
         roof_class = ndt.roof_type_map.get(building_object["RoofConstruction"], None)
@@ -289,7 +285,7 @@ def map_func(item):
                 roof_insulation_class, 
                 building_object.get("RoofInsulationThickness", None),
             )
-            ies.add_to_graph( roof_fusion, ies_ns+"isPartOf", building_inspection_state)
+            ies.add_to_graph(roof_fusion.uri, ies_ns+"isPartOf", building_inspection_state.uri)
 
         # windows
         window_class = ndt.window_type_map.get(building_object["MultipleGlazingType"], None)
@@ -300,7 +296,7 @@ def map_func(item):
                 window_class_uri, 
                 building_uprn
             )
-            ies.add_to_graph( window_fusion, ies_ns+"isPartOf", building_inspection_state)
+            ies.add_to_graph(window_fusion.uri, ies_ns+"isPartOf", building_inspection_state.uri)
 
     if DEBUG_MODE:
         ies.graph.serialize(destination=f"example_output.ttl", format="turtle")

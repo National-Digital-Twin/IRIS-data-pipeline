@@ -39,7 +39,7 @@ debug = config.get("DEBUG", required=False, default=False, converter=bool, requi
 
 logger = CoreLoggerFactory.get_logger(
     "{source}-to-{target}-mapper".format(source=source_topic, target=target_topic),
-    broker=broker,
+    kafka_config={ 'bootstrap.servers': broker },
     topic="telicent-logging",
 )
 # Function each record on the source topic is passed to.

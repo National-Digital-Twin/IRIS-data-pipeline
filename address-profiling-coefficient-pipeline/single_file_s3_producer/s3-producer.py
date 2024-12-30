@@ -14,10 +14,10 @@
 # limitations under the License.
 #
 
-from maplib.sinks import KafkaSink
-from maplib import AutomaticAdapter, Record, RecordUtils
-from maplib.config import Configurator
-from maplib.logging import CoreLoggerFactory
+from telicent_lib.sinks import KafkaSink
+from telicent_lib import AutomaticAdapter, Record, RecordUtils
+from telicent_lib.config import Configurator
+from telicent_lib.logging import CoreLoggerFactory
 from logging import StreamHandler
 import boto3
 from json import dumps
