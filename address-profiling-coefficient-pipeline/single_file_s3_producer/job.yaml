@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: address-profile-adapter-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: address-profile-adapter
+    spec:
+      containers:
+      - name: address-profile-adapter
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-adapter:latest
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: ia-kafka.default.svc.cluster.local:9092
+        - name: SASL_USERNAME
+          value: replace_me
+        - name: SASL_PASSWORD
+          value: replace_me
+        - name: SOURCE_TOPIC
+          value: address_profiling
+        - name: TARGET_TOPIC
+          value: knowledge
+        - name: PRODUCER_NAME
+          value: address-profile-adapter
+        - name: SORUCE_NAME
+          value: replace_me
+        - name: S3_BUCKET
+          value: iris-data-cleasner-output
+        - name: S3_FILENAME
+          value: replace_me
+        - name: DEFAULT_SECURITY_LABEL
+          value:
+        command: ["python", "./address_profile_to_knowledge_mapper.py"]
+      restartPolicy: Never

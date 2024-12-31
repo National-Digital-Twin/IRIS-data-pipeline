@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: address-profile-to-knowledge-mapping-job
+spec:
+  template:
+    metadata:
+      labels:
+        app: address-profile-to-knowledge-mapper
+    spec:
+      containers:
+      - name: address-profile-to-knowledge-mapper
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-to-knowledge-mapper:latest
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: ia-kafka.default.svc.cluster.local:9092
+        - name: SASL_USERNAME
+          value: replace_me
+        - name: SASL_PASSWORD
+          value: replace_me
+        - name: SOURCE_TOPIC
+          value: address_profiling
+        - name: TARGET_TOPIC
+          value: knowledge
+        command: ["python", "./address_profile_to_knowledge_mapper.py"]
+      restartPolicy: Never

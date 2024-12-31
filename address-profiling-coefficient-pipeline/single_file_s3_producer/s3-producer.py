@@ -30,25 +30,37 @@ from label_mapper import string_to_label
 # Mapper Configuration
 load_dotenv()
 config = Configurator()
-broker = config.get("BOOTSTRAP_SERVERS", required=True,
+BROKER = config.get("BOOTSTRAP_SERVERS", required=True,
                     description="Specifies the Kafka Bootstrap Servers to connect to.")
-target_topic = config.get("TARGET_TOPIC", required=True,
+SASL_USERNAME = config.get("SASL_USERNAME", required=True,
+                    description="The username for the SASL authentication.")
+SASL_PASSWORD = config.get("SASL_PASSWORD", required=True,
+                    description="The password for the SASL authentication.")
+TARGET_TOPIC = config.get("TARGET_TOPIC", required=True,
                     description="Specifies the Kafka topic the mapper pushes its output to")
-name = config.get("PRODUCER_NAME", required=True, 
+PRODUCER_NAME = config.get("PRODUCER_NAME", required=True, 
                     description="Specifies the name of the producer")
-source_name = config.get("SOURCE_NAME", required=True, 
+SOURCE_NAME = config.get("SOURCE_NAME", required=True, 
                     description="Specifies the source that the data has originated from")
-bucket = config.get("S3_BUCKET", required=True, 
+S3_BUCKET = config.get("S3_BUCKET", required=True, 
                     description="Specifies the source that the data has originated from")
-filename = config.get("S3_FILENAME", required=True, 
-                    description="Specifies the source that the data has originated from")
-
-dsl = config.get("DEFAULT_SECURITY_LABEL", required=True, 
+S3_FILENAME = config.get("S3_FILENAME", required=True, 
                     description="Specifies the source that the data has originated from")
 
-default_security_label = string_to_label(dsl)
+DEFAULT_SUECRITY_LABEL = config.get("DEFAULT_SECURITY_LABEL", required=True, 
+                    description="Specifies the source that the data has originated from")
 
-logger = CoreLoggerFactory.get_logger(__name__, broker=broker)
+default_security_label = string_to_label(DEFAULT_SUECRITY_LABEL)
+
+kafka_config = {
+    "bootstrap.servers": BROKER,
+    "security.protocol": "SASL_PLAINTEXT",
+    "sasl.mechanisms": "SCRAM-SHA-256",
+    "sasl.username": SASL_USERNAME,
+    "sasl.password": SASL_PASSWORD,
+}
+
+logger = CoreLoggerFactory.get_logger(__name__, kafka_config=kafka_config)
 logger.logger.addHandler(StreamHandler())
 
 s3 = boto3.client('s3')
@@ -61,8 +73,8 @@ def fetch_file(bucket, file):
     return reader
 
 def generate_records() -> Iterable[Record]:
-    logger.info("Processing... " + filename)
-    reader = fetch_file(bucket, filename)
+    logger.info("Processing... " + S3_FILENAME)
+    reader = fetch_file(S3_BUCKET, S3_FILENAME)
     i = 0
     for row in reader:
        
@@ -75,8 +87,8 @@ def create_record(data, security_labels):
         RecordUtils.to_headers(
             {
                 "Content-Type": "application/json",
-                "Data-Source": source_name,
-                "Data-Producer": name,
+                "Data-Source": SOURCE_NAME,
+                "Data-Producer": PRODUCER_NAME,
                 "Security-Label": security_labels,
             }
         ),
@@ -89,12 +101,12 @@ def create_record(data, security_labels):
 logger.info("Fetching bucket")
 
 
-sink = KafkaSink(target_topic, broker)
+sink = KafkaSink(TARGET_TOPIC, kafka_config=kafka_config)
 adapter = AutomaticAdapter(
     target=sink, 
     adapter_function=generate_records, 
-    name=name, 
-    source_name=source_name
+    name=PRODUCER_NAME, 
+    source_name=SOURCE_NAME
 )
 logger.info("Adapter created")
 adapter.run()
