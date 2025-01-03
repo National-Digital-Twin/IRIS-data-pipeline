@@ -23,6 +23,7 @@ DEBUG_MODE = False  # change to False when using with core
 # declare namespaces
 ies_ns = "http://ies.data.gov.uk/ontology/ies4#"
 telicent_ns = "http://telicent.io/ontology/"
+rdf_ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 rdfs_ns = "http://www.w3.org/2000/01/rdf-schema#"
 ndt_ns = "http://nationaldigitaltwin.gov.uk/ontology#"
 data_ns = "http://nationaldigitaltwin.gov.uk/data#"
@@ -62,17 +63,14 @@ def map_func(item):
         shares_toid = True
 
     my_hash = str(gh.encode(float(lat), float(lon), precision=11))
-    gp = ies.instantiate(
-        uri=ies_ns + "GeoPoint", instance_uri_context="http://geohash.org/" + my_hash
-    )
+    gp = ies.instantiate(uri="http://geohash.org/" + my_hash)
+    ies.add_to_graph(gp.uri, rdf_ns+"type", ies_ns + "GeoPoint")
 
-    latitude = ies.instantiate(
-        uri=f"{ies_ns}Latitude", instance_uri_context=f"http://geohash.org/{my_hash}_LAT"
-    )
+    latitude = ies.instantiate(uri=f"http://geohash.org/{my_hash}_LAT")
+    ies.add_to_graph(latitude.uri, rdf_ns+"type", f"{ies_ns}Latitude")
 
-    longitude = ies.instantiate(
-        uri=f"{ies_ns}Longitude", instance_uri_context=f"http://geohash.org/{my_hash}_LON"
-    )
+    longitude = ies.instantiate(uri=f"http://geohash.org/{my_hash}_LON")
+    ies.add_to_graph(longitude.uri, rdf_ns+"type", f"{ies_ns}Longitude")
 
     building = ies.instantiate(
         uri=building_uri, instance_uri_context=building_uri,

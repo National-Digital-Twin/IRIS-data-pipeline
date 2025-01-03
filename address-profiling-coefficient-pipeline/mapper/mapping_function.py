@@ -24,6 +24,7 @@ DEBUG_MODE = False  # change to False when using with core
 # declare namespaces
 ies_ns = "http://ies.data.gov.uk/ontology/ies4#"
 rdfs_ns = "http://www.w3.org/2000/01/rdf-schema#"
+rdf_ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 # IES with uncertainty v2.0 namespace
 ies_uncertainty_ns = "http://ies.data.gov.uk/ontology/ies_uncertainty_proposal/v2.0#"
 telicent_ns = "http://telicent.io/ontology/"
@@ -170,9 +171,9 @@ def map_func(item):
     building_type_literal = building_object.get("PropertyType", "Building")
     building_type = property_type_lookup.get(building_type_literal, Building)
     building = ies.instantiate(
-        uri=building_type,
-        instance_uri_context=building_uri,
+        uri=building_uri
     )
+    ies.add_to_graph(building.uri, rdf_ns+"type", building_type)
 
     # first we build the actual world graph of the building..
     ies_tool.ExchangedItem.add_identifier(
@@ -225,7 +226,8 @@ def map_func(item):
         state_id = building_object["LMK_KEY"]
         building_inspection_date = building_object["LodgementDate"] # taken from the filename of the data source
         
-        building_inspection_state = ies.instantiate(uri=epc_rating_map[current_epc_rating], instance_uri_context=data_ns + "state_" + state_id)
+        building_inspection_state = ies.instantiate(uri=data_ns + "state_" + state_id)
+        ies.add_to_graph(building_inspection_state.uri, rdf_ns+"type", epc_rating_map[current_epc_rating])
         ies.add_to_graph(building_inspection_state.uri, ies_ns+"isStateOf", building)
         ies_tool.Element.put_in_period(building_inspection_state, building_inspection_date)
 
