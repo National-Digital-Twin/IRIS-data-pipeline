@@ -15,7 +15,7 @@
 #
 
 from telicent_lib.sinks import KafkaSink
-from telicent_lib.sources import KafkaSource, KafkaResetPosition
+from telicent_lib.sources import KafkaSource
 from telicent_lib.config import Configurator
 from telicent_lib.logging import CoreLoggerFactory
 from telicent_lib import Mapper, Record, RecordUtils
@@ -47,7 +47,7 @@ debug = config.get(
 
 logger = CoreLoggerFactory.get_logger(
     "{source}-to-{target}-mapper".format(source=source_topic, target=target_topic),
-    broker=broker,
+    # broker=broker,
     topic="telicent-logging",
 )
 
@@ -79,7 +79,7 @@ def mapping_function(record: Record) -> Union[Record, List[Record], None]:
 
 
 source = KafkaSource(
-    topic=source_topic, broker=broker, reset_position=KafkaResetPosition.BEGINNING
+    topic=source_topic, broker=broker
 )
 target = KafkaSink(topic=target_topic, broker=broker)
 mapper = Mapper(

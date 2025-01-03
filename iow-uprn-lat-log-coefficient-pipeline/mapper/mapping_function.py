@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-import ies_tool as ies
+import ies_tool.ies_tool as ies_tool
 import hashlib
 import geohash_tools as gh
 
@@ -39,7 +39,7 @@ def create_deterministic_uri(value, type, namespace):
     return f"{namespace}{lower_case_type}_{hash}"
 
 
-ies = ies.IES_Tool(data_ns)
+ies = ies_tool.IESTool(data_ns)
 
 
 def map_func(item):
@@ -63,57 +63,61 @@ def map_func(item):
 
     my_hash = str(gh.encode(float(lat), float(lon), precision=11))
     gp = ies.instantiate(
-        ies_ns + "GeoPoint", instance="http://geohash.org/" + my_hash
+        uri=ies_ns + "GeoPoint", instance_uri_context="http://geohash.org/" + my_hash
     )
 
     latitude = ies.instantiate(
-        _class=f"{ies_ns}Latitude", instance=f"http://geohash.org/{my_hash}_LAT"
+        uri=f"{ies_ns}Latitude", instance_uri_context=f"http://geohash.org/{my_hash}_LAT"
     )
 
     longitude = ies.instantiate(
-        _class=f"{ies_ns}Longitude", instance=f"http://geohash.org/{my_hash}_LON"
+        uri=f"{ies_ns}Longitude", instance_uri_context=f"http://geohash.org/{my_hash}_LON"
     )
 
-    ies.add_to_graph(subject=gp, predicate=ies_ns + "isIdentifiedBy", object=longitude)
-    ies.add_to_graph(subject=gp, predicate=ies_ns + "isIdentifiedBy", object=latitude)
+    building = ies.instantiate(
+        uri=building_uri, instance_uri_context=building_uri,
+    )
+    
+    ies.add_to_graph(subject=gp.uri, predicate=ies_ns + "isIdentifiedBy", obj=longitude)
+    ies.add_to_graph(subject=gp.uri, predicate=ies_ns + "isIdentifiedBy", obj=latitude)
 
     ies.add_to_graph(
-        subject=latitude,
+        subject=latitude.uri,
         predicate=f"{ies_ns}representationValue",
-        object=lat,
+        obj=lat,
         is_literal=True,
         literal_type="float",
     )
     ies.add_to_graph(
-        subject=longitude,
+        subject=longitude.uri,
         predicate=f"{ies_ns}representationValue",
-        object=lon,
+        obj=lon,
         is_literal=True,
         literal_type="float",
     )
-
-    ies.add_identifier(
-        building_uri,
+    
+    ies_tool.ExchangedItem.add_identifier(
+        building,
         building_uprn,
-        _class=Uprn,
-        id_uri=f"{data_ns}uprn_{building_uprn}",
+        id_class=Uprn,
+        uri=f"{data_ns}uprn_{building_uprn}"
     )
 
     address_value = item["Address"]
     postcode_value = item["PostcodeLocator"]
-    ies.add_telicent_primary_name(building_uri, address_value)
+    building.add_telicent_primary_name(address_value)
 
     address = ies.instantiate(
-        ies_ns+"Address",
-        instance= create_deterministic_uri(address_value, "Address", data_ns)
+        uri=ies_ns+"Address",
+        instance_uri_context= create_deterministic_uri(address_value, "Address", data_ns)
     )
-    ies.add_telicent_primary_name(address, address_value + ", " + postcode_value)
+    address.add_telicent_primary_name(address_value + ", " + postcode_value)
 
-    ies.add_identifier(  
+    ies_tool.ExchangedItem.add_identifier(  
         address,
         address_value,
-        _class=ies_ns + "FirstLineOfAddress",
-        id_uri= create_deterministic_uri(
+        id_class=ies_ns + "FirstLineOfAddress",
+        uri= create_deterministic_uri(
             "".join(address_value.replace(",", "").split()).lower(), 
             "FirstLineOfAddress", 
             data_ns
@@ -122,11 +126,11 @@ def map_func(item):
     
     ies.add_to_graph(building_uri, ies_ns + "inLocation", address)
 
-    ies.add_identifier(
+    ies_tool.ExchangedItem.add_identifier(
         address,
         postcode_value,
-        _class=ies_ns + "PostalCode",
-        id_uri= create_deterministic_uri(
+        id_class=ies_ns + "PostalCode",
+        uri= create_deterministic_uri(
             "".join(postcode_value.split()).lower(),
             "Postcode",
             data_ns
@@ -134,18 +138,18 @@ def map_func(item):
     )
 
     building_with_toid_uri = building_uri
+    building_with_toid_uri = ies.instantiate(uri=Building, instance_uri_context=f'{data_ns}BUILDING_TOID_{str(toid)}')
     if shares_toid == True:
         print("parent")
-        building_with_toid_uri = ies.instantiate(Building, instance=f'{data_ns}BUILDING_TOID_{str(toid)}')
         ies.add_to_graph(building_uri, ies_ns + "isPartOf", building_with_toid_uri)
-    ies.add_identifier(
-        building_with_toid_uri, toid, _class=f"{ies_ns}TOID", id_uri=f"{data_ns}toid_{toid}"
+    ies_tool.ExchangedItem.add_identifier(
+        building_with_toid_uri, toid, id_class=f"{ies_ns}TOID", uri=f"{data_ns}toid_{toid}"
     )
 
-    ies.add_to_graph(subject=building_uri, predicate=f"{ies_ns}inLocation", object=gp)
+    ies.add_to_graph(subject=building_uri, predicate=f"{ies_ns}inLocation", obj=gp)
 
     if DEBUG_MODE:
-        ies.graph.serialize(destination=f"export/{hashlib.sha256(str(item).encode()).hexdigest()}.ttl", format="turtle")
+        ies.graph.serialize(destination=f"{hashlib.sha256(str(item).encode()).hexdigest()}.ttl", format="turtle")
      
         return
     record = ies.graph.serialize(format="turtle")
