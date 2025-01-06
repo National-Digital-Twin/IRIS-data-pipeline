@@ -134,9 +134,8 @@ def map_func(item):
             data_ns
         )
     )
-
-    building_with_toid_uri = building_uri
-    building_with_toid_uri = ies.instantiate(uri=Building, instance_uri_context=f'{data_ns}BUILDING_TOID_{str(toid)}')
+    
+    building_with_toid_uri = ies.instantiate(uri=building_uri, instance_uri_context=f'{data_ns}BUILDING_TOID_{str(toid)}')
     if shares_toid == True:
         print("parent")
         ies.add_to_graph(building_uri, ies_ns + "isPartOf", building_with_toid_uri)
