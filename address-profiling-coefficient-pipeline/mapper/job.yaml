@@ -24,3 +24,4 @@ spec:
           value: knowledge
         command: ["python", "./address_profile_to_knowledge_mapper.py"]
       restartPolicy: Never
+  ttlSecondsAfterFinished: 10
