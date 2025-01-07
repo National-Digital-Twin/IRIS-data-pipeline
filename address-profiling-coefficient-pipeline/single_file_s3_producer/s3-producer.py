@@ -55,7 +55,7 @@ default_security_label = string_to_label(DEFAULT_SUECRITY_LABEL)
 kafka_config = {
     "bootstrap.servers": BROKER,
     "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanism": "SCRAM-SHA-256",
+    "sasl.mechanism": "PLAIN",
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
