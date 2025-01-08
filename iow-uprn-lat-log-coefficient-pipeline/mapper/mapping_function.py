@@ -106,8 +106,7 @@ def map_func(item):
     building.add_telicent_primary_name(address_value)
 
     address = ies.instantiate(
-        uri=ies_ns+"Address",
-        instance_uri_context= create_deterministic_uri(address_value, "Address", data_ns)
+        uri=create_deterministic_uri(address_value, "Address", data_ns)
     )
     address.add_telicent_primary_name(address_value + ", " + postcode_value)
 
@@ -146,7 +145,7 @@ def map_func(item):
     ies.add_to_graph(subject=building_uri, predicate=f"{ies_ns}inLocation", obj=gp)
 
     if DEBUG_MODE:
-        ies.graph.serialize(destination=f"{hashlib.sha256(str(item).encode()).hexdigest()}.ttl", format="turtle")
+        ies.graph.serialize(destination=f"{building_uprn}_ll.ttl", format="turtle")
      
         return
     record = ies.graph.serialize(format="turtle")
