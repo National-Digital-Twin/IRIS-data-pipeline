@@ -20,7 +20,10 @@ spec:
           value: replace_me
         - name: SOURCE_TOPIC
           value: address_profiling
+        - name: SOURCE_GROUP_ID
+          value: 30f69b1e-5b81-4b11-b70a-3e213fe3ffd8
         - name: TARGET_TOPIC
           value: knowledge
         command: ["python", "./address_profile_to_knowledge_mapper.py"]
       restartPolicy: Never
+  ttlSecondsAfterFinished: 10

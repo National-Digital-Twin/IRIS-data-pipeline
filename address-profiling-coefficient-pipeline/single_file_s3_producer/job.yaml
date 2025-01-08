@@ -8,6 +8,7 @@ spec:
       labels:
         app: address-profile-adapter
     spec:
+      deletePolicy: DeleteAfter
       containers:
       - name: address-profile-adapter
         image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-adapter:latest
@@ -18,10 +19,8 @@ spec:
           value: replace_me
         - name: SASL_PASSWORD
           value: replace_me
-        - name: SOURCE_TOPIC
-          value: address_profiling
         - name: TARGET_TOPIC
-          value: knowledge
+          value: address-profiling
         - name: PRODUCER_NAME
           value: address-profile-adapter
         - name: SORUCE_NAME

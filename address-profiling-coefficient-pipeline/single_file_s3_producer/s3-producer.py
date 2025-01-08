@@ -55,9 +55,10 @@ default_security_label = string_to_label(DEFAULT_SUECRITY_LABEL)
 kafka_config = {
     "bootstrap.servers": BROKER,
     "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanisms": "SCRAM-SHA-256",
+    "sasl.mechanism": "PLAIN",
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
+    "allow.auto.create.topics": True,
 }
 
 logger = CoreLoggerFactory.get_logger(__name__, kafka_config=kafka_config)
@@ -101,12 +102,14 @@ def create_record(data, security_labels):
 logger.info("Fetching bucket")
 
 
-sink = KafkaSink(TARGET_TOPIC, kafka_config=kafka_config)
+sink = KafkaSink(TARGET_TOPIC, kafka_config=kafka_config, debug=True)
 adapter = AutomaticAdapter(
     target=sink, 
     adapter_function=generate_records, 
     name=PRODUCER_NAME, 
-    source_name=SOURCE_NAME
+    source_name=SOURCE_NAME,
+    has_error_handler=False,
+    has_reporter=False
 )
 logger.info("Adapter created")
 adapter.run()
