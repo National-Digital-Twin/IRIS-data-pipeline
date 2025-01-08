@@ -17,6 +17,7 @@
 import ies_tool.ies_tool as ies_tool
 import hashlib
 import ndt_classes as ndt
+from ies_tool.ies_tool import ParticularPeriod
 
 
 DEBUG_MODE = False  # change to False when using with core
@@ -226,10 +227,13 @@ def map_func(item):
         state_id = building_object["LMK_KEY"]
         building_inspection_date = building_object["LodgementDate"] # taken from the filename of the data source
         
-        building_inspection_state = ies.instantiate(uri=data_ns + "state_" + state_id)
-        ies.add_to_graph(building_inspection_state.uri, rdf_ns+"type", epc_rating_map[current_epc_rating])
-        ies.add_to_graph(building_inspection_state.uri, ies_ns+"isStateOf", building)
-        ies_tool.Element.put_in_period(building_inspection_state, building_inspection_date)
+        
+        # the building inspection state should not be instantiated, as we do not want it to be an RdfsResource
+        building_inspection_state_uri = data_ns + "state_" + state_id
+        ies.add_to_graph(building_inspection_state_uri, rdf_ns+"type", epc_rating_map[current_epc_rating])
+        ies.add_to_graph(building_inspection_state_uri, ies_ns+"isStateOf", building)
+        pp_instance = ParticularPeriod(tool=ies, time_string=building_inspection_date)
+        ies.add_triple(building_inspection_state_uri, f"{ies_ns}inPeriod", pp_instance._uri)
 
         current_sap_points = int(float(building_object["SAPRating"]))
         current_sap_points_qudt = add_qudt_quantity(
@@ -238,7 +242,7 @@ def map_func(item):
             SAP_Point,
             building_uprn,
         )
-        ies.add_to_graph(building_inspection_state.uri, ies_ns+"hasCharacteristic", current_sap_points_qudt)
+        ies.add_to_graph(building_inspection_state_uri, ies_ns+"hasCharacteristic", current_sap_points_qudt)
 
         # now add the parts of the building as fusions
         # walls
@@ -255,7 +259,7 @@ def map_func(item):
                 wall_insulation_class, 
                 building_object.get("WallInsulationThickness", None),
             )
-            ies.add_to_graph(wall_fusion.uri, ies_ns+"isPartOf", building_inspection_state)
+            ies.add_to_graph(wall_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
 
         # floors
         floor_class = ndt.floor_type_map.get(building_object["FloorConstruction"], None)
@@ -271,7 +275,7 @@ def map_func(item):
                 floor_insulation_class,
                 building_object.get("FloorInsulationThickness", None),
             )
-            ies.add_to_graph(floor_fusion.uri, ies_ns+"isPartOf", building_inspection_state)
+            ies.add_to_graph(floor_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
 
         # roofs
         roof_class = ndt.roof_type_map.get(building_object["RoofConstruction"], None)
@@ -287,7 +291,7 @@ def map_func(item):
                 roof_insulation_class, 
                 building_object.get("RoofInsulationThickness", None),
             )
-            ies.add_to_graph(roof_fusion.uri, ies_ns+"isPartOf", building_inspection_state.uri)
+            ies.add_to_graph(roof_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
 
         # windows
         window_class = ndt.window_type_map.get(building_object["MultipleGlazingType"], None)
@@ -298,10 +302,10 @@ def map_func(item):
                 window_class_uri, 
                 building_uprn
             )
-            ies.add_to_graph(window_fusion.uri, ies_ns+"isPartOf", building_inspection_state.uri)
+            ies.add_to_graph(window_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
 
     if DEBUG_MODE:
-        ies.graph.serialize(destination=f"example_output.ttl", format="turtle")
+        ies.graph.serialize(destination=f"{building_uprn}_epc.ttl", format="turtle")
         return
     record = ies.graph.serialize(format="nt")
     return record
