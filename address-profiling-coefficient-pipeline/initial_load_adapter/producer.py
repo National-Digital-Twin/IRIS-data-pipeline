@@ -52,19 +52,25 @@ SOURCE_NAME = config.get(
     required=True,
     description="Specifies the source that the data has originated from",
 )
+FILENAME=config.get(
+    "FILENAME",
+    required=True,
+    description="The path along with the filename of the csv file to be processed."
+)
+
 permitted_nationalities=['GBR', 'NZL']
 default_security_label = SecurityLabelBuilder().add_multiple(EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.value, *permitted_nationalities).build()
 
 # Define our adapter function, this is just a Python generator function that
 # generates the Record instance to be written out to the DataSink
-file_name = "./initial_epc_data_load.csv"
 
 kafka_config = {
     "bootstrap.servers": BROKER,
     "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanisms": "SCRAM-SHA-256",
+    "sasl.mechanism": "PLAIN",
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
+    "allow.auto.create.topics": True,
 }
 
 def create_record(data, security_labels):
@@ -85,7 +91,7 @@ def create_record(data, security_labels):
 def generate_records() -> Iterable[Record]:
     i = 0
 
-    with open(file_name, "r", encoding="utf-8-sig") as f:
+    with open(FILENAME, "r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
 
         for row in reader:
@@ -96,7 +102,7 @@ def generate_records() -> Iterable[Record]:
 # Create a sink and the adapter
 sink = KafkaSink(TARGET_TOPIC, kafka_config=kafka_config)
 adapter = AutomaticAdapter(
-    target=sink, adapter_function=generate_records, name=PRODUCER_NAME, source_name=SOURCE_NAME
+    target=sink, adapter_function=generate_records, name=PRODUCER_NAME, source_name=SOURCE_NAME, has_reporter=False, has_error_handler=False
 )
 
 # Call run() to run the action

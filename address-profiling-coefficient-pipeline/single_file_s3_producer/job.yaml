@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: address-profile-adapter-job
+  namespace: default
 spec:
   template:
     metadata:
@@ -23,7 +24,7 @@ spec:
           value: address-profiling
         - name: PRODUCER_NAME
           value: address-profile-adapter
-        - name: SORUCE_NAME
+        - name: SOURCE_NAME
           value: replace_me
         - name: S3_BUCKET
           value: iris-data-cleasner-output
@@ -33,3 +34,4 @@ spec:
           value:
         command: ["python", "./address_profile_to_knowledge_mapper.py"]
       restartPolicy: Never
+  ttlSecondsAfterFinished: 10

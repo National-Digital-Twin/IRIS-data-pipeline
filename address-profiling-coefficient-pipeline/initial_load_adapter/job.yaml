@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: address-profile-file-adapter-job
+  namespace: default
+spec:
+  template:
+    metadata:
+      labels:
+        app: address-profile-file-adapter
+    spec:
+      containers:
+      - name: address-profile-file-adapter
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-file-adapter:latest
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: ia-kafka.default.svc.cluster.local:9092
+        - name: SASL_USERNAME
+          value: replace-me
+        - name: SASL_PASSWORD
+          value: replace-me
+        - name: TARGET_TOPIC
+          value: address-profiling
+        - name: PRODUCER_NAME
+          value: address-profile-file-adapter
+        - name: SOURCE_NAME
+          value: address-profile-pipeline-csv
+        - name: FILENAME
+          value: replace-me
+        command: ["python", "./producer.py"]
+      restartPolicy: Never
+  ttlSecondsAfterFinished: 10
