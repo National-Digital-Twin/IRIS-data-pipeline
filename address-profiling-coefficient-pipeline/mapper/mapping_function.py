@@ -118,9 +118,7 @@ def add_fusion( fusion_of_class, part_of_string):
     set_of_things_to_fuse = data_ns + set_of_things_to_fuse_string
     ies.add_to_graph(set_of_things_to_fuse, rdfs_ns+"subClassOf", fusion_of_class)
 
-    fusion = ies.instantiate(
-        uri=Fusion,
-        instance_uri_context=f"{data_ns}{set_of_things_to_fuse_string.lower()}_fusion")
+    fusion = ies.instantiate(uri=f"{data_ns}{set_of_things_to_fuse_string.lower()}_fusion")
     
     ies.add_to_graph(set_of_things_to_fuse, fusedInto, fusion.uri)
     return fusion
