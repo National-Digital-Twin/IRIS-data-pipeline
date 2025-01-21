@@ -89,8 +89,7 @@ def create_deterministic_uri(value, type, namespace):
 
 def add_qudt_quantity(value, unit_class, quantitykind_class, deterministic_uri_salt=""): #check
     quantity = ies.instantiate(      
-        uri=qudt + "Quantity",
-        instance_uri_context=create_deterministic_uri(
+        uri=create_deterministic_uri(
             f"{str(value)}{unit_class}{quantitykind_class}{deterministic_uri_salt}", "Quantity", data_ns
         ),
     )
