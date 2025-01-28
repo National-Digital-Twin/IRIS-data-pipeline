@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uprn-lat-long-mapping-job
+  namespace: default
+spec:
+  template:
+    metadata:
+      labels:
+        app: uprn-lat-long-mapper
+    spec:
+      containers:
+      - name: uprn-lat-long-mapper
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/uprn-lat-long-mapper:latest
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: ia-kafka.default.svc.cluster.local:9092
+        - name: SASL_USERNAME
+          value: replace-me
+        - name: SASL_PASSWORD
+          value: replace-me
+        - name: SOURCE_TOPIC
+          value: uprn-lat-long
+        - name: SOURCE_TOPIC_GROUP_ID
+          value: 8a70e69f-eb13-44c7-8422-ae8602641cb4
+        - name: TARGET_TOPIC
+          value: knowledge
+        command: ["python", "./osopenuprn_to_knowledge_mapper.py"]
+      restartPolicy: Never
+  ttlSecondsAfterFinished: 10

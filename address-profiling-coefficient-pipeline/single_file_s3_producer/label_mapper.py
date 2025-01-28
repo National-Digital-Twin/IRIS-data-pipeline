@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-from maplib.access import SecurityLabelBuilder, EDHSecurityLabelsV2
+from telicent_lib.access import SecurityLabelBuilder, EDHSecurityLabelsV2
 
 def string_to_label(security_label: str, delimiter:str = ","):
     labels = security_label.split(delimiter)

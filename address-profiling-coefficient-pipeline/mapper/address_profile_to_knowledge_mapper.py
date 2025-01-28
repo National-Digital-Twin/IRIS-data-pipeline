@@ -29,17 +29,41 @@ from dotenv import load_dotenv
 # Mapper Configuration
 load_dotenv()
 config = Configurator()
-broker = config.get("BOOTSTRAP_SERVERS", required=True,
+BROKER = config.get("BOOTSTRAP_SERVERS", required=True,
                     description="Specifies the Kafka Bootstrap Servers to connect to.")
-source_topic = config.get("SOURCE_TOPIC", required=True,
+SASL_USERNAME = config.get("SASL_USERNAME", required=True,
+                    description="The username for the SASL authentication.")
+SASL_PASSWORD = config.get("SASL_PASSWORD", required=True,
+                    description="The password for the SASL authentication.")
+SOURCE_TOPIC = config.get("SOURCE_TOPIC", required=True,
                     description="Specifies the Kafka topic the mapper ingests from.")
-target_topic = config.get("TARGET_TOPIC", required=True,
+TARGET_TOPIC = config.get("TARGET_TOPIC", required=True,
                     description="Specifies the Kafka topic the mapper pushes its output to")
-debug = config.get("DEBUG", required=False, default=False, converter=bool, required_type=bool)
+SOURCE_TOPIC_GROUP_ID = config.get("SOURCE_TOPIC_GROUP_ID", required=False,
+                    description="The group id for the topic to consume", default=0)
+DEBUG = config.get("DEBUG", required=False, default=False, converter=bool, required_type=bool)
+
+kafka_config = {
+    "bootstrap.servers": BROKER,
+    "security.protocol": "SASL_PLAINTEXT",
+    "sasl.mechanisms": "PLAIN",
+    "sasl.username": SASL_USERNAME,
+    "sasl.password": SASL_PASSWORD,
+    "group.id": [SOURCE_TOPIC_GROUP_ID],
+}
+
+kafka_producer_config = {
+    "bootstrap.servers": BROKER,
+    "security.protocol": "SASL_PLAINTEXT",
+    "sasl.mechanisms": "PLAIN",
+    "sasl.username": SASL_USERNAME,
+    "sasl.password": SASL_PASSWORD,
+    "allow.auto.create.topics": True,
+}
 
 logger = CoreLoggerFactory.get_logger(
-    "{source}-to-{target}-mapper".format(source=source_topic, target=target_topic),
-    broker=broker,
+    "{source}-to-{target}-mapper".format(source=SOURCE_TOPIC, target=TARGET_TOPIC),
+    kafka_config=kafka_producer_config,
     topic="telicent-logging",
 )
 # Function each record on the source topic is passed to.
@@ -55,7 +79,7 @@ def mapping_function(record: Record) ->  Union[Record, List[Record], None]:
     return RecordUtils.add_header(Record(record.headers, record.key, mapped, None), "Content-Type", "application/n-triples")
 
 
-source = KafkaSource(topic=source_topic, broker=broker)
-target = KafkaSink(topic=target_topic, broker=broker)
-mapper = Mapper(source, target, mapping_function, name=source_topic + " to " + target_topic + " Mapper", has_reporter=False, reporting_batch_size=500)
+source = KafkaSource(topic=SOURCE_TOPIC, kafka_config=kafka_config)
+target = KafkaSink(topic=TARGET_TOPIC, kafka_config=kafka_producer_config)
+mapper = Mapper(source, target, mapping_function, name=SOURCE_TOPIC + " to " + TARGET_TOPIC + " Mapper", has_reporter=False, reporting_batch_size=500, has_error_handler=False)
 mapper.run()

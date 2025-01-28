@@ -110,19 +110,19 @@ ndt:ParkHomeWall                rdfs:subClassOf     ndt:Wall .
 ndt:WallInsulation                              rdf:type            rdfs:Class . # Used for Other
 ndt:WallInsulation                              rdfs:subClassOf     ndt:Insulation .
 ndt:ExternalWallInsulation                      rdf:type            rdfs:Class .
-ndt:ExternalWallInsulation                      rdfs:subClassOf     ndt:WallInsulation.
+ndt:ExternalWallInsulation                      rdfs:subClassOf     ndt:WallInsulation .
 ndt:FilledCavityWallInsulation                  rdf:type            rdfs:Class .
-ndt:FilledCavityWallInsulation                  rdfs:subClassOf     ndt:WallInsulation.
+ndt:FilledCavityWallInsulation                  rdfs:subClassOf     ndt:WallInsulation .
 ndt:InternalWallInsulation                      rdf:type            rdfs:Class .
-ndt:InternalWallInsulation                      rdfs:subClassOf     ndt:WallInsulation.
+ndt:InternalWallInsulation                      rdfs:subClassOf     ndt:WallInsulation .
 ndt:AsBuiltWallInsulation                       rdf:type            rdfs:Class .
-ndt:AsBuiltWallInsulation                       rdfs:subClassOf     ndt:WallInsulation.
+ndt:AsBuiltWallInsulation                       rdfs:subClassOf     ndt:WallInsulation .
 ndt:FilledCavityAndInternalWallInsulation       rdf:type            rdfs:Class .
-ndt:FilledCavityAndInternalWallInsulation       rdfs:subClassOf     ndt:WallInsulation.
+ndt:FilledCavityAndInternalWallInsulation       rdfs:subClassOf     ndt:WallInsulation .
 ndt:FilledCavityAndExternalWallInsulation       rdf:type            rdfs:Class .
-ndt:FilledCavityAndExternalWallInsulation       rdfs:subClassOf     ndt:WallInsulation.
+ndt:FilledCavityAndExternalWallInsulation       rdfs:subClassOf     ndt:WallInsulation .
 ndt:WallInsulationWithAdditionalInsulation      rdf:type            rdfs:Class .
-ndt:WallInsulationWithAdditionalInsulation      rdfs:subClassOf     ndt:WallInsulation.
+ndt:WallInsulationWithAdditionalInsulation      rdfs:subClassOf     ndt:WallInsulation .
 
 # floor types
 ndt:Floor                       rdf:type            rdfs:Class . # Used for Other

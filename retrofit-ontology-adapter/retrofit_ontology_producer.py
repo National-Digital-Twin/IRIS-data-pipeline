@@ -25,22 +25,35 @@ from typing import Union, List
 load_dotenv()
 # Mapper Configuration
 config = Configurator()
-broker = config.get("BOOTSTRAP_SERVERS", required=True,
+BROKER = config.get("BOOTSTRAP_SERVERS", required=True,
                     description="Specifies the Kafka Bootstrap Servers to connect to.")
-target_topic= config.get("TARGET_TOPIC", required=True,
+SASL_USERNAME = config.get("SASL_USERNAME", required=True,
+                    description="Specifies the username to connect to the Kafka server.")
+SASL_PASSWORD = config.get("SASL_PASSWORD", required=True,
+                    description="Specifies the password to connect to the Kafka server.")
+TARGET_TOPIC= config.get("TARGET_TOPIC", required=True,
                     description="Specifies the Kafka topic the mapper pushes its output to")
-name = config.get("PRODUCER_NAME", required=True, 
+PRODUCER_NAME = config.get("PRODUCER_NAME", required=True, 
                     description="Specifies the name of the producer")
-source_name=config.get("SOURCE_NAME", required=True, 
+SOURCE_NAME=config.get("SOURCE_NAME", required=True, 
                     description="Specifies the source that the data has originated from")
-debug = config.get("DEBUG", required=False, default=False, converter=bool, required_type=bool)
+DEBUG = config.get("DEBUG", required=False, default=False, converter=bool, required_type=bool)
 
+
+kafka_config = {
+    "bootstrap.servers": BROKER,
+    "security.protocol": "SASL_PLAINTEXT",
+    "sasl.mechanism": "PLAIN",
+    "sasl.username": SASL_USERNAME,
+    "sasl.password": SASL_PASSWORD,
+    "allow.auto.create.topics": True,
+}
 def generate_records() -> Iterable[Record]:
     return Record(RecordUtils.to_headers(
         {
             "Content-Type": "text/turtle",
-            "Data-Source": source_name,
-            "Data-Producer": name,
+            "Data-Source": SOURCE_NAME,
+            "Data-Producer": PRODUCER_NAME,
             "Security-Label": default_security_label
         }),
         None, 
@@ -61,8 +74,8 @@ if __name__ == "__main__":
         ttl_file = file.read()
 
         # Instantiate Sink for different topics 
-        sink_ttl = KafkaSink(target_topic, broker)
-        adapter = Adapter(sink_ttl, name=name, source_name=source_name)
+        sink_ttl = KafkaSink(TARGET_TOPIC, kafka_config=kafka_config)
+        adapter = Adapter(sink_ttl, name=PRODUCER_NAME, source_name=SOURCE_NAME, has_error_handler=False, has_reporter=False)
         
         adapter.run()
         process_source(adapter)

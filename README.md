@@ -19,3 +19,32 @@ Producer: ```/retrofit-ontology-adapter/retrofit_ontology_producer.py```
 
 ## S3 Producer for Address (EPC) profiling updates dropped into an S3 bucket
 Producer: ```/address-profiling-coefficient-pipeline/single_file_s3_producer/s3-producer.py```
+
+## Running a local instance of Kafka
+
+If you want to run a local instance of Kafka run the following commmand in the terminal:
+
+```
+make start-kafka-docker
+```
+
+To stop the running Kafka instance run the following command in the terminal:
+
+```
+make stop-and-remove-kafka-docker
+```
+The following details will be required to connect to the local Kafka instance:
+
+  - Username: user1
+  - Password: root
+
+## Running the jobs on the cluster
+
+To run the data pipeline on any of the deployed environments they must be run as kubernetees jobs.
+This can be done by navigating to the directoy for the aspect of the pipeline that needs to be run and subsequently running the following command
+
+```
+kubectl apply -f job.yaml
+```
+
+For any of the file based jobs the containers will need to be redeployed with the new files because the scripts look for them locally.
