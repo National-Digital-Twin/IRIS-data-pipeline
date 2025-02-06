@@ -20,7 +20,7 @@ spec:
         - name: SASL_PASSWORD
           value: replace-me
         - name: TARGET_TOPIC
-          value: ontology
+          value: knowledge
         - name: PRODUCER_NAME
           value: retrofit-ontology-adapter
         - name: SOURCE_NAME
