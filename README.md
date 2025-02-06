@@ -128,3 +128,6 @@ For any of the file based jobs the containers will need to be redeployed with th
 ## Running local code development tools
 
 See [RUNNING_CODE_DEV_TOOLS.md](./developer_docs/RUNNING_CODE_DEV_TOOLS.md) for more information.
+
+## Contributors
+The development of these works has been made possible with thanks to our [contributors](https://github.com/National-Digital-Twin/IRIS-data-pipeline/graphs/contributors).
