@@ -13,7 +13,7 @@ Some files have been excluded to focus on the key components.
 ├── Makefile
 ├── NOTICE
 ├── README.md
-├── address-profiling-coefficient-pipeline
+├── address-profiling-pipeline
 │   ├── initial_load_adapter
 │   │   ├── infrastructure
 │   │   │   ├── Dockerfile
@@ -42,7 +42,7 @@ Some files have been excluded to focus on the key components.
 │       │   ├── label_mapper.py
 │       │   └── s3-producer.py
 │       └── tests
-├── iow-uprn-lat-log-coefficient-pipeline
+├── lat-long-pipeline
 │   ├── adapter
 │   │   ├── infrastructure
 │   │   │   ├── Dockerfile
@@ -81,20 +81,20 @@ Please follow this structure to add any new sub pipelines to this project.
 
 ## There are four sets of things to run here:
 ### Address (EPC) profiling data (includes EPC rating and info about wall, roof, floor and window detail)
-Producer: ```/address-profiling-coefficient-pipeline/initial_load_adapter/src/producer.py```
+Producer: ```/address-profiling-pipeline/initial_load_adapter/src/producer.py```
 
-Mapper: ```/address-profiling-coefficient-pipeline/mapper/src/address_profile_to_knowledge_mapper.py```
+Mapper: ```/address-profiling-pipeline/mapper/src/address_profile_to_knowledge_mapper.py```
 
 ### OS data (includes lat-long and TOID data)
-Producer: ```/iow-uprn-lat-log-coefficient-pipeline/adapter/src/producer.py```
+Producer: ```/lat-long-pipeline/adapter/src/producer.py```
 
-Mapper: ```/iow-uprn-lat-log-coefficient-pipeline/mapper/src/osopenuprn_to_knowledge_mapper.py```
+Mapper: ```/lat-long-pipeline/mapper/src/osopenuprn_to_knowledge_mapper.py```
 
 ### Ontology extensions and styles
 Producer: ```/retrofit-ontology-adapter/src/retrofit_ontology_producer.py```
 
 ### S3 Producer for Address (EPC) profiling updates dropped into an S3 bucket
-Producer: ```/address-profiling-coefficient-pipeline/single_file_s3_producer/src/s3-producer.py```
+Producer: ```/address-profiling-pipeline/single_file_s3_producer/src/s3-producer.py```
 
 ## Running a local instance of Kafka
 
