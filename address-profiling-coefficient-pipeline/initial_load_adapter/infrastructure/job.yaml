@@ -1,17 +1,17 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: retrofit-ontology-adapter-job
+  name: address-profile-file-adapter-job
   namespace: default
 spec:
   template:
     metadata:
       labels:
-        app: retrofit-ontology-adapter
+        app: address-profile-file-adapter
     spec:
       containers:
-      - name: retrofit-ontology-adapter
-        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/retrofit-ontology-adapter:latest
+      - name: address-profile-file-adapter
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-file-adapter:latest
         env:
         - name: BOOTSTRAP_SERVERS
           value: ia-kafka.default.svc.cluster.local:9092
@@ -20,11 +20,13 @@ spec:
         - name: SASL_PASSWORD
           value: replace-me
         - name: TARGET_TOPIC
-          value: ontology
+          value: address-profiling
         - name: PRODUCER_NAME
-          value: retrofit-ontology-adapter
+          value: address-profile-file-adapter
         - name: SOURCE_NAME
-          value: retrofit-ontology-file
-        command: ["python", "./retrofit_ontology_producer.py"]
+          value: address-profile-pipeline-csv
+        - name: FILENAME
+          value: replace-me
+        command: ["python", "./producer.py"]
       restartPolicy: Never
   ttlSecondsAfterFinished: 10
