@@ -18,11 +18,10 @@ import ies_tool.ies_tool as ies_tool
 import hashlib
 import geohash_tools as gh
 
-DEBUG_MODE = False  # change to False when using with core
+DEBUG_MODE = False  # change to False when targeting Integration Architecture
 
 # declare namespaces
 ies_ns = "http://ies.data.gov.uk/ontology/ies4#"
-telicent_ns = "http://telicent.io/ontology/"
 rdf_ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 rdfs_ns = "http://www.w3.org/2000/01/rdf-schema#"
 ndt_ns = "http://nationaldigitaltwin.gov.uk/ontology#"
@@ -47,7 +46,6 @@ def map_func(item):
     ies.clear_graph()
     # first our namespaces
     ies.graph.namespace_manager.bind("ies", ies_ns)
-    ies.graph.namespace_manager.bind("telicent", telicent_ns)
     ies.graph.namespace_manager.bind("geoplace", geoplace_ns)
     ies.graph.namespace_manager.bind("data", data_ns)
     ies.graph.namespace_manager.bind("ndt", ndt_ns)

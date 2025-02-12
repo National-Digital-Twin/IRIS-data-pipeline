@@ -20,7 +20,7 @@ import ndt_classes as ndt
 from ies_tool.ies_tool import ParticularPeriod
 
 
-DEBUG_MODE = False  # change to False when using with core
+DEBUG_MODE = False  # change to False when targeting Integration Architecture
 
 # declare namespaces
 ies_ns = "http://ies.data.gov.uk/ontology/ies4#"
@@ -28,7 +28,6 @@ rdfs_ns = "http://www.w3.org/2000/01/rdf-schema#"
 rdf_ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 # IES with uncertainty v2.0 namespace
 ies_uncertainty_ns = "http://ies.data.gov.uk/ontology/ies_uncertainty_proposal/v2.0#"
-telicent_ns = "http://telicent.io/ontology/"
 ndt_ns = "http://nationaldigitaltwin.gov.uk/ontology#"
 data_ns = "http://nationaldigitaltwin.gov.uk/data#"
 epc_ns =  "http://gov.uk/government/organisations/department-for-levelling-up-housing-and-communities/ontology/epc#"
@@ -151,7 +150,6 @@ def map_func(item):
     ies.clear_graph()
     # first our namespaces
     ies.graph.namespace_manager.bind("ies", ies_ns)
-    ies.graph.namespace_manager.bind("telicent", telicent_ns)
     ies.graph.namespace_manager.bind("data", data_ns)
     ies.graph.namespace_manager.bind("iesuncertainty", ies_uncertainty_ns)
     ies.graph.namespace_manager.bind("ndt", ndt_ns)

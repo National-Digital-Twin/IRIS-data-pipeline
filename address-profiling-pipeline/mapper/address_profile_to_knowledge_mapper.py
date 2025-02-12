@@ -64,11 +64,10 @@ kafka_producer_config = {
 logger = CoreLoggerFactory.get_logger(
     "{source}-to-{target}-mapper".format(source=SOURCE_TOPIC, target=TARGET_TOPIC),
     kafka_config=kafka_producer_config,
-    topic="telicent-logging",
+    topic="logging",
 )
 # Function each record on the source topic is passed to.
 def mapping_function(record: Record) ->  Union[Record, List[Record], None]:
-    
 
     # Add mapping logic here
     # Try to keep it small and performant
