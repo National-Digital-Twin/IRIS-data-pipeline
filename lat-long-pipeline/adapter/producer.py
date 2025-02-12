@@ -30,10 +30,10 @@ load_dotenv()
 config = Configurator()
 BROKER = config.get("BOOTSTRAP_SERVERS", required=True,
                     description="Specifies the Kafka Bootstrap Servers to connect to.")
-# SASL_USERNAME = config.get("SASL_USERNAME", required=True,
-#                     description="The username for the SASL authentication.")
-# SASL_PASSWORD = config.get("SASL_PASSWORD", required=True,
-#                     description="The password for the SASL authentication.")
+SASL_USERNAME = config.get("SASL_USERNAME", required=True,
+                    description="The username for the SASL authentication.")
+SASL_PASSWORD = config.get("SASL_PASSWORD", required=True,
+                    description="The password for the SASL authentication.")
 TARGET_TOPIC = config.get("TARGET_TOPIC", required=True,
                     description="Specifies the Kafka topic the mapper pushes its output to")
 PRODUCER_NAME = config.get("PRODUCER_NAME", required=True, 
@@ -49,10 +49,10 @@ FILENAME=config.get("FILENAME", required=True,
 
 kafka_config = {
     "bootstrap.servers": BROKER,
-    # "security.protocol": "SASL_PLAINTEXT",
-    # "sasl.mechanism": "PLAIN",
-    # "sasl.username": SASL_USERNAME,
-    # "sasl.password": SASL_PASSWORD,
+    "security.protocol": "SASL_PLAINTEXT",
+    "sasl.mechanism": "PLAIN",
+    "sasl.username": SASL_USERNAME,
+    "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
 }
 

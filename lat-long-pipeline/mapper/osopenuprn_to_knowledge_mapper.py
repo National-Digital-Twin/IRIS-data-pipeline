@@ -31,14 +31,14 @@ BROKER = config.get(
     required=True,
     description="Specifies the Kafka Bootstrap Servers to connect to.",
 )
-# SASL_USERNAME = config.get(
-#     "SASL_USERNAME", required=True,
-#     description="The username for the SASL authentication."
-# )
-# SASL_PASSWORD = config.get(
-#     "SASL_PASSWORD", required=True,
-#     description="The password for the SASL authentication."
-# )
+SASL_USERNAME = config.get(
+    "SASL_USERNAME", required=True,
+    description="The username for the SASL authentication."
+)
+SASL_PASSWORD = config.get(
+    "SASL_PASSWORD", required=True,
+    description="The password for the SASL authentication."
+)
 SOURCE_TOPIC = config.get(
     "SOURCE_TOPIC",
     required=True,
@@ -60,19 +60,19 @@ DEBUG = config.get(
 
 kafka_config = {
     "bootstrap.servers": BROKER,
-    # "security.protocol": "SASL_PLAINTEXT",
-    # "sasl.mechanisms": "PLAIN",
-    # "sasl.username": SASL_USERNAME,
-    # "sasl.password": SASL_PASSWORD,
+    "security.protocol": "SASL_PLAINTEXT",
+    "sasl.mechanisms": "PLAIN",
+    "sasl.username": SASL_USERNAME,
+    "sasl.password": SASL_PASSWORD,
     "group.id": [SOURCE_TOPIC_GROUP_ID],
 }
 
 kafka_producer_config = {
     "bootstrap.servers": BROKER,
-    # "security.protocol": "SASL_PLAINTEXT",
-    # "sasl.mechanisms": "PLAIN",
-    # "sasl.username": SASL_USERNAME,
-    # "sasl.password": SASL_PASSWORD,
+    "security.protocol": "SASL_PLAINTEXT",
+    "sasl.mechanisms": "PLAIN",
+    "sasl.username": SASL_USERNAME,
+    "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
 }
 

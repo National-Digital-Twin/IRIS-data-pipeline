@@ -3,4 +3,3 @@ telicent-ies-tool==1.0.2
 python-dotenv
 geohash-tools==0.2.0
 setuptools
-pytest
