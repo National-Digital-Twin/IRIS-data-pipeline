@@ -17,9 +17,9 @@ def load_json(file_name):
 
 @pytest.mark.address_profiling_pipeline     
 def test_map_func():
-    input = load_json('input.json')
+    input_data = load_json('input.json')
     expected_output = load_file("output.txt")
-    mapped_result = map_func(input).strip()
+    mapped_result = map_func(input_data).strip()
     result_array = mapped_result.split("\n")
     assert set(result_array) == set(expected_output)
 
