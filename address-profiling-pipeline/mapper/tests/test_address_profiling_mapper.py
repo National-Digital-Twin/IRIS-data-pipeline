@@ -1,5 +1,8 @@
 import pytest
-from mapping_function import map_func 
+import importlib
+import mapping_function
+importlib.reload(mapping_function)
+from mapping_function import map_func
 import json
 import os
 

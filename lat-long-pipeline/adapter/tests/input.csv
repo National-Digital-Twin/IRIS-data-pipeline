@@ -1,0 +1,2 @@
+UPRN,UDPRN,TOID,SharesTOID,Address,PostcodeLocator,XCoordinate,YCoordinate,Latitude,Longitude,ParentUPRN,WardCode,LSOA11Code,COA11Code,ParishCode,ConservationArea,NationalPark,WorldHeritageSite,AONB,Class,ClassDescription,OSAPISource
+100050060776,7333991,osgb1000002094854531,False,"Aire View, Gowdall Road, Snaith, Goole, DN14 0AA",DN14 0AA,464018.36,422250.46,53.69278550200611,-1.0319753337442386,10095590640,,,,,,,,,CM01,Dentist,DPA

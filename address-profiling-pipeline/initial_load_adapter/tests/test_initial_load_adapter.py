@@ -1,3 +1,4 @@
+from unittest.mock import patch
 import pytest
 from producer import generate_records
 import json
@@ -11,14 +12,17 @@ def load_expected_output(file_name):
 
 @pytest.mark.address_profiling_pipeline    
 def test_generate_records():
-    expected_output = load_expected_output("output.json")
-    records = list(generate_records())
+    test_input_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "input.csv"))
 
-    actual_output = []
-    for record in records:
-        actual_output.extend(record.value.strip().split("\n"))
+    with patch('producer.FILENAME', test_input_file):
+        expected_output = load_expected_output("output.json")
+        records = list(generate_records())
 
-    assert set(actual_output) == set(expected_output)
+        actual_output = []
+        for record in records:
+            actual_output.extend(record.value.strip().split("\n"))
+
+        assert set(actual_output) == set(expected_output)
 
 if __name__ == "__main__":
     pytest.main()
