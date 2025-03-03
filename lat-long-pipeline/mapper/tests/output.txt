@@ -1,0 +1,45 @@
+@prefix data: <http://nationaldigitaltwin.gov.uk/data#> .
+@prefix geoplace: <https://www.geoplace.co.uk/addresses-streets/location-data/the-uprn#> .
+@prefix ies: <http://ies.data.gov.uk/ontology/ies4#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tont: <http://telicent.io/ontology/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+data:building_100050060776 a rdfs:Resource ;
+    ies:inLocation <http://geohash.org/gcx32w2x1hx>,
+        data:address_ddc4ae6d4d9b645b1f4a1d876adc95b8d7461e5ba015fd3bdf7dcd04daeedc45 ;
+    ies:isIdentifiedBy data:toid_osgb1000002094854531,
+        data:uprn_100050060776 ;
+    tont:primaryName "Aire View, Gowdall Road, Snaith, Goole, DN14 0AA"^^xsd:string .
+
+<http://geohash.org/gcx32w2x1hx> a ies:GeoPoint,
+        rdfs:Resource ;
+    ies:isIdentifiedBy <http://geohash.org/gcx32w2x1hx_LAT>,
+        <http://geohash.org/gcx32w2x1hx_LON> .
+
+<http://geohash.org/gcx32w2x1hx_LAT> a ies:Latitude,
+        rdfs:Resource ;
+    ies:representationValue "53.69278550200611"^^xsd:float .
+
+<http://geohash.org/gcx32w2x1hx_LON> a ies:Longitude,
+        rdfs:Resource ;
+    ies:representationValue "-1.0319753337442386"^^xsd:float .
+
+data:address_ddc4ae6d4d9b645b1f4a1d876adc95b8d7461e5ba015fd3bdf7dcd04daeedc45 a rdfs:Resource ;
+    ies:isIdentifiedBy data:firstlineofaddress_f4c9387a1c8a3734587bac723b877c6a62cea0f9f23eaa739040f497279e994c,
+        data:postcode_93c770da92e2af74ff0f10270e755c958034b7c3afce6d0cb1be2be3bfca47f9 ;
+    tont:primaryName "Aire View, Gowdall Road, Snaith, Goole, DN14 0AA, DN14 0AA"^^xsd:string .
+
+data:firstlineofaddress_f4c9387a1c8a3734587bac723b877c6a62cea0f9f23eaa739040f497279e994c a ies:FirstLineOfAddress ;
+    ies:representationValue "Aire View, Gowdall Road, Snaith, Goole, DN14 0AA"^^xsd:string .
+
+data:postcode_93c770da92e2af74ff0f10270e755c958034b7c3afce6d0cb1be2be3bfca47f9 a ies:PostalCode ;
+    ies:representationValue "DN14 0AA"^^xsd:string .
+
+data:toid_osgb1000002094854531 a ies:TOID ;
+    ies:representationValue "osgb1000002094854531"^^xsd:string .
+
+data:uprn_100050060776 a geoplace:UniquePropertyReferenceNumber ;
+    ies:representationValue "100050060776"^^xsd:string .
+
+

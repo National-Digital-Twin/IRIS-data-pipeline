@@ -33,7 +33,7 @@ Building = ndt_ns + "Building"
 Uprn = geoplace_ns + "UniquePropertyReferenceNumber"
 
 
-def create_deterministic_uri(value, type, namespace):
+def create_deterministic_uri_full_hash(value, type, namespace):
     hash = hashlib.sha256(value.encode()).hexdigest()
     lower_case_type = type.lower()
     return f"{namespace}{lower_case_type}_{hash}"
@@ -104,7 +104,7 @@ def map_func(item):
     building.add_telicent_primary_name(address_value)
 
     address = ies.instantiate(
-        uri=create_deterministic_uri(address_value, "Address", data_ns)
+        uri=create_deterministic_uri_full_hash(address_value, "Address", data_ns)
     )
     address.add_telicent_primary_name(address_value + ", " + postcode_value)
 
@@ -112,7 +112,7 @@ def map_func(item):
         address,
         address_value,
         id_class=ies_ns + "FirstLineOfAddress",
-        uri= create_deterministic_uri(
+        uri= create_deterministic_uri_full_hash(
             "".join(address_value.replace(",", "").split()).lower(), 
             "FirstLineOfAddress", 
             data_ns
@@ -125,7 +125,7 @@ def map_func(item):
         address,
         postcode_value,
         id_class=ies_ns + "PostalCode",
-        uri= create_deterministic_uri(
+        uri= create_deterministic_uri_full_hash(
             "".join(postcode_value.split()).lower(),
             "Postcode",
             data_ns

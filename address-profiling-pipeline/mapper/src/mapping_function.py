@@ -80,7 +80,7 @@ PartOfBuilding = ndt_ns + "PartOfBuilding"
 Uprn = geoplace_ns + "UniquePropertyReferenceNumber"
 
 
-def create_deterministic_uri(value, type, namespace):
+def create_deterministic_uri_short_hash(value, type, namespace):
     hash = hashlib.sha256(value.encode()).hexdigest()
     short_hash = hash[:16]
     lower_case_type = type.lower()
@@ -88,7 +88,7 @@ def create_deterministic_uri(value, type, namespace):
 
 def add_qudt_quantity(value, unit_class, quantitykind_class, deterministic_uri_salt=""): #check
     quantity = ies.instantiate(      
-        uri=create_deterministic_uri(
+        uri=create_deterministic_uri_short_hash(
             f"{str(value)}{unit_class}{quantitykind_class}{deterministic_uri_salt}", "Quantity", data_ns
         ),
     )
@@ -184,7 +184,7 @@ def map_func(item):
 
     # address = ies.instantiate(
     #     ies_ns+"Address",
-    #     instance= create_deterministic_uri(address_value, "Address", data_ns)
+    #     instance= create_deterministic_uri_short_hash(address_value, "Address", data_ns)
     # )
     # ies.add_telicent_primary_name(address, address_value + ", " + postcode_value)
 
@@ -192,7 +192,7 @@ def map_func(item):
     #     address,
     #     address_value,
     #     _class=ies_ns + "FirstLineOfAddress",
-    #     id_uri= create_deterministic_uri(
+    #     id_uri= create_deterministic_uri_short_hash(
     #         "".join(address_value.replace(",", "").split()).lower(), 
     #         "FirstLineOfAddress", 
     #         data_ns
@@ -204,7 +204,7 @@ def map_func(item):
     #     address,
     #     postcode_value,
     #     _class=ies_ns + "PostalCode",
-    #     id_uri= create_deterministic_uri(
+    #     id_uri= create_deterministic_uri_short_hash(
     #         "".join(postcode_value.split()).lower(),
     #         "Postcode",
     #         data_ns
