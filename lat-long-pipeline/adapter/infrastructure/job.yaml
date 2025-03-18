@@ -12,6 +12,13 @@ spec:
       containers:
       - name: uprn-lat-long-adapter
         image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/uprn-lat-long-adapter:latest
+        resources:
+          limits:
+            memory: "8Gi"
+          requests:
+            cpu: 1
+            memory: "2Gi"
+            ephemeral-storage: "10Gi"
         env:
         - name: BOOTSTRAP_SERVERS
           value: ia-kafka.default.svc.cluster.local:9092
