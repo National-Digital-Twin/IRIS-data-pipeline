@@ -177,39 +177,7 @@ def map_func(item):
         building_uprn,
         id_class=Uprn,
         uri=f"{data_ns}uprn_{building_uprn}"),
-    
-    # address_value = building_object["Address"]
-    # postcode_value = building_object["Postcode"]
-    # ies.add_telicent_primary_name(building, building_type_literal + " at " + address_value)
 
-    # address = ies.instantiate(
-    #     ies_ns+"Address",
-    #     instance= create_deterministic_uri_short_hash(address_value, "Address", data_ns)
-    # )
-    # ies.add_telicent_primary_name(address, address_value + ", " + postcode_value)
-
-    # ies.add_identifier(  
-    #     address,
-    #     address_value,
-    #     _class=ies_ns + "FirstLineOfAddress",
-    #     id_uri= create_deterministic_uri_short_hash(
-    #         "".join(address_value.replace(",", "").split()).lower(), 
-    #         "FirstLineOfAddress", 
-    #         data_ns
-    #     )
-    # )
-    
-    # ies.add_to_graph(building, ies_ns + "inLocation", address)
-    # ies.add_identifier(
-    #     address,
-    #     postcode_value,
-    #     _class=ies_ns + "PostalCode",
-    #     id_uri= create_deterministic_uri_short_hash(
-    #         "".join(postcode_value.split()).lower(),
-    #         "Postcode",
-    #         data_ns
-    #     )
-    # )
     # only add more detail if the certificate is related to a domestic property
     if building_object["CertificateType"] == "domestic":
         roof_class = ndt.roof_type_map.get(building_object["RoofConstruction"], None)
