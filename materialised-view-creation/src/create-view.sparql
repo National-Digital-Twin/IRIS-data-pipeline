@@ -1,0 +1,38 @@
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX data: <http://nationaldigitaltwin.gov.uk/data#>
+PREFIX ies: <http://ies.data.gov.uk/ontology/ies4#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX geoplace: <https://www.geoplace.co.uk/addresses-streets/location-data/the-uprn#>
+PREFIX ex: <http://example.org/geo#>
+ 
+# Create named graph for building-ward mapping
+CREATE GRAPH <http://ndtp.co.uk/building-ward-mapping> ;
+ 
+# Insert building-to-ward mappings
+INSERT { 
+  GRAPH <http://ndtp.co.uk/building-ward-mapping> {
+    ?building data:locatedInWard ?ward .
+    ?building data:inWardName ?wardName .
+    ?uprn_id data:locatedInWardUPRN ?ward .
+  }
+}
+WHERE {
+  # Get ward boundaries
+  ?ward a geo:Feature ;
+        ex:WD23NM ?wardName ;
+        geo:asWKT ?wardWKT .
+ 
+  # Get buildings with coordinates (using your project's pattern)
+  ?building geo:hasGeometry ?geometry .
+  ?geometry geo:asWKT ?wkt .
+ 
+  # Get UPRN for the building
+  ?building ies:isIdentifiedBy ?uprn .
+  ?uprn ies:representationValue ?uprn_id .
+  ?uprn rdf:type geoplace:UniquePropertyReferenceNumber .
+ 
+  # Spatial filter
+  FILTER(geof:sfWithin(?wkt, ?wardWKT))
+}

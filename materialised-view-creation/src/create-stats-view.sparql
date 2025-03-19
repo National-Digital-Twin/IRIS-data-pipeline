@@ -1,0 +1,62 @@
+PREFIX data: <http://nationaldigitaltwin.gov.uk/data#>
+PREFIX ex: <http://example.org/geo#>
+PREFIX stats: <http://example.org/stats#>
+
+# Create named graph for statistics
+CREATE GRAPH <http://ndtp.co.uk/epc-ward-statistics> ;
+
+# Insert EPC statistics by ward
+INSERT { 
+    GRAPH <http://ndtp.co.uk/epc-ward-statistics> {
+        ?statsNode a stats:EPCWardStats ;
+                            stats:wardName ?wardName ;
+                            stats:EPC_Rating_A ?EPC_Rating_A ;
+                            stats:EPC_Rating_B ?EPC_Rating_B ;
+                            stats:EPC_Rating_C ?EPC_Rating_C ;
+                            stats:EPC_Rating_D ?EPC_Rating_D ;
+                            stats:EPC_Rating_E ?EPC_Rating_E ;
+                            stats:EPC_Rating_F ?EPC_Rating_F ;
+                            stats:EPC_Rating_G ?EPC_Rating_G ;
+                            stats:No_EPC_Rating ?No_EPC_Rating .
+    }
+}
+WHERE {
+    {
+      SELECT ?wardName
+      (COUNT(DISTINCT ?buildingA) AS ?EPC_Rating_A)
+      (COUNT(DISTINCT ?buildingB) AS ?EPC_Rating_B)
+      (COUNT(DISTINCT ?buildingC) AS ?EPC_Rating_C)
+      (COUNT(DISTINCT ?buildingD) AS ?EPC_Rating_D)
+      (COUNT(DISTINCT ?buildingE) AS ?EPC_Rating_E)
+      (COUNT(DISTINCT ?buildingF) AS ?EPC_Rating_F)
+      (COUNT(DISTINCT ?buildingG) AS ?EPC_Rating_G)
+      (COUNT(DISTINCT ?buildingNoEPC) AS ?No_EPC_Rating)
+      WHERE {
+        # Get ward name from mapping
+        GRAPH <http://ndtp.co.uk/building-ward-mapping> {
+          ?building data:locatedInWard ?ward .
+        }
+          ?ward ex:WD23NM ?wardName .
+        
+        # Get EPC rating from mapping
+        OPTIONAL {
+          GRAPH <http://ndtp.co.uk/building-epc-mapping> {
+            ?building data:hasEPCRating ?epcRating .
+          }
+        }
+        # Categorize buildings by EPC rating
+        BIND(IF(?epcRating = "A", ?building, ?undefined) AS ?buildingA)
+        BIND(IF(?epcRating = "B", ?building, ?undefined) AS ?buildingB)
+        BIND(IF(?epcRating = "C", ?building, ?undefined) AS ?buildingC)
+        BIND(IF(?epcRating = "D", ?building, ?undefined) AS ?buildingD)
+        BIND(IF(?epcRating = "E", ?building, ?undefined) AS ?buildingE)
+        BIND(IF(?epcRating = "F", ?building, ?undefined) AS ?buildingF)
+        BIND(IF(?epcRating = "G", ?building, ?undefined) AS ?buildingG)
+        BIND(IF(!BOUND(?epcRating), ?building, ?undefined) AS ?buildingNoEPC)
+      }
+      GROUP BY ?wardName
+}
+    
+    # Create unique ID for each ward's statistics
+    BIND(IRI(CONCAT("http://example.org/stats#", ENCODE_FOR_URI(?wardName))) AS ?statsNode)
+}
