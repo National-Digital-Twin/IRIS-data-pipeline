@@ -70,13 +70,10 @@ def create_record(data, security_labels):
     }), None, dumps(data))
 
 def generate_records() -> Iterable[Record]:
-    i=0
-
     with open(FILENAME, 'r', encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
 
         for row in reader:
-            i += 1
             yield create_record(row, default_security_label)
 
 # Create a sink and the adapter

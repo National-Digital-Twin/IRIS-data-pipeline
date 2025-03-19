@@ -47,10 +47,10 @@ S3_BUCKET = config.get("S3_BUCKET", required=True,
 S3_FILENAME = config.get("S3_FILENAME", required=True, 
                     description="Specifies the source that the data has originated from")
 
-DEFAULT_SUECRITY_LABEL = config.get("DEFAULT_SECURITY_LABEL", required=True, 
+DEFAULT_SECURITY_LABEL = config.get("DEFAULT_SECURITY_LABEL", required=True, 
                     description="Specifies the source that the data has originated from")
 
-default_security_label = string_to_label(DEFAULT_SUECRITY_LABEL)
+default_security_label = string_to_label(DEFAULT_SECURITY_LABEL)
 
 kafka_config = {
     "bootstrap.servers": BROKER,

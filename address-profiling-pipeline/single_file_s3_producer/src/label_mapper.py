@@ -42,7 +42,6 @@ def string_to_label(security_label: str, delimiter:str = ","):
                 attrs[EDHSecurityLabelsV2.CLASSIFICATION.name] = value
             case _: 
                 print(f"Attribute {attribute}, not valid in handling model")
-                continue
     for group in groups:
         details = group.split(":")
         group_type = details[-1]
@@ -57,10 +56,9 @@ def string_to_label(security_label: str, delimiter:str = ","):
                 attrs[EDHSecurityLabelsV2.OR_GROUPS.name].append(":".join(details[:-1]))
             case _: 
                 print(f"Group {group}, is not valid in handling model, must be an and or or group")
-                continue
    
     for k in attrs: 
-        if type(attrs[k]) == list:
+        if isinstance(type(attrs[k]), list):
             slb.add_multiple(EDHSecurityLabelsV2[k].value, *attrs[k])
         else: 
             slb.add(EDHSecurityLabelsV2[k].value, attrs[k])

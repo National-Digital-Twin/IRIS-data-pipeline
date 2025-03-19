@@ -26,7 +26,6 @@ wall_type_map = {
     "CobWall": "CobWall",
     "Cob": "CobWall",
     "ParkHomeWall": "ParkHomeWall",
-    "SystemBuilt": "SystemBuiltWall",
     "NULL": None,
     "": None,
     "Other": "Wall",
@@ -68,7 +67,6 @@ floor_insulation_map = {
     "NoInsulation": None,
     "Insulated": "InsulatedFloor",
     "LimitedInsulation": "LimitedFloorInsulation",
-    "NoInsulation": None,
     "NULL": None,
     "": None,
 }
@@ -107,7 +105,6 @@ roof_insulation_map = {
     "LimitedInsulation": "LimitedInsulation",
     "InsulatedAssumed": "InsulatedAssumed",
     "NoInsulationAssumed": "NoInsulationAssumed",
-    "NoInsulation": None,
     "Other": "RoofInsulation",
     "Insulated": "RoofInsulation",
     "Thatched": None,
