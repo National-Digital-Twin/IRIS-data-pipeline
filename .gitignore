@@ -1,0 +1,10 @@
+*.csv
+!address-profiling-pipeline/initial_load_adapter/tests/input.csv
+!lat-long-pipeline/adapter/tests/input.csv
+
+venv
+**/*venv/
+
+__pycache__/
+
+.env

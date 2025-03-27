@@ -1,0 +1,2 @@
+python-dotenv
+telicent-lib==2.0.1

@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: retrofit-ontology-adapter-job
+  namespace: default
+spec:
+  template:
+    metadata:
+      labels:
+        app: retrofit-ontology-adapter
+    spec:
+      containers:
+      - name: retrofit-ontology-adapter
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/retrofit-ontology-adapter:latest
+        resources:
+          limits:
+            memory: "8Gi"
+          requests:
+            cpu: 1
+            memory: "2Gi"
+            ephemeral-storage: "10Gi"
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: ia-kafka.default.svc.cluster.local:9092
+        - name: SASL_USERNAME
+          value: replace-me
+        - name: SASL_PASSWORD
+          value: replace-me
+        - name: TARGET_TOPIC
+          value: knowledge
+        - name: PRODUCER_NAME
+          value: retrofit-ontology-adapter
+        - name: SOURCE_NAME
+          value: retrofit-ontology-file
+        command: ["python", "./retrofit_ontology_producer.py"]
+      restartPolicy: Never
+  ttlSecondsAfterFinished: 10

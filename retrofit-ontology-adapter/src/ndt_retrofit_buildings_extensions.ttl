@@ -1,0 +1,255 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ies: <http://ies.data.gov.uk/ontology/ies4#> .
+@prefix epc: <http://gov.uk/government/organisations/department-for-levelling-up-housing-and-communities/ontology/epc#> .
+@prefix ndt: <http://nationaldigitaltwin.gov.uk/ontology#> .
+@prefix geoplace: <https://www.geoplace.co.uk/addresses-streets/location-data/the-uprn#> .
+
+ndt:BuildingState       rdf:type            rdfs:Class .
+ndt:BuildingState       rdfs:subClassOf     ies:LocationState .
+ndt:Building            rdf:type            rdfs:Class .
+ndt:Building            rdfs:subClassOf     ies:Location .
+ndt:Building            rdfs:subClassOf     ndt:BuildingState .
+
+# powertypes
+ndt:ClassOfLocation  rdf:type            rdfs:Class .
+ndt:ClassOfLocation  rdfs:subClassOf     ies:ClassOfEntity .
+ndt:ClassOfBuilding  rdf:type            rdfs:Class .
+ndt:ClassOfBuilding  rdfs:subClassOf     ndt:ClassOfLocation .
+ndt:PropertyClass    rdf:type            rdfs:Class .
+ndt:PropertyClass    rdfs:subClassOf     ndt:ClassOfBuilding .
+ndt:BuildFormClass   rdf:type            rdfs:Class .
+ndt:BuildFormClass   rdfs:subClassOf     ndt:ClassOfBuilding .
+
+# property types
+ndt:House           rdf:type            rdfs:Class .
+ndt:House           rdfs:subClassOf     ndt:Building .
+ndt:House           ies:powertype       ndt:PropertyClass .
+ndt:Flat            rdf:type            rdfs:Class .
+ndt:Flat            rdfs:subClassOf     ndt:Building .
+ndt:Flat            ies:powertype       ndt:PropertyClass .
+ndt:Bungalow        rdf:type            rdfs:Class .
+ndt:Bungalow        rdfs:subClassOf     ndt:Building .
+ndt:Bungalow        ies:powertype       ndt:PropertyClass .
+ndt:Maisonette      rdf:type            rdfs:Class .
+ndt:Maisonette      rdfs:subClassOf     ndt:Building .
+ndt:Maisonette      ies:powertype       ndt:PropertyClass .
+ndt:ParkHome        rdf:type            rdfs:Class .
+ndt:ParkHome        rdfs:subClassOf     ndt:Building .
+ndt:ParkHome        ies:powertype       ndt:PropertyClass .
+
+# build form types
+ndt:SemiDetached            rdf:type            rdfs:Class .
+ndt:SemiDetached            rdfs:subClassOf     ndt:Building .
+ndt:SemiDetached            ies:powertype       ndt:BuildFormClass .
+ndt:EndTerrace              rdf:type            rdfs:Class .
+ndt:EndTerrace              rdfs:subClassOf     ndt:Building .
+ndt:EndTerrace              ies:powertype       ndt:BuildFormClass .
+ndt:Detached                rdf:type            rdfs:Class .
+ndt:Detached                rdfs:subClassOf     ndt:Building .
+ndt:Detached                ies:powertype       ndt:BuildFormClass .
+ndt:MidTerrace              rdf:type            rdfs:Class .
+ndt:MidTerrace              rdfs:subClassOf     ndt:Building .
+ndt:MidTerrace              ies:powertype       ndt:BuildFormClass .
+ndt:EnclosedEndTerrace      rdf:type            rdfs:Class .
+ndt:EnclosedEndTerrace      rdfs:subClassOf     ndt:Building .
+ndt:EnclosedEndTerrace      ies:powertype       ndt:BuildFormClass .
+ndt:EnclosedMidTerrace      rdf:type            rdfs:Class .
+ndt:EnclosedMidTerrace      rdfs:subClassOf     ndt:Building .
+ndt:EnclosedMidTerrace      ies:powertype       ndt:BuildFormClass .
+
+
+geoplace:UniquePropertyReferenceNumber      rdf:type             rdfs:Class .
+geoplace:UniquePropertyReferenceNumber      rdfs:subClassOf      ies:GeoIdentity .
+
+# epc building categories
+epc:BuildingWithEnergyRatingOfA   rdf:type            rdfs:Class .
+epc:BuildingWithEnergyRatingOfA   rdfs:subClassOf     ndt:BuildingState .
+epc:BuildingWithEnergyRatingOfB   rdf:type            rdfs:Class .
+epc:BuildingWithEnergyRatingOfB   rdfs:subClassOf     ndt:BuildingState .
+epc:BuildingWithEnergyRatingOfC   rdf:type            rdfs:Class .
+epc:BuildingWithEnergyRatingOfC   rdfs:subClassOf     ndt:BuildingState .
+epc:BuildingWithEnergyRatingOfD   rdf:type            rdfs:Class .
+epc:BuildingWithEnergyRatingOfD   rdfs:subClassOf     ndt:BuildingState .
+epc:BuildingWithEnergyRatingOfE   rdf:type            rdfs:Class .
+epc:BuildingWithEnergyRatingOfE   rdfs:subClassOf     ndt:BuildingState .
+epc:BuildingWithEnergyRatingOfF   rdf:type            rdfs:Class .
+epc:BuildingWithEnergyRatingOfF   rdfs:subClassOf     ndt:BuildingState .
+epc:BuildingWithEnergyRatingOfG   rdf:type            rdfs:Class .
+epc:BuildingWithEnergyRatingOfG   rdfs:subClassOf     ndt:BuildingState .
+
+ndt:PartOfBuilding             rdf:type            rdfs:Class .
+ndt:PartOfBuilding             rdfs:subClassOf     ies:Location .
+
+ndt:Insulation             rdf:type            rdfs:Class .
+ndt:Insulation             rdfs:subClassOf     ndt:PartOfBuilding .
+
+# wall types
+ndt:Wall                        rdf:type            rdfs:Class . # Used for Other
+ndt:Wall                        rdfs:subClassOf     ndt:PartOfBuilding .
+ndt:GraniteOrWhinstoneWall      rdf:type            rdfs:Class .
+ndt:GraniteOrWhinstoneWall      rdfs:subClassOf     ndt:Wall .
+ndt:SandstoneWall               rdf:type            rdfs:Class .
+ndt:SandstoneWall               rdfs:subClassOf     ndt:Wall .
+ndt:SandstoneOrLimestoneWall    rdf:type            rdfs:Class .
+ndt:SandstoneOrLimestoneWall    rdfs:subClassOf     ndt:Wall .
+ndt:SolidBrickWall              rdf:type            rdfs:Class .
+ndt:SolidBrickWall              rdfs:subClassOf     ndt:Wall .
+ndt:CavityWall                  rdf:type            rdfs:Class .
+ndt:CavityWall                  rdfs:subClassOf     ndt:Wall .
+ndt:TimberFrameWall             rdf:type            rdfs:Class .
+ndt:TimberFrameWall             rdfs:subClassOf     ndt:Wall .
+ndt:SystemBuiltWall             rdf:type            rdfs:Class .
+ndt:SystemBuiltWall             rdfs:subClassOf     ndt:Wall .
+ndt:CobWall                     rdf:type            rdfs:Class .
+ndt:CobWall                     rdfs:subClassOf     ndt:Wall .
+ndt:ParkHomeWall                rdf:type            rdfs:Class .
+ndt:ParkHomeWall                rdfs:subClassOf     ndt:Wall .
+
+# wall insulation types
+ndt:WallInsulation                              rdf:type            rdfs:Class . # Used for Other
+ndt:WallInsulation                              rdfs:subClassOf     ndt:Insulation .
+ndt:ExternalWallInsulation                      rdf:type            rdfs:Class .
+ndt:ExternalWallInsulation                      rdfs:subClassOf     ndt:WallInsulation .
+ndt:FilledCavityWallInsulation                  rdf:type            rdfs:Class .
+ndt:FilledCavityWallInsulation                  rdfs:subClassOf     ndt:WallInsulation .
+ndt:InternalWallInsulation                      rdf:type            rdfs:Class .
+ndt:InternalWallInsulation                      rdfs:subClassOf     ndt:WallInsulation .
+ndt:AsBuiltWallInsulation                       rdf:type            rdfs:Class .
+ndt:AsBuiltWallInsulation                       rdfs:subClassOf     ndt:WallInsulation .
+ndt:FilledCavityAndInternalWallInsulation       rdf:type            rdfs:Class .
+ndt:FilledCavityAndInternalWallInsulation       rdfs:subClassOf     ndt:WallInsulation .
+ndt:FilledCavityAndExternalWallInsulation       rdf:type            rdfs:Class .
+ndt:FilledCavityAndExternalWallInsulation       rdfs:subClassOf     ndt:WallInsulation .
+ndt:WallInsulationWithAdditionalInsulation      rdf:type            rdfs:Class .
+ndt:WallInsulationWithAdditionalInsulation      rdfs:subClassOf     ndt:WallInsulation .
+
+# floor types
+ndt:Floor                       rdf:type            rdfs:Class . # Used for Other
+ndt:Floor                       rdfs:subClassOf     ndt:PartOfBuilding .
+ndt:SolidFloor                  rdf:type            rdfs:Class .
+ndt:SolidFloor                  rdfs:subClassOf     ndt:Floor .
+ndt:Suspended                   rdf:type            rdfs:Class .
+ndt:Suspended                   rdfs:subClassOf     ndt:Floor .
+ndt:OtherPremisesBelowFloor     rdf:type            rdfs:Class .
+ndt:OtherPremisesBelowFloor     rdfs:subClassOf     ndt:Floor .
+ndt:AnotherDwellingBelowFloor   rdf:type            rdfs:Class .
+ndt:AnotherDwellingBelowFloor   rdfs:subClassOf     ndt:Floor .
+
+# floor insulation types
+ndt:InsulatedFloor                              rdf:type            rdfs:Class . # Used for Other
+ndt:InsulatedFloor                              rdfs:subClassOf     ndt:Insulation .
+ndt:LimitedFloorInsulation                      rdf:type            rdfs:Class .
+ndt:LimitedFloorInsulation                      rdfs:subClassOf     ndt:InsulatedFloor .
+
+# roof types
+ndt:Roof                              rdf:type            rdfs:Class . # Used for Other
+ndt:Roof                              rdfs:subClassOf     ndt:PartOfBuilding .
+ndt:FlatRoof                          rdf:type            rdfs:Class .
+ndt:FlatRoof                          rdfs:subClassOf     ndt:Roof .
+ndt:AnotherDwellingAboveRoof          rdf:type            rdfs:Class .
+ndt:AnotherDwellingAboveRoof          rdfs:subClassOf     ndt:Roof .
+ndt:OtherPremisesAboveRoof            rdf:type            rdfs:Class .
+ndt:OtherPremisesAboveRoof            rdfs:subClassOf     ndt:Roof .
+ndt:PitchedRoof                       rdf:type            rdfs:Class .
+ndt:PitchedRoof                       rdfs:subClassOf     ndt:Roof .
+ndt:ParkHomeRoof                      rdf:type            rdfs:Class .
+ndt:ParkHomeRoof                      rdfs:subClassOf     ndt:Roof .
+ndt:ThatchedRoof                      rdf:type            rdfs:Class .
+ndt:ThatchedRoof                      rdfs:subClassOf     ndt:Roof .
+ndt:RoofWithRooms                     rdf:type            rdfs:Class .
+ndt:RoofWithRooms                     rdfs:subClassOf     ndt:Roof .
+
+# roof insulation types
+ndt:RoofInsulation                              rdf:type            rdfs:Class . # Used for Other
+ndt:RoofInsulation                              rdfs:subClassOf     ndt:Insulation .
+ndt:RaftersRoofInsulation                       rdf:type            rdfs:Class .
+ndt:RaftersRoofInsulation                       rdfs:subClassOf     ndt:RoofInsulation .
+ndt:JoistsRoofInsulation                        rdf:type            rdfs:Class .
+ndt:JoistsRoofInsulation                        rdfs:subClassOf     ndt:RoofInsulation .
+ndt:CeilingInsulation                           rdf:type            rdfs:Class .
+ndt:CeilingInsulation                           rdfs:subClassOf     ndt:RoofInsulation .
+ndt:FlatRoofInsulation                          rdf:type            rdfs:Class .
+ndt:FlatRoofInsulation                          rdfs:subClassOf     ndt:RoofInsulation .
+ndt:SlopingCeilingRoofInsulation                rdf:type            rdfs:Class .
+ndt:SlopingCeilingRoofInsulation                rdfs:subClassOf     ndt:RoofInsulation .
+ndt:AssumedNoInsulation                         rdf:type            rdfs:Class .
+ndt:AssumedNoInsulation                         rdfs:subClassOf     ndt:RoofInsulation .
+ndt:AssumedLoftInsulation                       rdf:type            rdfs:Class .
+ndt:AssumedLoftInsulation                       rdfs:subClassOf     ndt:RoofInsulation .
+ndt:LoftInsulation                              rdf:type            rdfs:Class .
+ndt:LoftInsulation                              rdfs:subClassOf     ndt:RoofInsulation .
+ndt:AssumedLimitedInsulation                    rdf:type            rdfs:Class .
+ndt:AssumedLimitedInsulation                    rdfs:subClassOf     ndt:RoofInsulation .
+ndt:LimitedInsulation                           rdf:type            rdfs:Class .
+ndt:LimitedInsulation                           rdfs:subClassOf     ndt:RoofInsulation .
+ndt:InsulatedAssumed                            rdf:type            rdfs:Class .
+ndt:InsulatedAssumed                            rdfs:subClassOf     ndt:RoofInsulation .
+ndt:NoInsulationAssumed                         rdf:type            rdfs:Class .
+ndt:NoInsulationAssumed                         rdfs:subClassOf     ndt:RoofInsulation .
+ndt:ThatchedWithAdditionalRoofInsulation        rdf:type            rdfs:Class .
+ndt:ThatchedWithAdditionalRoofInsulation        rdfs:subClassOf     ndt:RoofInsulation .
+
+# Window types
+ndt:Window                              rdf:type            rdfs:Class .
+ndt:Window                              rdfs:subClassOf     ndt:PartOfBuilding .
+ndt:DoubleGlazedAfter2002Window         rdf:type            rdfs:Class .
+ndt:DoubleGlazedAfter2002Window         rdfs:subClassOf     ndt:Window .
+ndt:DoubleGlazedBefore2002Window        rdf:type            rdfs:Class .
+ndt:DoubleGlazedBefore2002Window        rdfs:subClassOf     ndt:Window .
+ndt:DoubleGlazedWindow                  rdf:type            rdfs:Class .
+ndt:DoubleGlazedWindow                  rdfs:subClassOf     ndt:Window .
+ndt:SecondaryGlazedWindow               rdf:type            rdfs:Class .
+ndt:SecondaryGlazedWindow               rdfs:subClassOf     ndt:Window .
+ndt:SingleGlazedWindow                  rdf:type            rdfs:Class .
+ndt:SingleGlazedWindow                  rdfs:subClassOf     ndt:Window .
+ndt:TripleGlazedWindow                  rdf:type            rdfs:Class .
+ndt:TripleGlazedWindow                  rdfs:subClassOf     ndt:Window .
+
+# write-back "flagging" categories
+ndt:BuildingWithDraftsAroundWindowsAndDoors                 rdf:type            rdfs:Class .
+ndt:BuildingWithDraftsAroundWindowsAndDoors                 rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithInadequateInsulation                        rdf:type            rdfs:Class .
+ndt:BuildingWithInadequateInsulation                        rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithOldHeatingSystem                            rdf:type            rdfs:Class .
+ndt:BuildingWithOldHeatingSystem                            rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithHighEnergyBills                             rdf:type            rdfs:Class .
+ndt:BuildingWithHighEnergyBills                             rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithFrequentBoilerBreakdownsOrMaintenance       rdf:type            rdfs:Class .
+ndt:BuildingWithFrequentBoilerBreakdownsOrMaintenance       rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithLackOfEnergyEfficentLighting                rdf:type            rdfs:Class .
+ndt:BuildingWithLackOfEnergyEfficentLighting                rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithPoorlySealedDuctwork                        rdf:type            rdfs:Class .
+ndt:BuildingWithPoorlySealedDuctwork                        rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithAgingAppliances                             rdf:type            rdfs:Class .
+ndt:BuildingWithAgingAppliances                             rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithExcessiveCondensationOrDamp                 rdf:type            rdfs:Class .
+ndt:BuildingWithExcessiveCondensationOrDamp                 rdfs:subClassOf     ndt:BuildingState .
+ndt:BuildingWithSingleGlazedWindows                         rdf:type            rdfs:Class .
+ndt:BuildingWithSingleGlazedWindows                         rdfs:subClassOf     ndt:BuildingState .
+
+# write-back assessment categories
+ndt:AssessToBeFalse                         rdf:type              rdfs:Class .
+ndt:AssessToBeFalse                         rdfs:subClassOf       ies:Assess .
+ndt:AssessThatMeasuresAreImplemented        rdf:type              rdfs:Class .
+ndt:AssessThatMeasuresAreImplemented        rdfs:subClassOf       ndt:AssessToBeFalse .
+ndt:AssessPropertyNotToBeEligible           rdf:type              rdfs:Class .
+ndt:AssessPropertyNotToBeEligible           rdfs:subClassOf       ndt:AssessToBeFalse .
+ndt:AssessOccupantNotToBeEligible           rdf:type              rdfs:Class .
+ndt:AssessOccupantNotToBeEligible           rdfs:subClassOf       ndt:AssessToBeFalse . 
+ndt:AssessOccupantOptOutOrRefusal           rdf:type              rdfs:Class .
+ndt:AssessOccupantOptOutOrRefusal           rdfs:subClassOf       ndt:AssessToBeFalse . 
+ndt:AssessToHaveSecuredAlternativeFunding   rdf:type              rdfs:Class .
+ndt:AssessToHaveSecuredAlternativeFunding   rdfs:subClassOf       ndt:AssessToBeFalse .
+ndt:AssessToBeDuplicate                     rdf:type              rdfs:Class .
+ndt:AssessToBeDuplicate                     rdfs:subClassOf       ndt:AssessToBeFalse .
+ndt:AssessToBeManualError                   rdf:type              rdfs:Class .
+ndt:AssessToBeManualError                   rdfs:subClassOf       ndt:AssessToBeFalse .
+ndt:AssessToBeComplianceIssue               rdf:type              rdfs:Class .
+ndt:AssessToBeComplianceIssue               rdfs:subClassOf       ndt:AssessToBeFalse .
+
+# write-back flagging reasons
+ndt:InterestedInInvestigating       rdf:type                    rdfs:Class .
+ndt:InterestedInInvestigating       rdfs:subClassOf             ies:Interested .
+ndt:InterestedInVisiting            rdf:type                    rdfs:Class .
+ndt:InterestedInVisiting            rdfs:subClassOf             ies:Interested .

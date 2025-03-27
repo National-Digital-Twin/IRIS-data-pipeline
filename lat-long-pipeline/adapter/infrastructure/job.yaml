@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: uprn-lat-long-adapter-job
+  namespace: default
+spec:
+  template:
+    metadata:
+      labels:
+        app: uprn-lat-long-adapter
+    spec:
+      containers:
+      - name: uprn-lat-long-adapter
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/uprn-lat-long-adapter:1.0.0
+        resources:
+          limits:
+            memory: "8Gi"
+          requests:
+            cpu: 1
+            memory: "2Gi"
+            ephemeral-storage: "10Gi"
+        env:
+        - name: BOOTSTRAP_SERVERS
+          value: ia-kafka.default.svc.cluster.local:9092
+        - name: SASL_USERNAME
+          value: replace-me
+        - name: SASL_PASSWORD
+          value: replace-me
+        - name: TARGET_TOPIC
+          value: uprn-lat-long
+        - name: PRODUCER_NAME
+          value: uprn-lat-long-adapter
+        - name: SOURCE_NAME
+          value: uprn-lat-long-file
+        - name: FILENAME
+          value: replace-me
+        command: ["python", "./producer.py"]
+      restartPolicy: Never
+  ttlSecondsAfterFinished: 10
