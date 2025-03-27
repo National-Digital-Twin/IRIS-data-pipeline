@@ -1,138 +1,72 @@
-# Project Overview
+# README
 
-IRIS is a digital tool designed to support data-driven decision-making for retrofitting domestic properties by identifying homes that could benefit from energy efficiency improvements. It enables stakeholders to assess housing stock based on energy performance data to help target funding schemes and policy interventions more effectively
+**Repository:** `IRIS-Data-Pipeline`
 
-# Repository Description
+**Description:** `This repository holds two major data pipelines. Firstly, the address-profiling-pipeline processes EPC assessment data, including data points such as the type and location of insulation within the building as well as the SAP band and rating. Secondly, the lat-long-pipeline processes geographic data, such as the building's longitude and latitude coordinates and TOID. Both pipelines implement an Adapter and Mapper components. The former fetches data from a source (e.g. a CSV, an S3 bucket object) and transforms it for ingestion. The latter can be used to perform mappings (e.g. filtering records you don't want to map, mapping each input record to a single output record, mapping each input record to many output records).`
 
-This repository functions as the data pipeline of IRIS and provides data load functionality.
+**SPDX-License-Identifier:** `Apache-2.0 AND OGL-UK-3.0 `  
 
-# NDT Retrofit Data Pipeline
+## Overview
 
-## Project structure
+This repository contributes to the development of **secure, scalable, and interoperable data-sharing infrastructure**. It supports NDTP’s mission to enable **trusted, federated, and decentralised** data-sharing across organisations.  
 
-Some files have been excluded to focus on the key components. 
+This repository is one of several open-source components that underpin NDTP’s **Integration Architecture (IA)**—a framework designed to allow organisations to manage and exchange data securely while maintaining control over their own information. The IA is actively deployed and tested across multiple sectors, ensuring its adaptability and alignment with real-world needs.
 
-<pre>
-.
-├── LICENSE
-├── Makefile
-├── NOTICE
-├── README.md
-├── address-profiling-pipeline
-│   ├── initial_load_adapter
-│   │   ├── infrastructure
-│   │   │   ├── Dockerfile
-│   │   │   └── job.yaml
-│   │   ├── input_files (contains any local files required by the adapters)
-│   │   ├── requirements.txt
-│   │   ├── src
-│   │   │   └── producer.py
-│   │   └── tests
-│   ├── mapper
-│   │   ├── infrastructure
-│   │   │   ├── Dockerfile
-│   │   │   └── job.yaml
-│   │   ├── requirements.txt
-│   │   ├── src
-│   │   │   ├── address_profile_to_knowledge_mapper.py
-│   │   │   ├── mapping_function.py
-│   │   │   └── ndt_classes.py
-│   │   └── tests
-│   └── single_file_s3_producer
-│       ├── infrastructure
-│       │   ├── Dockerfile
-│       │   └── job.yaml
-│       ├── requirements.txt
-│       ├── src
-│       │   ├── label_mapper.py
-│       │   └── s3-producer.py
-│       └── tests
-├── lat-long-pipeline
-│   ├── adapter
-│   │   ├── infrastructure
-│   │   │   ├── Dockerfile
-│   │   │   └── job.yaml
-│   │   ├── input_files (contains any local files required by the adapters)
-│   │   ├── requirements.txt
-│   │   ├── src
-│   │   │   └── producer.py
-│   │   └── tests
-│   └── mapper
-│       ├── infrastructure
-│       │   ├── Dockerfile
-│       │   └── job.yaml
-│       ├── requirements.txt
-│       ├── src
-│       │   ├── mapping_function.py
-│       │   └── osopenuprn_to_knowledge_mapper.py
-│       └── tests
-├── repository-configuration
-│   ├── README.md
-│   ├── provider.tf
-│   ├── repository.tf
-│   ├── terraform.tf
-│   └── variables.tf
-└── retrofit-ontology-adapter
-    ├── infrastructure
-    │   ├── Dockerfile
-    │   └── job.yaml
-    ├── requirements.txt
-    ├── src
-    │   ├── ndt_retrofit_buildings_extensions.ttl
-    │   └── retrofit_ontology_producer.py
-    └── tests</pre>
+## Prerequisites  
+Before using this repository, ensure you have the following dependencies installed:  
+- **Required Tooling:** Python v3.12.0 (onwards), Docker, Kafka, Zookeeper (or equivalent)
+- **Pipeline Requirements:** N/A
+- **Supported Kubernetes Versions:** v1.8 (onwards)
+- **System Requirements:** Dual-Core CPU (Intel i5 or AMD Ryzen 3 equivalent), 8GB RAM, SSD/HDD with 10GB free space
 
-Please follow this structure to add any new sub pipelines to this project.
+## Quick Start  
+Follow these steps to get started quickly with this repository. For detailed installation, configuration, and deployment, refer to the relevant MD files.  
 
-## There are four sets of things to run here:
-### Address (EPC) profiling data (includes EPC rating and info about wall, roof, floor and window detail)
-Producer: ```/address-profiling-pipeline/initial_load_adapter/src/producer.py```
-
-Mapper: ```/address-profiling-pipeline/mapper/src/address_profile_to_knowledge_mapper.py```
-
-### OS data (includes lat-long and TOID data)
-Producer: ```/lat-long-pipeline/adapter/src/producer.py```
-
-Mapper: ```/lat-long-pipeline/mapper/src/osopenuprn_to_knowledge_mapper.py```
-
-### Ontology extensions and styles
-Producer: ```/retrofit-ontology-adapter/src/retrofit_ontology_producer.py```
-
-### S3 Producer for Address (EPC) profiling updates dropped into an S3 bucket
-Producer: ```/address-profiling-pipeline/single_file_s3_producer/src/s3-producer.py```
-
-## Running a local instance of Kafka
-
-If you want to run a local instance of Kafka run the following commmand in the terminal:
-
-```
-make start-kafka-docker
+### 1. Download and Build  
+```sh  
+git clone https://github.com/IRIS-data-pipeline.git  
+cd IRIS-data-pipeline
 ```
 
-To stop the running Kafka instance run the following command in the terminal:
-
-```
-make stop-and-remove-kafka-docker
-```
-The following details will be required to connect to the local Kafka instance:
-
-  - Username: user1
-  - Password: root
-
-## Running the jobs on the cluster
-
-To run the data pipeline on any of the deployed environments they must be run as kubernetees jobs.
-This can be done by navigating to the directoy for the aspect of the pipeline that needs to be run and subsequently running the following command
-
-```
-kubectl apply -f job.yaml
+### 2. Run Build Version
+```sh  
+python --version
 ```
 
-For any of the file based jobs the containers will need to be redeployed with the new files because the scripts look for them locally.
+### 3. Full Installation  
+Refer to [INSTALLATION.md](INSTALLATION.md) for detailed installation steps, including required dependencies and setup configurations.  
 
-## Running local code development tools
+### 4. Uninstallation  
+For steps to remove this repository and its dependencies, see [UNINSTALL.md](UNINSTALL.md).  
 
-See [RUNNING_CODE_DEV_TOOLS.md](./developer_docs/RUNNING_CODE_DEV_TOOLS.md) for more information.
+## Features
+This repository contains the following significant features:
+- **address-profiling-pipeline**: Ingests EPC-related data from either a CSV or a S3 bucket object via its adapter components and converts this to an RDF representation of the data.
+- **lat-long-pipeline**: Ingests geographic data from a CSV via its adapter components and converts this to an RDF representation of the data.
+- **Kafka integration**: The pipelines both consume data (mapper components) and persist data to Kafka topics (adapter & mapper components). 
 
-## Contributors
-The development of these works has been made possible with thanks to our [contributors](https://github.com/National-Digital-Twin/IRIS-data-pipeline/graphs/contributors).
+## Public Funding Acknowledgment  
+This repository has been developed with public funding as part of the National Digital Twin Programme (NDTP), a UK Government initiative. NDTP, alongside its partners, has invested in this work to advance open, secure, and reusable digital twin technologies for any organisation, whether from the public or private sector, irrespective of size.  
+
+## License  
+This repository contains both source code and documentation, which are covered by different licenses:  
+- **Code:** Originally developed by Telicent, now maintained by National Digital Twin Programme. Licensed under the Apache License 2.0.
+- **Documentation:** Licensed under the Open Government Licence v3.0.  
+
+See `LICENSE.md`, `OGL_LICENCE.md`, and `NOTICE.md` for details.  
+
+## Security and Responsible Disclosure  
+We take security seriously. If you believe you have found a security vulnerability in this repository, please follow our responsible disclosure process outlined in `SECURITY.md`.  
+
+## Contributing  
+We welcome contributions that align with the Programme’s objectives. Please read our `CONTRIBUTING.md` guidelines before submitting pull requests.
+
+## Acknowledgements  
+This repository has benefited from collaboration with various organisations. For a list of acknowledgments, see `ACKNOWLEDGEMENTS.md`.  
+
+## Support and Contact  
+For questions or support, check our Issues or contact the NDTP team on ndtp@businessandtrade.gov.uk.
+
+**Maintained by the National Digital Twin Programme (NDTP).**  
+
+© Crown Copyright 2025. This work has been developed by the National Digital Twin Programme and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
