@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: Apache-2.0
+# Originally developed by Telicent Ltd.; subsequently adapted, enhanced, and maintained by the National Digital Twin Programme.
+
 #
 # Copyright (C) Telicent Ltd
 #
@@ -13,6 +16,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+#  Modifications made by the National Digital Twin Programme (NDTP)
+#  © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
+#  and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
 
 from telicent_lib.sinks import KafkaSink
 from telicent_lib import Record, RecordUtils, AutomaticAdapter
