@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+
 #
 # Copyright (C) Telicent Ltd
 #
@@ -13,6 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+# This file is unmodified from its original version developed by Telicent Ltd.,
+# and is now included as part of a repository maintained by the National Digital Twin Programme.
+# All support, maintenance and further development of this code is now the responsibility
+# of the National Digital Twin Programme.
 
 from telicent_lib.access import SecurityLabelBuilder, EDHSecurityLabelsV2
 

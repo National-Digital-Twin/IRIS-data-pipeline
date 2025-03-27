@@ -1,5 +1,10 @@
-*This repository contains Alpha code and is being released to meet a contractual obligation to the National Digital Twin
-Programme*
+# Project Overview
+
+IRIS is a digital tool designed to support data-driven decision-making for retrofitting domestic properties by identifying homes that could benefit from energy efficiency improvements. It enables stakeholders to assess housing stock based on energy performance data to help target funding schemes and policy interventions more effectively
+
+# Repository Description
+
+This repository functions as the data pipeline of IRIS and provides data load functionality.
 
 # NDT Retrofit Data Pipeline
 
