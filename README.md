@@ -1,16 +1,15 @@
 # README
 
 **Repository:** `IRIS-data-pipeline`
-
 **Description:** `This repository holds two major data pipelines. Firstly, the address-profiling-pipeline processes EPC assessment data, including data points such as the type and location of insulation within the building as well as the SAP band and rating. Secondly, the lat-long-pipeline processes geographic data, such as the building's longitude and latitude coordinates and TOID. Both pipelines implement an Adapter and Mapper components. The former fetches data from a source (e.g. a CSV, an S3 bucket object) and transforms it for ingestion. The latter can be used to perform mappings (e.g. filtering records you don't want to map, mapping each input record to a single output record, mapping each input record to many output records).`
 
 **SPDX-License-Identifier:** `Apache-2.0 AND OGL-UK-3.0 `  
 
 ## Overview
 
-This repository contributes to the development of **secure, scalable, and interoperable data-sharing infrastructure**. It supports NDTP’s mission to enable **trusted, federated, and decentralised** data-sharing across organisations.  
+IRIS is a digital tool designed to support data-driven decision-making for retrofitting domestic properties by identifying homes that could benefit from energy efficiency improvements. It enables stakeholders to assess housing stock based on energy performance data to help target funding schemes and policy interventions more effectively. IRIS is part of the NDTP Demonstrator Programme.
 
-This repository is one of several open-source components that underpin NDTP’s **Integration Architecture (IA)**—a framework designed to allow organisations to manage and exchange data securely while maintaining control over their own information. The IA is actively deployed and tested across multiple sectors, ensuring its adaptability and alignment with real-world needs.
+This repository holds two major data pipelines. Firstly, the address-profiling-pipeline processes EPC assessment data, including data points such as the type and location of insulation within the building as well as the SAP band and rating. Secondly, the lat-long-pipeline processes geographic data, such as the building's longitude and latitude coordinates and TOID.
 
 ## Prerequisites  
 Before using this repository, ensure you have the following dependencies installed:  
