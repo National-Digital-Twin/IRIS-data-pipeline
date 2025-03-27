@@ -41,31 +41,16 @@ Uprn = geoplace_ns + "UniquePropertyReferenceNumber"
 
 
 def create_deterministic_uri_full_hash(value, type, namespace):
-    hash = hashlib.sha256(value.encode()).hexdigest()
+    full_hash = hashlib.sha256(value.encode()).hexdigest()
     lower_case_type = type.lower()
-    return f"{namespace}{lower_case_type}_{hash}"
+    return f"{namespace}{lower_case_type}_{full_hash}"
 
 
 ies = ies_tool.IESTool(data_ns)
 
-
-def map_func(item):
-    ies.clear_graph()
-    # first our namespaces
-    ies.graph.namespace_manager.bind("ies", ies_ns)
-    ies.graph.namespace_manager.bind("geoplace", geoplace_ns)
-    ies.graph.namespace_manager.bind("data", data_ns)
-    ies.graph.namespace_manager.bind("ndt", ndt_ns)
-
-    building_uprn = item["UPRN"].replace(".0", "")
-    building_uri = f"{data_ns}building_{building_uprn}"
+def add_geographic_mapping(item):
     lat = str(item.get("Latitude"))
     lon = str(item.get("Longitude"))
-    toid = item["TOID"]
-
-    shares_toid = False
-    if str(item["SharesTOID"]) == "True": 
-        shares_toid = True
 
     my_hash = str(gh.encode(float(lat), float(lon), precision=11))
     gp = ies.instantiate(uri="http://geohash.org/" + my_hash)
@@ -76,10 +61,6 @@ def map_func(item):
 
     longitude = ies.instantiate(uri=f"http://geohash.org/{my_hash}_LON")
     ies.add_to_graph(longitude.uri, rdf_ns+"type", f"{ies_ns}Longitude")
-
-    building = ies.instantiate(
-        uri=building_uri, instance_uri_context=building_uri,
-    )
     
     ies.add_to_graph(subject=gp.uri, predicate=ies_ns + "isIdentifiedBy", obj=longitude)
     ies.add_to_graph(subject=gp.uri, predicate=ies_ns + "isIdentifiedBy", obj=latitude)
@@ -98,6 +79,31 @@ def map_func(item):
         is_literal=True,
         literal_type="float",
     )
+    return gp
+
+
+def map_func(item):
+    ies.clear_graph()
+    # first our namespaces
+    ies.graph.namespace_manager.bind("ies", ies_ns)
+    ies.graph.namespace_manager.bind("geoplace", geoplace_ns)
+    ies.graph.namespace_manager.bind("data", data_ns)
+    ies.graph.namespace_manager.bind("ndt", ndt_ns)
+
+    building_uprn = item["UPRN"].replace(".0", "")
+    building_uri = f"{data_ns}building_{building_uprn}"
+    toid = item["TOID"]
+
+    shares_toid = False
+    if str(item["SharesTOID"]) == "True": 
+        shares_toid = True
+
+    building = ies.instantiate(
+        uri=building_uri, instance_uri_context=building_uri,
+    )
+    
+    gp = add_geographic_mapping(item)
+    ies.add_to_graph(subject=building_uri, predicate=f"{ies_ns}inLocation", obj=gp)
     
     ies_tool.ExchangedItem.add_identifier(
         building,
@@ -146,8 +152,6 @@ def map_func(item):
     ies_tool.ExchangedItem.add_identifier(
         building_with_toid_uri, toid, id_class=f"{ies_ns}TOID", uri=f"{data_ns}toid_{toid}"
     )
-
-    ies.add_to_graph(subject=building_uri, predicate=f"{ies_ns}inLocation", obj=gp)
 
     if DEBUG_MODE:
         ies.graph.serialize(destination=f"{building_uprn}_ll.ttl", format="turtle")

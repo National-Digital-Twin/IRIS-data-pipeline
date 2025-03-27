@@ -88,8 +88,8 @@ Uprn = geoplace_ns + "UniquePropertyReferenceNumber"
 
 
 def create_deterministic_uri_short_hash(value, type, namespace):
-    hash = hashlib.sha256(value.encode()).hexdigest()
-    short_hash = hash[:16]
+    hashed_value = hashlib.sha256(value.encode()).hexdigest()
+    short_hash = hashed_value[:16]
     lower_case_type = type.lower()
     return f"{namespace}{lower_case_type}_{short_hash}"
 
@@ -114,8 +114,7 @@ def add_qudt_quantity(value, unit_class, quantitykind_class, deterministic_uri_s
     return quantity
 
 def add_fusion( fusion_of_class, part_of_string):
-    Fusion = ndt_ns + "Fusion"
-    fusedInto = ndt_ns + "fusedInto"
+    fused_into = ndt_ns + "fusedInto"
 
     # we create a subclass of the fusion_of_class 
     # that only has those things that we want to fuse as members
@@ -126,7 +125,7 @@ def add_fusion( fusion_of_class, part_of_string):
 
     fusion = ies.instantiate(uri=f"{data_ns}{set_of_things_to_fuse_string.lower()}_fusion")
     
-    ies.add_to_graph(set_of_things_to_fuse, fusedInto, fusion.uri)
+    ies.add_to_graph(set_of_things_to_fuse, fused_into, fusion.uri)
     return fusion
 
 def add_insulatable_fusion(thing_class, building_uprn, thing_insulation_class=None, ndt_formated_thickness = None):
@@ -150,6 +149,65 @@ def add_insulatable_fusion(thing_class, building_uprn, thing_insulation_class=No
 def parse_insultation_thickness(thickness_string):
     if "mm" not in thickness_string: return None
     return thickness_string.split("mm")[0]
+
+def map_walls(building_object, building_uprn, building_inspection_state_uri):
+    wall_class = ndt.wall_type_map.get(building_object["WallConstruction"], None)
+    if wall_class:
+        wall_class_uri = ndt_ns + wall_class
+        ies.add_to_graph( wall_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Wall")
+        wall_insulation_class = ndt.wall_insulation_map.get(building_object["WallInsulationType"], None)
+        if wall_insulation_class:
+            wall_insulation_class = ndt_ns + wall_insulation_class
+        wall_fusion = add_insulatable_fusion(
+            wall_class_uri, 
+            building_uprn,
+            wall_insulation_class, 
+            building_object.get("WallInsulationThickness", None),
+        )
+        ies.add_to_graph(wall_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
+
+def map_floors(building_object, building_uprn, building_inspection_state_uri):
+    floor_class = ndt.floor_type_map.get(building_object["FloorConstruction"], None)
+    if floor_class:
+        floor_class_uri = ndt_ns + floor_class
+        ies.add_to_graph( floor_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Floor")
+        floor_insulation_class = ndt.floor_insulation_map.get(building_object["FloorInsulation"], None)
+        if floor_insulation_class:
+            floor_insulation_class = ndt_ns + floor_insulation_class
+        floor_fusion = add_insulatable_fusion(
+            floor_class_uri, 
+            building_uprn,
+            floor_insulation_class,
+            building_object.get("FloorInsulationThickness", None),
+        )
+        ies.add_to_graph(floor_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
+
+def map_roof(building_object, building_uprn, building_inspection_state_uri):
+    roof_class = ndt.roof_type_map.get(building_object["RoofConstruction"], None)
+    if roof_class:
+        roof_class_uri = ndt_ns + roof_class
+        ies.add_to_graph( roof_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Roof")
+        roof_insulation_class = ndt.roof_insulation_map.get(building_object["RoofInsulationLocation"], None)
+        if roof_insulation_class:
+            roof_insulation_class = ndt_ns + roof_insulation_class
+        roof_fusion = add_insulatable_fusion(     
+            roof_class_uri, 
+            building_uprn,
+            roof_insulation_class, 
+            building_object.get("RoofInsulationThickness", None),
+        )
+        ies.add_to_graph(roof_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
+
+def map_windows(building_object, building_uprn, building_inspection_state_uri):
+    window_class = ndt.window_type_map.get(building_object["MultipleGlazingType"], None)
+    if window_class:
+        window_class_uri = ndt_ns + window_class
+        ies.add_to_graph( window_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Window")
+        window_fusion = add_fusion(
+            window_class_uri, 
+            building_uprn
+        )
+        ies.add_to_graph(window_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
 
 ies = ies_tool.IESTool(data_ns)
 
@@ -187,7 +245,6 @@ def map_func(item):
 
     # only add more detail if the certificate is related to a domestic property
     if building_object["CertificateType"] == "domestic":
-        roof_class = ndt.roof_type_map.get(building_object["RoofConstruction"], None)
         built_form_type = building_object.get("BuiltForm", None)
         if built_form_type:
             ies.instantiate(uri=build_form_lookup[built_form_type.replace("-", "")], instance_uri_context=building_uri)
@@ -196,7 +253,6 @@ def map_func(item):
         current_epc_rating = building_object["SAPBand"]
         state_id = building_object["LMK_KEY"]
         building_inspection_date = building_object["LodgementDate"] # taken from the filename of the data source
-        
         
         # the building inspection state should not be instantiated, as we do not want it to be an RdfsResource
         building_inspection_state_uri = data_ns + "state_" + state_id
@@ -215,64 +271,10 @@ def map_func(item):
         ies.add_to_graph(building_inspection_state_uri, ies_ns+"hasCharacteristic", current_sap_points_qudt)
 
         # now add the parts of the building as fusions
-        # walls
-        wall_class = ndt.wall_type_map.get(building_object["WallConstruction"], None)
-        if wall_class:
-            wall_class_uri = ndt_ns + wall_class
-            ies.add_to_graph( wall_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Wall")
-            wall_insulation_class = ndt.wall_insulation_map.get(building_object["WallInsulationType"], None)
-            if wall_insulation_class:
-                wall_insulation_class = ndt_ns + wall_insulation_class
-            wall_fusion = add_insulatable_fusion(
-                wall_class_uri, 
-                building_uprn,
-                wall_insulation_class, 
-                building_object.get("WallInsulationThickness", None),
-            )
-            ies.add_to_graph(wall_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
-
-        # floors
-        floor_class = ndt.floor_type_map.get(building_object["FloorConstruction"], None)
-        if floor_class:
-            floor_class_uri = ndt_ns + floor_class
-            ies.add_to_graph( floor_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Floor")
-            floor_insulation_class = ndt.floor_insulation_map.get(building_object["FloorInsulation"], None)
-            if floor_insulation_class:
-                floor_insulation_class = ndt_ns + floor_insulation_class
-            floor_fusion = add_insulatable_fusion(
-                floor_class_uri, 
-                building_uprn,
-                floor_insulation_class,
-                building_object.get("FloorInsulationThickness", None),
-            )
-            ies.add_to_graph(floor_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
-
-        # roofs
-        roof_class = ndt.roof_type_map.get(building_object["RoofConstruction"], None)
-        if roof_class:
-            roof_class_uri = ndt_ns + roof_class
-            ies.add_to_graph( roof_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Roof")
-            roof_insulation_class = ndt.roof_insulation_map.get(building_object["RoofInsulationLocation"], None)
-            if roof_insulation_class:
-                roof_insulation_class = ndt_ns + roof_insulation_class
-            roof_fusion = add_insulatable_fusion(     
-                roof_class_uri, 
-                building_uprn,
-                roof_insulation_class, 
-                building_object.get("RoofInsulationThickness", None),
-            )
-            ies.add_to_graph(roof_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
-
-        # windows
-        window_class = ndt.window_type_map.get(building_object["MultipleGlazingType"], None)
-        if window_class:
-            window_class_uri = ndt_ns + window_class
-            ies.add_to_graph( window_class_uri, rdfs_ns+"subClassOf", ndt_ns + "Window")
-            window_fusion = add_fusion(
-                window_class_uri, 
-                building_uprn
-            )
-            ies.add_to_graph(window_fusion.uri, ies_ns+"isPartOf", building_inspection_state_uri)
+        map_walls(building_object, building_uprn, building_inspection_state_uri)
+        map_floors(building_object, building_uprn, building_inspection_state_uri)
+        map_roof(building_object, building_uprn, building_inspection_state_uri)
+        map_windows(building_object, building_uprn, building_inspection_state_uri)        
 
     if DEBUG_MODE:
         ies.graph.serialize(destination=f"{building_uprn}_epc.ttl", format="turtle")

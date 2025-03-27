@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: address-profile-file-adapter
-        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-file-adapter:latest
+        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-file-adapter:1.0.0
         resources:
           limits:
             memory: "8Gi"
