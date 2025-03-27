@@ -1,6 +1,6 @@
 # INSTALLATION
 
-**Repository:** `IRIS-Data-Pipeline`  
+**Repository:** `IRIS-data-pipeline`  
 **Description:** `Details how to install and run the pipeline`  
 **SPDX-License-Identifier:** `Apache-2.0 AND OGL-UK-3.0 ` 
 
@@ -10,8 +10,8 @@ Before using this repository, ensure you have the following dependencies install
 
 ### 1. Download 
 ```sh  
-git clone https://github.com/IRIS-Data-Pipeline.git  
-cd IRIS-Data-Pipeline
+git clone https://github.com/IRIS-data-pipeline.git  
+cd IRIS-data-pipeline
 ```
 
 ### 2. Install Dependencies

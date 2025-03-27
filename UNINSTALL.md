@@ -1,6 +1,6 @@
 # UNINSTALL  
 
-**Repository:** `IRIS-Data-Pipeline`  
+**Repository:** `IRIS-data-pipeline`  
 **Description:** `Details how to remove the software`  
 **SPDX-License-Identifier:** `Apache-2.0 AND OGL-UK-3.0 ` 
 
@@ -8,5 +8,5 @@
 
 This project is distributed as source code and is not installed system-wide. To remove it, simply delete the project directory:
    ```sh
-   rm -rf IRIS-Data-Pipeline
+   rm -rf IRIS-data-pipeline
    ```

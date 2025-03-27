@@ -1,6 +1,6 @@
 # README
 
-**Repository:** `IRIS-Data-Pipeline`
+**Repository:** `IRIS-data-pipeline`
 
 **Description:** `This repository holds two major data pipelines. Firstly, the address-profiling-pipeline processes EPC assessment data, including data points such as the type and location of insulation within the building as well as the SAP band and rating. Secondly, the lat-long-pipeline processes geographic data, such as the building's longitude and latitude coordinates and TOID. Both pipelines implement an Adapter and Mapper components. The former fetches data from a source (e.g. a CSV, an S3 bucket object) and transforms it for ingestion. The latter can be used to perform mappings (e.g. filtering records you don't want to map, mapping each input record to a single output record, mapping each input record to many output records).`
 
