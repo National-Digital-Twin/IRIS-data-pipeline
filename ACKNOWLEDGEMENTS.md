@@ -13,9 +13,7 @@ Over time, the following organisations have provided technical expertise, develo
 that have contributed to the evolution of this project:  
 
 - Informed Solutions
-- [Supplier B]
-- [Supplier C]
-- [Supplier D]
+- Telicent
 
 We are grateful for the collaboration that has helped shape this repository.  
 

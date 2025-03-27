@@ -2,7 +2,7 @@
 
 **Repository:** `IRIS-data-pipeline`  
 **Description:** `Attribution and legal notices related to the use of this repository, including acknowledgments of external contributions.`  
-**SPDX-License-Identifier: OGL-UK-3.0
+**SPDX-License-Identifier:** OGL-UK-3.0
 
 This repository contains software developed as part of the  
 National Digital Twin Programme (NDTP), a UK Government initiative.  
@@ -20,3 +20,6 @@ This project has been developed to support NDTP’s mission of enabling
 secure, scalable, and interoperable data-sharing across organisations.  
 
 For a list of acknowledgments, see [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md).  
+
+
+This repository includes software originally developed as **IRIS-data-pipeline**   by **Telicent**, now maintained by the **National Digital Twin Programme**
