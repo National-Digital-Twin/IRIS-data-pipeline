@@ -26,7 +26,7 @@ from ies_tool.ies_tool import RDF_TYPE, XSD
 import hashlib
 from rdflib import BNode, Literal, Namespace, URIRef
 
-DEBUG_MODE = False  # change to False when using with core
+DEBUG_MODE = False  # output to local file if True
 
 # declare namespaces
 ies_ns = "http://ies.data.gov.uk/ontology/ies4#"
@@ -118,7 +118,7 @@ def add_typed_field(record: dict, type: str, type_ns: str, record_field: str) ->
     """
     value = record[record_field]
     identifier_uri = create_record_uri(record, type)
-    ies.add_to_graph(identifier_uri, RDF_TYPE, build_uri(type_ns, type))
+    ies.add_triple(identifier_uri, RDF_TYPE, build_uri(type_ns, type))
     ies.add_triple(subject=identifier_uri, predicate=build_ies_uri("representationValue"), obj=value, 
                    is_literal=True, literal_type="string")
     return identifier_uri
@@ -138,7 +138,7 @@ def add_typed_identifier(record: dict, subject: str, type: str, type_ns: str, re
         None
     """
     identifier_uri = add_typed_field(record, type, type_ns, record_field)
-    ies.add_to_graph(subject, predicate=build_ies_uri("isIdentifiedBy"), obj=identifier_uri)
+    ies.add_triple(subject, predicate=build_ies_uri("isIdentifiedBy"), obj=identifier_uri)
     
 def add_postcode_identifier(record: dict, addressable_location: str) -> None:
     """
@@ -153,10 +153,10 @@ def add_postcode_identifier(record: dict, addressable_location: str) -> None:
     """
     postcode = record.get("PostcodeLocator")
     identifier_uri = f"{data_ns}PCODE_{postcode.replace(" ", "_")}"
-    ies.add_to_graph(identifier_uri, RDF_TYPE, build_ies_uri("PostalCode"))
+    ies.add_triple(identifier_uri, RDF_TYPE, build_ies_uri("PostalCode"))
     ies.add_triple(subject=identifier_uri, predicate=build_ies_uri("representationValue"), obj=postcode, 
                    is_literal=True, literal_type="string")
-    ies.add_to_graph(addressable_location, predicate=ies_ns + "isIdentifiedBy", obj=identifier_uri)
+    ies.add_triple(addressable_location, predicate=ies_ns + "isIdentifiedBy", obj=identifier_uri)
     
 
 def add_addressable_location_identifiers(record: dict, addressable_location: str) -> None:
@@ -203,7 +203,7 @@ def add_geographic_mapping(record: dict) -> None:
         None
     """
     location_point_uri = create_record_uri(record, "LocationPoint")
-    ies.add_to_graph(subject=location_point_uri, predicate=RDF_TYPE, obj=build_ies_uri("PointOnEarthSurface"))
+    ies.add_triple(subject=location_point_uri, predicate=RDF_TYPE, obj=build_ies_uri("PointOnEarthSurface"))
     
     long = record.get("Longitude")
     long_node = add_bnode_with_ies_type_and_value("Longitude", long)
@@ -238,11 +238,11 @@ def map_func(record: dict) -> str:
     ies.graph.namespace_manager.bind("ndt", ndt_ns)
 
     addressable_location_uri = create_record_uri(record, "AddressableLocation")
-    ies.add_to_graph(addressable_location_uri, RDF_TYPE, build_ies_building_uri("AddressableLocation"))
+    ies.add_triple(addressable_location_uri, RDF_TYPE, build_ies_building_uri("AddressableLocation"))
     add_addressable_location_identifiers(record, addressable_location_uri)
     
     location_uri = create_record_uri(record, "Location")
-    ies.add_to_graph(location_uri, RDF_TYPE, build_ies_uri("Location"))
+    ies.add_triple(location_uri, RDF_TYPE, build_ies_uri("Location"))
     add_postcode_identifier(record, location_uri)
     
     add_geographic_mapping(record)

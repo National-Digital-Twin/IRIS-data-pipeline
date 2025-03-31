@@ -108,14 +108,29 @@ class Roof:
         Returns:
             None
         """
-        insulation_thickness = record.get("RoofInsulationThickness")
-        roof_type = self.roof_type_map.get(record.get("RoofConstruction"))
-        insulation_type = self.roof_insulation_map.get(record.get("RoofInsulationLocation"))
-        all_assessed_roof_state_uri = add_attribute_of_state_mapping(self.ies, record, "AllAssessedRoof", ["AllAssessedRoof", f"{insulation_thickness}_Insulation", f"{insulation_type}", f"{roof_type}"], 
+        roof_types = self.get_roof_types(record)
+        all_assessed_roof_state_uri = add_attribute_of_state_mapping(self.ies, record, "AllAssessedRoof", roof_types, 
             [self.all_asssessed_roof_uri], [structure_unit_state_uri])
         all_assessed_roof_sections_state_uri = add_attribute_of_state_mapping(self.ies, record, "AllAssessedRoofSections", ["AllAssessedRoofSection"], 
             [], [all_assessed_roof_state_uri, self.all_assessed_roof_sections_uri])
         assess_roof_insulation_uri = add_attribute_of_state_mapping(self.ies, record, "AssessRoofInsulation", ["DetermineRoofInsulationLocation"], 
             [], [epc_assessment_uri])
-        self.ies.add_to_graph(assess_roof_insulation_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_assessed_roof_sections_state_uri)
+        self.ies.add_triple(assess_roof_insulation_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_assessed_roof_sections_state_uri)
         
+    def get_roof_types(self, record: dict) -> list[str]:
+        """
+        Gets a list of types for the roof.
+        
+        Args:
+            record (dict): A record representing a building.
+
+        Returns:
+            list[str]: A list of types for the roof.
+        """
+        insulation_thickness = record.get("RoofInsulationThickness")
+        roof_type = self.roof_type_map.get(record.get("RoofConstruction"))
+        insulation_type = self.roof_insulation_map.get(record.get("RoofInsulationLocation"))
+        roof_types = ["AllAssessedRoof", f"{insulation_type}", f"{roof_type}"]
+        if (insulation_thickness):
+            roof_types.append(f"{insulation_thickness}_Insulation")
+        return roof_types

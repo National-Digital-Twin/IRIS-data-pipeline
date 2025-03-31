@@ -48,10 +48,11 @@ class StructureUnit:
         main_purpose_of_use = "ResidentialDwelling" if record["CertificateType"] == "domestic" else "Commercial"
         add_attribute_of_state_mapping(ies, record, "MainPurposeOfUse", [main_purpose_of_use], 
             [self.uri], [self.state_uri])
-        add_attribute_of_state_mapping(ies, record, "StructureUnitType", [record.get("PropertyType")], 
-            [self.uri], [self.state_uri])
-        add_attribute_of_state_mapping(ies, record, "BuiltForm", [record.get("BuiltForm")], 
-            [self.uri], [self.state_uri])
+        if (record["CertificateType"] == "domestic"):
+            add_attribute_of_state_mapping(ies, record, "StructureUnitType", [record.get("PropertyType")], 
+                [self.uri], [self.state_uri])
+            add_attribute_of_state_mapping(ies, record, "BuiltForm", [record.get("BuiltForm")], 
+                [self.uri], [self.state_uri])
     
     def get_building_identifiers(self, record: dict) -> list[str]:
         """
@@ -82,7 +83,7 @@ class StructureUnit:
             None
         """
         for identifier in identifiers:
-            self.ies.add_to_graph(subject, build_ies_uri("isIdentifiedBy"), identifier)
+            self.ies.add_triple(subject, build_ies_uri("isIdentifiedBy"), identifier)
 
     def get_locations(self, record: dict) -> list[str]:
         """
@@ -112,7 +113,7 @@ class StructureUnit:
             None
         """
         for location in locations:
-            self.ies.add_to_graph(subject, build_ies_uri("inLocation"), location)
+            self.ies.add_triple(subject, build_ies_uri("inLocation"), location)
     
     def add_structure_unit_mapping(self, record: dict, building_uri: str, identifiers: list[str], locations: list[str]) -> str:
         """

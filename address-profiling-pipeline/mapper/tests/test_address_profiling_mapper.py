@@ -35,11 +35,12 @@ def check_equivalent_graphs(expected_graph, actual_graph):
 
 @pytest.mark.address_profiling_pipeline     
 def test_map_func():
-    input_data = load_json('input.json')
-    expected_graph = Graph().parse(f"{os.getcwd()}/address-profiling-pipeline/mapper/tests/output.txt", format="turtle", publicID="")     
-    mapped_result = map_func(input_data).strip()
-    actual_graph = Graph().parse(data=mapped_result, format="turtle")
-    check_equivalent_graphs(expected_graph, actual_graph)
+    input_data = load_json('inputs.json')
+    for record in input_data:
+        expected_graph = Graph().parse(f"{os.getcwd()}/address-profiling-pipeline/mapper/tests/output_{record.get('UPRN')}.txt", format="turtle", publicID="")     
+        mapped_result = map_func(record).strip()
+        actual_graph = Graph().parse(data=mapped_result, format="turtle")
+        check_equivalent_graphs(expected_graph, actual_graph)
 
 if __name__ == "__main__":
     pytest.main()

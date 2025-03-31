@@ -33,7 +33,7 @@ from models.epc_assessment import EpcAssessment
 from namespaces import *
 from utils import *
 
-DEBUG_MODE = True
+DEBUG_MODE = False # output to local file if True
 
 ies = ies_tool.IESTool(data_ns)
 
@@ -47,6 +47,7 @@ def bind_namespaces() -> None:
         None
     """
     ies.graph.namespace_manager.bind("ies", ies_ns)
+    ies.graph.namespace_manager.bind("building", ies_building_ns)
     ies.graph.namespace_manager.bind("data", data_ns)
     ies.graph.namespace_manager.bind("iesuncertainty", ies_uncertainty_ns)
     ies.graph.namespace_manager.bind("ndt", ndt_ns)

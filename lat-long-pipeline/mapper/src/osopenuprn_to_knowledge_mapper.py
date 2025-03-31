@@ -99,14 +99,9 @@ def mapping_function(record: Record) -> Union[Record, List[Record], None]:
     mapped = map_func(data)
     if mapped is None:
         logger.warning(
-            "{uprn}, {address} does not container a lat/lon lookup".format(
+            "{uprn}, {address} does not contain a lat/lon lookup".format(
                 uprn=data["UPRN"], address=data["Address"]
             ),
-        )
-        print(
-            "{uprn}, {address} does not container a lat/lon lookup".format(
-                uprn=data["UPRN"], address=data["Address"]
-            )
         )
         return mapped
     return RecordUtils.add_header(

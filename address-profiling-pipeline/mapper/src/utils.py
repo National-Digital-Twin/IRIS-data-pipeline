@@ -119,7 +119,7 @@ def add_ies_building_type_mappings(ies: IESTool, subject: str, types: list[str])
         None
     """
     for type in types:
-        ies.add_to_graph(subject, RDF_TYPE, build_ies_building_uri(type))
+        ies.add_triple(subject, RDF_TYPE, build_ies_building_uri(type))
 
 def add_ies_type_mappings(ies: IESTool, subject: str, types: list[str]) -> None:
     """
@@ -134,7 +134,7 @@ def add_ies_type_mappings(ies: IESTool, subject: str, types: list[str]) -> None:
         None
     """
     for type in types:
-        ies.add_to_graph(subject, RDF_TYPE, build_ies_uri(type))
+        ies.add_triple(subject, RDF_TYPE, build_ies_uri(type))
 
 def add_state_mappings(ies: IESTool, state_of_entity: str, entities: list[str]) -> None:
     """
@@ -149,7 +149,7 @@ def add_state_mappings(ies: IESTool, state_of_entity: str, entities: list[str]) 
         None
     """
     for entity in entities:
-        ies.add_to_graph(state_of_entity, build_ies_uri("isStateOf"), entity)
+        ies.add_triple(state_of_entity, build_ies_uri("isStateOf"), entity)
 
 def add_part_mappings(ies: IESTool, part_of_entity: str, entities: list[str]) -> None:
     """
@@ -164,7 +164,7 @@ def add_part_mappings(ies: IESTool, part_of_entity: str, entities: list[str]) ->
         None
     """
     for entity in entities:
-        ies.add_to_graph(part_of_entity, build_ies_uri("isPartOf"), entity)
+        ies.add_triple(part_of_entity, build_ies_uri("isPartOf"), entity)
     
 def add_attribute_mapping(ies: IESTool, record: dict, attribute_name: str, attribute_types: list[str], whole_entity: str) -> str:
     """

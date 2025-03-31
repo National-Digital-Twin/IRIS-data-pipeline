@@ -119,4 +119,4 @@ class Floor:
             [], [all_assessed_floors_constructed_uri, self.all_asssessed_floor_sections_uri])
         assess_floor_construction_uri = add_attribute_of_state_mapping(self.ies, record, "AssessFloorConstruction", ["AssessFloorConstruction"], 
             [], [epc_assessment_uri])
-        self.ies.add_to_graph(assess_floor_construction_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_assessed_floor_sections_constructed_uri)
+        self.ies.add_triple(assess_floor_construction_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_assessed_floor_sections_constructed_uri)
