@@ -37,8 +37,15 @@ DEBUG_MODE = True
 
 ies = ies_tool.IESTool(data_ns)
 
-def bind_namespaces():
-    """Binds namespaces required for this graph."""
+def bind_namespaces() -> None:
+    """
+    Binds namespaces required for this graph.
+    Args:
+        None
+        
+    Returns:
+        None
+    """
     ies.graph.namespace_manager.bind("ies", ies_ns)
     ies.graph.namespace_manager.bind("data", data_ns)
     ies.graph.namespace_manager.bind("iesuncertainty", ies_uncertainty_ns)
@@ -50,24 +57,30 @@ def bind_namespaces():
     ies.graph.namespace_manager.bind("quantitykind", qudt_quantitykind)
     
 
-def add_building_mapping(record):
+def add_building_mapping(record: dict) -> str:
     """
     Adds the common mapping for a Building entity.
     
     Args:
-        record (Dict): A record representing a building.
+        record (dict): A record representing a building.
+        
+    Returns:
+        str: The building URI.
     """
     building_uri = create_record_uri(record, "Building")
     add_ies_building_type_mappings(ies, building_uri, ["Building"])
     ies.add_triple(building_uri, build_ies_uri("inLocation"), create_record_uri(record, "Location"))
     return building_uri
 
-def map_func(record):
+def map_func(record: dict) -> str:
     """
     Creates the graph and orchestrates its mappings.
     
     Args:
-        record (Dict): A record representing a building.
+        record (dict): A record representing a building.
+        
+    Returns:
+        str: The RDF graph serialized into triples.
     """
     ies.clear_graph()
     bind_namespaces()

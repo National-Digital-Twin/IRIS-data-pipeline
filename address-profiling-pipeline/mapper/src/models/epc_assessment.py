@@ -17,7 +17,7 @@
 
 from ies_tool.ies_tool import IESTool
 from namespaces import iso8601_ns
-from structure_unit import StructureUnit
+from models.structure_unit import StructureUnit
 from utils import *
 
 class EpcAssessment:
@@ -27,7 +27,7 @@ class EpcAssessment:
     Attributes:
         uri (str): The URI of the `EpcAssessment`
     """
-    uri = ""
+    uri: str = ""
     
     def __init__(self, ies: IESTool, record: dict, structure_unit: StructureUnit):
         """

@@ -16,14 +16,19 @@
 #  limitations under the License.
 
 from utils import *
+from ies_tool.ies_tool import IESTool
 
 class Floor:
     """
     A class representing the `Floor`(s) within a `StructureUnit`, where insulation and construction of the `Floor` forms
     part of an Energy Performance Certificate (EPC) assessment.
+    
+    Attributes:
+        floor_construction_map (dict): A map of floor constructions against IES Building ontology.
+        floor_insulation_map (dict): A map of floor insulations against IES Building ontology.
     """
 
-    floor_construction_map = {
+    floor_construction_map: dict = {
         "Unknown": None,
         "Other": "Floor",
         "Solid": "SolidFloor",
@@ -36,7 +41,7 @@ class Floor:
         "": None,
     }
 
-    floor_insulation_map = {
+    floor_insulation_map: dict = {
         "AsBuilt": None,
         "RetroFitted": "InsulatedFloor",
         "NoInsulation": "NoInsulationInFloor",
@@ -46,13 +51,13 @@ class Floor:
         "": None,
     }
     
-    def __init__(self, ies, record, structure_unit_state_uri, epc_assessment_uri):
+    def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
         """
         Initializes the `Floor` class and adds the common mapping as well as specific insulation mappings.
         
         Args:
             ies (IESTool): An instance of the IES Tool, providing utility methods for mapping against the IES ontology.
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
             structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
             epc_assessment_uri (str): The URI of the EPC assessment.
         """
@@ -61,26 +66,32 @@ class Floor:
         self.add_floor_insulation_mapping(record, structure_unit_state_uri)
         self.add_floor_construction_mapping(record, structure_unit_state_uri, epc_assessment_uri)
         
-    def add_floor_mapping(self, record):
+    def add_floor_mapping(self, record: dict) -> None:
         """
         Adds the core floor mapping.
         
         Args:
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
+            
+        Returns:
+            None
 
         """
         self.all_asssessed_floors_uri = add_attribute_mapping(self.ies, record, "AllAssessedFloors", ["AllAssessedFloor"], create_record_uri(record, "Building"))
         self.all_asssessed_floor_sections_uri = add_attribute_mapping(self.ies, record, "AllAssessedFloorSections", ["AllAssessedFloorSection"], self.all_asssessed_floors_uri)
         
-    def add_floor_insulation_mapping(self, record, structure_unit_state_uri):
+    def add_floor_insulation_mapping(self, record: dict, structure_unit_state_uri: str) -> None:
         """
         Adds insulation-specific mapping, including whether the floor was insulated at the point in time
         when the EPC assessment took place.
         
         Args:
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
             structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
             epc_assessment_uri (str): The URI of the EPC assessment.
+        
+        Returns:
+            None
         """
         floor_insulation = self.floor_insulation_map.get(record.get("FloorInsulation"))
         all_assessed_floors_insulated_uri = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedFloors{floor_insulation}", ["AllAssessedFloor", f"{floor_insulation}"], 
@@ -88,7 +99,7 @@ class Floor:
         add_attribute_of_state_mapping(self.ies, record, f"AllAssessedFloorSections{floor_insulation}", ["AllAssessedFloorSection"], 
             [], [all_assessed_floors_insulated_uri, self.all_asssessed_floor_sections_uri])
         
-    def add_floor_construction_mapping(self, record, structure_unit_state_uri, epc_assessment_uri):
+    def add_floor_construction_mapping(self, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str) -> None:
         """
         Adds construction-specific mapping, including the state of the floor construction at the point in time
         when the EPC assessment took place.
@@ -97,6 +108,9 @@ class Floor:
             record (Dict): A record representing a building.
             structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
             epc_assessment_uri (str): The URI of the EPC assessment.
+        
+        Returns:
+            None
         """
         floor_construction = self.floor_construction_map.get(record.get("FloorConstruction"))
         all_assessed_floors_constructed_uri = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedFloors{floor_construction}", ["AllAssessedFloor", floor_construction], 

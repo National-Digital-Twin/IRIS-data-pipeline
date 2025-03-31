@@ -16,11 +16,16 @@
 #  limitations under the License.
 
 from utils import *
+from ies_tool.ies_tool import IESTool
 
 class Roof:
     """
     A class representing the `Roof`(s) within a `StructureUnit`, where insulation and construction of the `Roof` forms
     part of an Energy Performance Certificate (EPC) assessment.
+    
+    Attributes:
+        roof_type_map (dict): A map of roof types against IES Building ontology.
+        roof_insulation_map (dict): A map of roof insulations against IES Building ontology.
     """
 
     roof_type_map = {
@@ -63,13 +68,13 @@ class Roof:
         "": "NoInsulationInRoof",
     }
     
-    def __init__(self, ies, record, structure_unit_state_uri, epc_assessment_uri):
+    def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
         """
         Initializes the `Roof` class and adds the common mapping as well as specific insulation mappings.
         
         Args:
             ies (IESTool): An instance of the IES Tool, providing utility methods for mapping against the IES ontology.
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
             structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
             epc_assessment_uri (str): The URI of the EPC assessment.
         """
@@ -77,26 +82,31 @@ class Roof:
         self.add_roof_mapping(record)
         self.add_roof_insulation_mapping(record, structure_unit_state_uri, epc_assessment_uri)
         
-    def add_roof_mapping(self, record):
+    def add_roof_mapping(self, record: dict) -> None:
         """
         Adds the core roof mapping.
         
         Args:
             record (Dict): A record representing a building.
-
+        
+        Returns:
+            None
         """
         self.all_asssessed_roof_uri = add_attribute_mapping(self.ies, record, "AllAssessedRoof", ["AllAssessedRoof"], create_record_uri(record, "Building"))
         self.all_assessed_roof_sections_uri = add_attribute_mapping(self.ies, record, "AllAssessedRoofSections", ["AllAssessedRoofSection"], self.all_asssessed_roof_uri)
         
-    def add_roof_insulation_mapping(self, record, structure_unit_state_uri, epc_assessment_uri):
+    def add_roof_insulation_mapping(self, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str) -> None:
         """
         Adds insulation-specific mapping, including the location and depth of the roof insulation at the point in time
         when the EPC assessment took place.
         
         Args:
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
             structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
             epc_assessment_uri (str): The URI of the EPC assessment.
+        
+        Returns:
+            None
         """
         insulation_thickness = record.get("RoofInsulationThickness")
         roof_type = self.roof_type_map.get(record.get("RoofConstruction"))

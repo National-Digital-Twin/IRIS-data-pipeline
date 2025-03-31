@@ -83,6 +83,9 @@ def mapping_function(record: Record) ->  Union[Record, List[Record], None]:
     
     Args:
         record (Dict): A record representing a building.
+
+    Returns:
+        Union[Record, List[Record], None]: The Record containing the mapped RDF building data.
     """
     data = loads(record.value)
     mapped = map_func(data)

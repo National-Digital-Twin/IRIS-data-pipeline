@@ -16,21 +16,17 @@
 #  limitations under the License.
 
 from utils import *
+from ies_tool.ies_tool import IESTool
 
 class Wall:
+    """
+    A class representing the `Wall`(s) within a `StructureUnit`, where insulation and construction of the `Wall` forms
+    part of an Energy Performance Certificate (EPC) assessment.
     
-    wall_insulation_map = {
-        "AsBuilt": "InsulatedWall",
-        "FilledCavity": "InsulatedWall",
-        "FilledCavityAndInternalInsulation": "InternalInsulation",
-        "FilledCavityAndExternalInsulation": "ExternalInsulation",
-        "WithAdditionalInsulation": "InsulatedWall",
-        "WithInternalInsulation": "InternalInsulation",
-        "WithExternalInsulation": "ExternalInsulation",
-        "Unknown": "WallInsulation",
-        "NULL": "NoInsulationInWall",
-        "": "NoInsulationInWall",
-    }
+    Attributes:
+        wall_type_map (dict): A map of wall types against IES Building ontology.
+        wall_insulation_map (dict): A map of wall insulations against IES Building ontology.
+    """
     
     wall_type_map = {
         "CavityWall": "CavityWall",
@@ -45,18 +41,61 @@ class Wall:
         "": None,
         "Other": "Wall",
     }
+    
+    wall_insulation_map = {
+        "AsBuilt": "InsulatedWall",
+        "FilledCavity": "InsulatedWall",
+        "FilledCavityAndInternalInsulation": "InternalInsulation",
+        "FilledCavityAndExternalInsulation": "ExternalInsulation",
+        "WithAdditionalInsulation": "InsulatedWall",
+        "WithInternalInsulation": "InternalInsulation",
+        "WithExternalInsulation": "ExternalInsulation",
+        "Unknown": "WallInsulation",
+        "NULL": "NoInsulationInWall",
+        "": "NoInsulationInWall",
+    }
         
-    def __init__(self, ies, record, structure_unit_state_uri, epc_assessment_uri):
+    def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
+        """
+        Initializes the `Wall` class and adds the common mapping as well as specific insulation and construction mappings.
+        
+        Args:
+            ies (IESTool): An instance of the IES Tool, providing utility methods for mapping against the IES ontology.
+            record (dict): A record representing a building.
+            structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
+            epc_assessment_uri (str): The URI of the EPC assessment.
+        """
         self.ies = ies
         self.add_wall_mapping(record)
         self.add_wall_insulation_mapping(record, structure_unit_state_uri, epc_assessment_uri)
         self.add_wall_construction_mapping(record, structure_unit_state_uri, epc_assessment_uri)
         
-    def add_wall_mapping(self, record):
+    def add_wall_mapping(self, record: dict) -> None:
+        """
+        Adds the core wall mapping.
+        
+        Args:
+            record (dict): A record representing a building.
+        
+        Returns:
+            None
+        """
         self.all_asssessed_wall_uri = add_attribute_mapping(self.ies, record, "AllAssessedWalls", ["AllAssessedWall"], create_record_uri(record, "Building"))
         self.all_assessed_wall_sections_uri = add_attribute_mapping(self.ies, record, "AllAssessedWallSections", ["AllAssessedWallSection"], self.all_asssessed_wall_uri)
         
-    def add_wall_insulation_mapping(self, record, structure_unit_state_uri, epc_assessment_uri):
+    def add_wall_insulation_mapping(self, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str) -> None:
+        """
+        Adds insulation-specific mapping, including the location and depth of the wall  insulation at the point in time
+        when the EPC assessment took place.
+        
+        Args:
+            record (dict): A record representing a building.
+            structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
+            epc_assessment_uri (str): The URI of the EPC assessment.
+        
+        Returns:
+            None
+        """
         wall_insulation = self.wall_insulation_map.get(record.get("WallInsulationType"))
         all_walls_insulation_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWalls{wall_insulation}", ["AllAssessedWall", f"{wall_insulation}"], 
             [self.all_asssessed_wall_uri], [structure_unit_state_uri])
@@ -66,7 +105,19 @@ class Wall:
             [], [epc_assessment_uri])
         self.ies.add_triple(assess_wall_insulation_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_walls_sections_insulation_state)
 
-    def add_wall_construction_mapping(self, record, structure_unit_state_uri, epc_assessment_uri):
+    def add_wall_construction_mapping(self, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str) -> None:
+        """
+        Adds insulation-specific mapping, including the location and depth of the wall  insulation at the point in time
+        when the EPC assessment took place.
+        
+        Args:
+            record (dict): A record representing a building.
+            structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
+            epc_assessment_uri (str): The URI of the EPC assessment.
+        
+        Returns:
+            None
+        """
         wall_construction = record.get("WallConstruction")
         all_walls_construction_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWalls{wall_construction}", ["AllAssessedWall", f"{wall_construction}"], 
             [self.all_asssessed_wall_uri], [structure_unit_state_uri])

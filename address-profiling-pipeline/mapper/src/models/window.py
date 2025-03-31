@@ -16,6 +16,7 @@
 #  limitations under the License.
 
 from utils import *
+from ies_tool.ies_tool import IESTool
 
 class Window:
     """
@@ -23,13 +24,13 @@ class Window:
     part of an Energy Performance Certificate (EPC) assessment.
     """
         
-    def __init__(self, ies, record, structure_unit_state_uri, epc_assessment_uri):
+    def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
         """
         Initializes the `Window` class and adds the common mapping as well as specific insulation mappings.
         
         Args:
             ies (IESTool): An instance of the IES Tool, providing utility methods for mapping against the IES ontology.
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
             structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
             epc_assessment_uri (str): The URI of the EPC assessment.
         """
@@ -37,25 +38,30 @@ class Window:
         self.add_window_mapping(record)
         self.add_window_insulation_mapping(record, structure_unit_state_uri, epc_assessment_uri)
         
-    def add_window_mapping(self, record):
+    def add_window_mapping(self, record: dict) -> None:
         """
         Adds the core window mapping, including the window's type and its inclusion in the `StructureUnit`.
         
         Args:
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
 
+        Returns:
+            None
         """
         self.all_asssessed_window_uri = add_attribute_mapping(self.ies, record, "AllAssessedWindows", ["AllAssessedWindows"], create_record_uri(record, "StructureUnit"))
         
-    def add_window_insulation_mapping(self, record, structure_unit_state_uri, epc_assessment_uri):
+    def add_window_insulation_mapping(self, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str) -> None:
         """
         Adds insulation-specific mapping, including what type of glazing the windows had at the point in time
         when the EPC assessment took place.
         
         Args:
-            record (Dict): A record representing a building.
+            record (dict): A record representing a building.
             structure_unit_state_uri (str): The URI of the building's structure unit state at the tme of the EPC assessment.            
             epc_assessment_uri (str): The URI of the EPC assessment.
+        
+        Returns:
+            None
         """
         window_glazing = record.get("MultipleGlazingType")
         self.window_glazing_state_uri = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWindows{window_glazing}", ["AllAssessedWindows", window_glazing], 
