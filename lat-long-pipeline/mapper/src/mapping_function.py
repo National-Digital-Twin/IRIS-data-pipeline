@@ -246,7 +246,7 @@ def map_func(record: dict) -> str:
     add_geographic_mapping(record)
 
     if DEBUG_MODE:
-        ies.graph.serialize(destination=f"output_ttls/ies-b/{get_uprn(record)}_ll.ttl", format="turtle")
+        ies.graph.serialize(destination=f"{get_uprn(record)}_ll.ttl", format="turtle")
      
         return
     record = ies.graph.serialize(format="turtle")
