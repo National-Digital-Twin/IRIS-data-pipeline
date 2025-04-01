@@ -1,8 +1,8 @@
 @prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
-@prefix data: <http://nationaldigitaltwin.gov.uk/data#> .
+@prefix data: <http://ndtp.co.uk/data#> .
 @prefix geo: <http://www.opengis.net/ont/geosparql#> .
 @prefix geoplace: <https://www.geoplace.co.uk/addresses-streets/location-data/the-uprn#> .
-@prefix ies: <http://ies.data.gov.uk/ontology/ies4#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 

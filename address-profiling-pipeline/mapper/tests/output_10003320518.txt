@@ -1,6 +1,6 @@
 @prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
 @prefix data: <http://ndtp.co.uk/data#> .
-@prefix ies: <http://ies.data.gov.uk/ontology/ies4#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
 @prefix iso8601: <http://iso8601.iso.org/> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .

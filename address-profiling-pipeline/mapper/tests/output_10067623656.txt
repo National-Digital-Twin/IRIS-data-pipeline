@@ -1,5 +1,5 @@
 @prefix data: <http://ndtp.co.uk/data#> .
-@prefix ies: <http://ies.data.gov.uk/ontology/ies4#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
 @prefix ns1: <http://ies.data.gov.uk/ontology/ies-building1#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 

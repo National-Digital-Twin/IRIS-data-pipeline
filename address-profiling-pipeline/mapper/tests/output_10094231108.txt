@@ -1,6 +1,6 @@
 @prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
 @prefix data: <http://ndtp.co.uk/data#> .
-@prefix ies: <http://ies.data.gov.uk/ontology/ies4#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
 
 data:MainPurposeOfUse_10094231108_20240311 a building:Commercial ;
     ies:isPartOf data:StructureUnitState_10094231108_20240311 ;

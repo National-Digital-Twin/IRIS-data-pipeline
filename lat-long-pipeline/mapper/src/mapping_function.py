@@ -29,12 +29,11 @@ from rdflib import BNode, Literal, Namespace, URIRef
 DEBUG_MODE = False  # output to local file if True
 
 # declare namespaces
-ies_ns = "http://ies.data.gov.uk/ontology/ies4#"
+ies_ns = "http://informationexchangestandard.org/ont/ies#"
 ies_building_ns = "http://ies.data.gov.uk/ontology/ies-building1#"
 rdf_ns = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 rdfs_ns = "http://www.w3.org/2000/01/rdf-schema#"
-ndt_ns = "http://nationaldigitaltwin.gov.uk/ontology#"
-data_ns = "http://nationaldigitaltwin.gov.uk/data#"
+data_ns = "http://ndtp.co.uk/data#"
 geoplace_ns = "https://www.geoplace.co.uk/addresses-streets/location-data/the-uprn#"
 
 GEO = Namespace("http://www.opengis.net/ont/geosparql#")
@@ -235,7 +234,6 @@ def map_func(record: dict) -> str:
     ies.graph.namespace_manager.bind("data", data_ns)
     ies.graph.namespace_manager.bind("geoplace", geoplace_ns)
     ies.graph.namespace_manager.bind("ies", ies_ns)
-    ies.graph.namespace_manager.bind("ndt", ndt_ns)
 
     addressable_location_uri = create_record_uri(record, "AddressableLocation")
     ies.add_triple(addressable_location_uri, RDF_TYPE, build_ies_building_uri("AddressableLocation"))

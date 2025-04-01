@@ -50,7 +50,6 @@ def bind_namespaces() -> None:
     ies.graph.namespace_manager.bind("building", ies_building_ns)
     ies.graph.namespace_manager.bind("data", data_ns)
     ies.graph.namespace_manager.bind("iesuncertainty", ies_uncertainty_ns)
-    ies.graph.namespace_manager.bind("ndt", ndt_ns)
     ies.graph.namespace_manager.bind("epc", epc_ns)
     ies.graph.namespace_manager.bind("geoplace", geoplace_ns)
     ies.graph.namespace_manager.bind("qudt", qudt)
