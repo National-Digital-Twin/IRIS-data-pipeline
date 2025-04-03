@@ -13,7 +13,7 @@ data:StructureUnit_10003320518 a building:StructureUnit ; #PROTO_da6be1e8
     ies:isIdentifiedBy data:PCODE_PO36_0HN,
         data:UPRN_10003320518,
         data:FirstLineOfAddress_10003320518,
-		data:toid_10003320518 ;
+		data:TOID_10003320518 ;
     ies:isPartOf data:Building_10003320518 .
 
 data:StructureUnitState_10003320518_20241031 a building:StructureUnitState ; #ex:PROTO_ST_5a5

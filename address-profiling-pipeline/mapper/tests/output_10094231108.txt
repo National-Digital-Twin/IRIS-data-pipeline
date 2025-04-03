@@ -19,6 +19,6 @@ data:StructureUnit_10094231108 a building:StructureUnit ;
     ies:isIdentifiedBy data:FirstLineOfAddress_10094231108,
         data:PCODE_PO36_9PH,
         data:UPRN_10094231108,
-        data:toid_10094231108 ;
+        data:TOID_10094231108 ;
     ies:isPartOf data:Building_10094231108 .
 

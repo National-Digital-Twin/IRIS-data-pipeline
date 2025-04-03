@@ -150,7 +150,7 @@ data:StructureUnit_10067623656 a building:StructureUnit ;
     ies:isIdentifiedBy data:FirstLineOfAddress_10067623656,
         data:PCODE_PO32_6FE,
         data:UPRN_10067623656,
-        data:toid_10067623656 ;
+        data:TOID_10067623656 ;
     ies:isPartOf data:Building_10067623656 .
 
 data:EPCAssessment_10067623656_20240330 a building:EPCAssessment ;
