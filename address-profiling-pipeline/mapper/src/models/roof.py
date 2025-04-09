@@ -63,7 +63,7 @@ class Roof:
         "Other": "Insulated",
         "Insulated": "Insulated",
         "Thatched": "InsulatedWithThatched",
-        "ThatchedWithAdditionalInsulation": "ThatchedWithAdditionalInsulation ",
+        "ThatchedWithAdditionalInsulation": "ThatchedWithAdditionalInsulation",
         "NULL": "NoInsulationInRoof",
         "": "NoInsulationInRoof",
     }
