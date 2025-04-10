@@ -92,8 +92,6 @@ logger = CoreLoggerFactory.get_logger(
 
 # Function each record on the source topic is passed to.
 def mapping_function(record: Record) -> Union[Record, List[Record], None]:
-    # Add mapping logic here
-    # Try to keep it small and performant
     data = loads(record.value)
 
     mapped = map_func(data)

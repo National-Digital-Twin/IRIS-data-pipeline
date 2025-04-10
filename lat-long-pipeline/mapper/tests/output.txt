@@ -35,7 +35,9 @@ data:LocationPoint_100050060776 a ies:PointOnEarthSurface ;
             a ies:Longitude ;
             ies:representationValue "-1.0319753337442386"^^xsd:string
         ] ;
-    ies:isRepresentedAs [
-        a ies:ISO19125-WKT ;
-        ies:representationValue "POINT(-1.0319753337442386 53.69278550200611)"^^geo:wktLiteral 
-    ] .
+    ies:isRepresentedAs _:g1 ;
+    geo:hasGeometry _:g1 .
+
+_:g1 a ies:ISO19125-WKT ;
+    ies:representationValue "POINT(-1.0319753337442386 53.69278550200611)"^^geo:wktLiteral ;
+    geo:asWKT "POINT(-1.0319753337442386 53.69278550200611)"^^geo:wktLiteral .

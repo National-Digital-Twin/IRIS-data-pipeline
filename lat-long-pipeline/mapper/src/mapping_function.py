@@ -215,7 +215,9 @@ def add_geographic_mapping(record: dict) -> None:
     wkt_bnode = BNode()
     ies.graph.add((wkt_bnode, URIRef(RDF_TYPE), URIRef(build_ies_uri("ISO19125-WKT"))))
     ies.graph.add((wkt_bnode, URIRef(build_ies_uri("representationValue")), wkt_literal))
+    ies.graph.add((wkt_bnode, GEO.asWKT, wkt_literal))
     ies.graph.add((URIRef(location_point_uri), URIRef(build_ies_uri("isRepresentedAs")), wkt_bnode))
+    ies.graph.add((URIRef(location_point_uri), GEO.hasGeometry, wkt_bnode))
 
 
 def map_func(record: dict) -> str:
