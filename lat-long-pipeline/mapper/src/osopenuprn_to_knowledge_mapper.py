@@ -27,6 +27,7 @@ from telicent_lib.config import Configurator
 from telicent_lib.logging import CoreLoggerFactory
 from telicent_lib import Mapper, Record, RecordUtils
 from typing import Union, List
+import logging
 from json import loads
 from mapping_function import map_func
 from dotenv import load_dotenv
@@ -86,6 +87,7 @@ kafka_producer_config = {
 logger = CoreLoggerFactory.get_logger(
     "{source}-to-{target}-mapper".format(source=SOURCE_TOPIC, target=TARGET_TOPIC),
     kafka_config=kafka_producer_config,
+    level = logging.DEBUG,
     topic="logging",
 )
 
