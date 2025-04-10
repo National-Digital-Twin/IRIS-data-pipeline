@@ -94,6 +94,7 @@ logger = CoreLoggerFactory.get_logger(
 
 # Function each record on the source topic is passed to.
 def mapping_function(record: Record) -> Union[Record, List[Record], None]:
+    logger.info("Beginning processing of address_base record")
     data = loads(record.value)
 
     mapped = map_func(data)
@@ -124,4 +125,5 @@ mapper = Mapper(
     reporting_batch_size=500,
     has_error_handler=False
 )
+logger.info("Mapper instantiated")
 mapper.run()
