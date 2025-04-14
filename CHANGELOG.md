@@ -14,6 +14,13 @@ This project follows **Semantic Versioning (SemVer)** ([semver.org](https://semv
 
  ---
 
+ ## Unreleased
+
+ ### Features
+ 
+ - Updated mappers for both `address-profiling-pipeline` and `lat-long-pipeline` to align with IES Building data structure
+ - Added a set of scripts for creating named graphs (`materialised-view-creation`), surfacing smaller datasets to faciliate faster queries
+
  ## [0.90.0] – 2025-03-28
 
  ### Initial Public Release (Pre-Stable)
