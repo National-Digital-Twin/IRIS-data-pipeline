@@ -1,0 +1,4 @@
+PREFIX building: <http://ies.data.gov.uk/ontology/ies-building1#>
+SELECT COUNT(?uprn) WHERE {
+    ?uprn a building:UPRN .  
+  }

@@ -1,30 +1,34 @@
-PREFIX ies: <http://ies.data.gov.uk/ontology/ies4#>
-PREFIX ex: <http://example.org/geo#>
-PREFIX data: <http://nationaldigitaltwin.gov.uk/data#>
-PREFIX geoplace: <https://www.geoplace.co.uk/addresses-streets/location-data/the-uprn#>
+PREFIX building: <http://ies.data.gov.uk/ontology/ies-building1#>
+PREFIX data: <http://ndtp.co.uk/data#>
+PREFIX ies: <http://informationexchangestandard.org/ont/ies#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 # Create named graph for EPC mapping
+DROP SILENT GRAPH <http://ndtp.co.uk/building-epc-mapping> ;
 CREATE GRAPH <http://ndtp.co.uk/building-epc-mapping> ;
 
 # Insert building-to-EPC mappings
 INSERT { 
     GRAPH <http://ndtp.co.uk/building-epc-mapping> {
-        ?building data:hasEPCRating ?epcRating .
+        ?structureUnit data:hasEPCRating ?epcRating .
         ?uprn_id data:hasEPCRatingUPRN ?epcRating .
     }
 }
 WHERE {
-    # Get EPC ratings using your project's pattern
-    ?state ies:isStateOf ?building .
-    ?state a ?epc_uri .
-    
-    # Get UPRN 
-    ?building ies:isIdentifiedBy ?uprn .
-    ?uprn ies:representationValue ?uprn_id .
-    ?uprn rdf:type geoplace:UniquePropertyReferenceNumber .
-    
-    # Extract the rating
-    FILTER(CONTAINS(STR(?epc_uri), "BuildingWithEnergyRatingOf"))
-    BIND(STRAFTER(STR(?epc_uri), "BuildingWithEnergyRatingOf") AS ?epcRating)
+  ?uprn a building:UPRN .
+  ?uprn ies:representationValue ?uprn_id .
+  ?structureUnit ies:isIdentifiedBy ?uprn .
+  
+  ?structureUnit a building:StructureUnit .
+  ?structureUnitState a building:StructureUnitState .
+  ?structureUnitState ies:isStateOf ?structureUnit .
+  
+  ?epcCertificate a ?epcRatingFull .
+  ?epcRatingFull rdfs:subClassOf building:UKDomesticEPC .
+  ?epcCertificateCreated ies:isStateOf ?epcCertificate ;
+                         ies:isPartOf ?epcAssessment .
+  ?epcAssessment building:assessedStateForEnergyPerformance ?structureUnitState .
+
+  BIND(STRAFTER(STR(?epcRatingFull), "UK_DOM_EPC_") AS ?epcRating)
 }

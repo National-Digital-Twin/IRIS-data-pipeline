@@ -23,7 +23,7 @@ data:MainPurposeOfUse_10003320518_20241031 a building:ResidentialDwelling ;
 	ies:isPartOf data:StructureUnitState_10003320518_20241031 ;
 	ies:isStateOf data:StructureUnit_10003320518 .
 
-data:StructureUnitType_10003320518_20241031 a building:House ;
+data:StructureUnitType_10003320518_20241031 a building:Bungalow ;
 	ies:isPartOf data:StructureUnitState_10003320518_20241031 ;
 	ies:isStateOf data:StructureUnit_10003320518 .
 

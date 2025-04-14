@@ -1,8 +1,8 @@
-PREFIX data: <http://nationaldigitaltwin.gov.uk/data#>
-PREFIX ex: <http://example.org/geo#>
-PREFIX stats: <http://example.org/stats#>
+PREFIX data: <http://ndtp.co.uk/data#>
+PREFIX stats: <http://ndtp.co.uk/stats#>
 
 # Create named graph for statistics
+DROP SILENT GRAPH <http://ndtp.co.uk/epc-ward-statistics> ;
 CREATE GRAPH <http://ndtp.co.uk/epc-ward-statistics> ;
 
 # Insert EPC statistics by ward
@@ -36,7 +36,7 @@ WHERE {
         GRAPH <http://ndtp.co.uk/building-ward-mapping> {
           ?building data:locatedInWard ?ward .
         }
-          ?ward ex:WD23NM ?wardName .
+          ?ward data:WD23NM ?wardName .
         
         # Get EPC rating from mapping
         OPTIONAL {
