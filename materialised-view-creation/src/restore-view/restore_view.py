@@ -19,9 +19,13 @@ import rdflib
 import requests
 import sys
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 ttl_file = os.environ.get("TTL_RESTORATION_FILE")
 fuseki_url = os.environ.get("FUSEKI_URL")
-named_graph = "http://ndtp.co.uk/building-geo-mapping"
+named_graph = os.environ.get("NAMED_GRAPH_NAME")
 chunk_size = 1000
 
 print(f"Loading data from {ttl_file}")

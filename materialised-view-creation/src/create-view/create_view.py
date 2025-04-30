@@ -23,14 +23,14 @@ load_dotenv()
 fuseki_url = os.environ.get("FUSEKI_URL")
 create_view_query_file = os.environ.get("CREATE_VIEW_QUERY_FILE")
 record_count_query_file = os.environ.get("RECORD_COUNT_QUERY_FILE")
-batch_limit = 25000
+batch_limit = 10000
 
 with open(create_view_query_file, "r") as f:
     view_creation_query_template = f.read()
 with open(record_count_query_file, "r") as f:
     count_query = f.read()
 
-offset = 0
+offset = 190000
 page = 1
 
 count_result = requests.post(

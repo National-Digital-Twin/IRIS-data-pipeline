@@ -1,0 +1,38 @@
+PREFIX building: <http://ies.data.gov.uk/ontology/ies-building1#>
+PREFIX data: <http://ndtp.co.uk/data#>
+PREFIX ies: <http://informationexchangestandard.org/ont/ies#>
+PREFIX old_ies: <http://ies.data.gov.uk/ontology/ies4#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  
+# Insert minimalist building mappings
+INSERT {{
+  GRAPH <http://ndtp.co.uk/detailed-building-geo-mapping> {{
+    ?uprn data:hasWallConstruction ?wallConstruction .
+    ?uprn data:hasWallInsulation ?wallInsulation .
+  }}
+}}
+WHERE {{
+  SELECT ?uprn ?wallConstruction ?wallInsulation
+  WHERE {{
+    ?uprn a building:UPRN ;
+        ies:representationValue ?_uprn .
+
+    ?structureUnit a building:StructureUnit ;
+        ies:isIdentifiedBy ?uprn .
+    ?structureUnitState a building:StructureUnitState ;
+        ies:isStateOf ?structureUnit .
+
+    ?_wc a ?wallConstruction ;
+        ies:isPartOf ?structureUnitState .
+    ?wallConstruction a building:WallConstruction .
+
+    ?_wi a ?wallInsulation ;
+        ies:isPartOf ?structureUnitState .
+    ?wallInsulation a building:WallInsulation .
+  }}
+  LIMIT {LIMIT} 
+  OFFSET {OFFSET} 
+}}

@@ -1,0 +1,43 @@
+PREFIX building: <http://ies.data.gov.uk/ontology/ies-building1#>
+PREFIX data: <http://ndtp.co.uk/data#>
+PREFIX ies: <http://informationexchangestandard.org/ont/ies#>
+PREFIX old_ies: <http://ies.data.gov.uk/ontology/ies4#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  
+# Insert minimalist building mappings
+INSERT {{
+  GRAPH <http://ndtp.co.uk/detailed-building-geo-mapping> {{
+    ?uprn geo:asWKT ?point .
+    ?uprn data:hasPostcode ?postcode .
+    ?uprn data:hasWindowGlazing ?windowGlazing .
+  }}
+}}
+WHERE {{
+  SELECT ?uprn ?postcode ?point ?windowGlazing
+  WHERE {{
+    ?uprn a building:UPRN ;
+        ies:representationValue ?_uprn .
+    ?pcode a ies:PostalCode ;
+        ies:representationValue ?postcode .
+
+    ?structureUnit a building:StructureUnit ;
+        ies:isIdentifiedBy ?uprn ;
+        ies:isIdentifiedBy ?pcode ;
+        ies:inLocation ?locationPoint .
+    ?structureUnitState a building:StructureUnitState ;
+        ies:isStateOf ?structureUnit .  
+
+    ?locationPoint ies:isRepresentedAs ?gp .
+    ?gp a ies:ISO19125-WKT ;
+        ies:representationValue ?point .
+
+    ?_wg a ?windowGlazing ;
+        ies:isPartOf ?structureUnitState .
+    ?windowGlazing a building:GlazingType .
+  }}
+  LIMIT {LIMIT} 
+  OFFSET {OFFSET} 
+}}

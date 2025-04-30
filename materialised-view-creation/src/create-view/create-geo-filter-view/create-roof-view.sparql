@@ -1,0 +1,50 @@
+PREFIX building: <http://ies.data.gov.uk/ontology/ies-building1#>
+PREFIX data: <http://ndtp.co.uk/data#>
+PREFIX ies: <http://informationexchangestandard.org/ont/ies#>
+PREFIX old_ies: <http://ies.data.gov.uk/ontology/ies4#>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  
+# Insert minimalist building mappings
+INSERT {{
+  GRAPH <http://ndtp.co.uk/detailed-building-geo-mapping> {{
+    ?uprn data:hasLodgementDate ?lodgementDate .
+    ?uprn data:hasRoofConstruction ?roofConstruction .
+    ?uprn data:hasRoofInsulation ?roofInsulation .
+    ?uprn data:hasRoofInsulationThickness ?roofInsulationThickness .
+  }}
+}}
+WHERE {{
+  SELECT ?uprn ?lodgementDate ?roofConstruction ?roofInsulation ?roofInsulationThickness
+  WHERE {{
+    ?uprn a building:UPRN ;
+        ies:representationValue ?_uprn .
+
+    ?structureUnit a building:StructureUnit ;
+        ies:isIdentifiedBy ?uprn .
+    ?structureUnitState a building:StructureUnitState ;
+        ies:isStateOf ?structureUnit .
+            
+  ?epc_result building:lodgementDate ?lodgementDate ;
+      ies:isParticipantIn ?epc_assessment .
+  ?epc_assessment building:assessedStateForEnergyPerformance ?structureUnitState .
+
+  ?_rc a ?roofConstruction ;
+       ies:isPartOf ?structureUnitState .
+  ?roofConstruction a building:RoofConstruction .
+
+  ?_ri a ?roofInsulation ;
+       ies:isPartOf ?structureUnitState .
+  ?roofInsulation a building:RoofInsulationLocation .
+            
+  OPTIONAL {{
+      ?_rit a ?roofInsulationThickness ;
+ 		    ies:isPartOf ?structureUnitState .
+      ?roofInsulationThickness a building:RoofInsulationThickness .
+    }}
+  }}
+  LIMIT {LIMIT} 
+  OFFSET {OFFSET} 
+}}
