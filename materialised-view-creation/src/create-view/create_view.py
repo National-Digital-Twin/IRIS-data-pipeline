@@ -30,7 +30,7 @@ with open(create_view_query_file, "r") as f:
 with open(record_count_query_file, "r") as f:
     count_query = f.read()
 
-offset = 190000
+offset = 0
 page = 1
 
 count_result = requests.post(
