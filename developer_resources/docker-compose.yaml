@@ -1,0 +1,36 @@
+services:
+  zookeeper:
+    container_name: iris-pipeline-zookeeper
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+  kafka:
+    container_name: iris-pipeline-kafka
+    image: "bitnami/kafka:3.5.1"
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    volumes:
+      - ./kafka/server.properties:/bitnami/kafka/config/server.properties
+    environment:
+      - BITNAMI_DEBUG=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  secure-agent-graph:
+    container_name: iris-pipeline-sag
+    environment:
+      JAVA_OPTIONS: "-XX:MaxRAMPercentage=40.0"
+      JWKS_URL: "disabled"
+    command:
+      - --config
+      - /fuseki/config/config.ttl
+    image: iris-pipeline/secure-agent-graph
+    depends_on:
+      - kafka
+    ports:
+      - 3030:3030
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
