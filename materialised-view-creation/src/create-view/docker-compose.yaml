@@ -45,3 +45,27 @@ services:
       CREATE_VIEW_QUERY_FILE: data/create-windows-view.sparql
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  # create_ward_view:
+  #   container_name: create_ward_view
+  #   image: iris-pipeline/create-view
+  #   environment:
+  #     <<: *common-variables
+  #     CREATE_VIEW_QUERY_FILE: data/create-ward-view.sparql
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  # create_epc_view:
+  #   container_name: create_epc_view
+  #   image: iris-pipeline/create-view
+  #   environment:
+  #     <<: *common-variables
+  #     CREATE_VIEW_QUERY_FILE: data/create-epc-view.sparql
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"
+  # create_stats_view:
+  #   container_name: create_stats_view
+  #   image: iris-pipeline/create-view
+  #   environment:
+  #     <<: *common-variables
+  #     CREATE_VIEW_QUERY_FILE: data/create-stats-view.sparql
+  #   extra_hosts:
+  #     - "host.docker.internal:host-gateway"

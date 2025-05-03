@@ -4,24 +4,24 @@ PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
 PREFIX data: <http://ndtp.co.uk/data#>
 PREFIX ies: <http://informationexchangestandard.org/ont/ies#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
- 
+
 # Create named graph for building-ward mapping
 DROP SILENT GRAPH <http://ndtp.co.uk/building-ward-mapping> ;
 CREATE GRAPH <http://ndtp.co.uk/building-ward-mapping> ;
- 
+
 # Insert building-to-ward mappings
-INSERT { 
-  GRAPH <http://ndtp.co.uk/building-ward-mapping> {
+INSERT {{
+  GRAPH <http://ndtp.co.uk/building-ward-mapping> {{
     ?structureUnit data:locatedInWard ?ward .
     ?structureUnit data:inWardName ?wardName .
     ?uprn_id data:locatedInWardUPRN ?ward .
-  }
-}
-WHERE {
+  }}
+}}
+WHERE {{
   ?ward a geo:Feature ;
         data:WD23NM ?wardName ;
         geo:asWKT ?wardWKT .
-      
+
   ?uprn a building:UPRN .
   ?uprn ies:representationValue ?uprn_id .
 
@@ -32,6 +32,6 @@ WHERE {
   ?locationPoint ies:isRepresentedAs ?gp .
   ?gp a ies:ISO19125-WKT ;
       ies:representationValue ?point .
-  
+
   FILTER(geof:sfIntersects(?point, ?wardWKT))
-}
+}}

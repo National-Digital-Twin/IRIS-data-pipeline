@@ -15,7 +15,10 @@ COPY ./create-geo-filter-view/create-roof-view.sparql data/
 COPY ./create-geo-filter-view/create-walls-view.sparql data/
 COPY ./create-geo-filter-view/create-floors-view.sparql data/
 COPY ./create-geo-filter-view/create-windows-view.sparql data/
-COPY get-total-buildings.sparql data/
+COPY ./get-total-buildings.sparql data/
+COPY ./create-ward-view.sparql data/
+COPY ./create-stats-view.sparql data/
+COPY ./create-epc-view.sparql data/
 
 # Command to run your script
 CMD ["python", "create_view.py"]

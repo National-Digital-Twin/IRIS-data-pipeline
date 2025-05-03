@@ -9,13 +9,13 @@ DROP SILENT GRAPH <http://ndtp.co.uk/building-epc-mapping> ;
 CREATE GRAPH <http://ndtp.co.uk/building-epc-mapping> ;
 
 # Insert building-to-EPC mappings
-INSERT { 
-    GRAPH <http://ndtp.co.uk/building-epc-mapping> {
+INSERT {{
+    GRAPH <http://ndtp.co.uk/building-epc-mapping> {{
         ?structureUnit data:hasEPCRating ?epcRating .
         ?uprn_id data:hasEPCRatingUPRN ?epcRating .
-    }
-}
-WHERE {
+    }}
+}}
+WHERE {{
   ?uprn a building:UPRN .
   ?uprn ies:representationValue ?uprn_id .
   ?structureUnit ies:isIdentifiedBy ?uprn .
@@ -31,4 +31,4 @@ WHERE {
   ?epcAssessment building:assessedStateForEnergyPerformance ?structureUnitState .
 
   BIND(STRAFTER(STR(?epcRatingFull), "UK_DOM_EPC_") AS ?epcRating)
-}
+}}

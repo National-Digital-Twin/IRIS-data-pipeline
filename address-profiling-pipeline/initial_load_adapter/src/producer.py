@@ -21,15 +21,15 @@
 #  © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
 #  and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
 
-from telicent_lib.sinks import KafkaSink
-from telicent_lib import Record, RecordUtils, AutomaticAdapter
-from telicent_lib.config import Configurator
-from telicent_lib.access import SecurityLabelBuilder, EDHSecurityLabelsV2
+import csv
 from json import dumps
 from typing import Iterable
-import csv
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
+from telicent_lib import AutomaticAdapter, Record, RecordUtils
+from telicent_lib.access import EDHSecurityLabelsV2, SecurityLabelBuilder
+from telicent_lib.config import Configurator
+from telicent_lib.sinks import KafkaSink
 
 load_dotenv()
 config = Configurator()
@@ -39,12 +39,14 @@ BROKER = config.get(
     description="Specifies the Kafka Bootstrap Servers to connect to.",
 )
 SASL_USERNAME = config.get(
-    "SASL_USERNAME", required=True,
-    description="The username for the SASL authentication."
+    "SASL_USERNAME",
+    required=True,
+    description="The username for the SASL authentication.",
 )
 SASL_PASSWORD = config.get(
-    "SASL_PASSWORD", required=True,
-    description="The password for the SASL authentication."
+    "SASL_PASSWORD",
+    required=True,
+    description="The password for the SASL authentication.",
 )
 TARGET_TOPIC = config.get(
     "TARGET_TOPIC",
@@ -59,14 +61,28 @@ SOURCE_NAME = config.get(
     required=True,
     description="Specifies the source that the data has originated from",
 )
-FILENAME=config.get(
+FILENAME = config.get(
     "FILENAME",
     required=True,
-    description="The path along with the filename of the csv file to be processed."
+    description="The path along with the filename of the csv file to be processed.",
 )
 
-permitted_nationalities=['GBR', 'NZL']
-default_security_label = SecurityLabelBuilder().add_multiple(EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.value, *permitted_nationalities).build()
+LIMIT = config.get(
+    "LIMIT",
+    required=False,
+    description="A limit for the numbers of records to stream to Kafka.",
+    required_type=int,
+    converter=int,
+)
+
+permitted_nationalities = ["GBR", "NZL"]
+default_security_label = (
+    SecurityLabelBuilder()
+    .add_multiple(
+        EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.value, *permitted_nationalities
+    )
+    .build()
+)
 
 # Define our adapter function, this is just a Python generator function that
 # generates the Record instance to be written out to the DataSink
@@ -79,6 +95,7 @@ kafka_config = {
     "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
 }
+
 
 def create_record(data, security_labels):
     return Record(
@@ -95,6 +112,20 @@ def create_record(data, security_labels):
     )
 
 
+def generate_records_with_limit() -> Iterable[Record]:
+    with open(FILENAME, "r", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+
+        counter = 0
+
+        for row in reader:
+            if counter > LIMIT:
+                return
+
+            counter += 1
+            yield create_record(row, default_security_label)
+
+
 def generate_records() -> Iterable[Record]:
     with open(FILENAME, "r", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
@@ -105,9 +136,25 @@ def generate_records() -> Iterable[Record]:
 
 # Create a sink and the adapter
 sink = KafkaSink(TARGET_TOPIC, kafka_config=kafka_config)
+adapter_with_limit = AutomaticAdapter(
+    target=sink,
+    adapter_function=generate_records_with_limit,
+    name=PRODUCER_NAME,
+    source_name=SOURCE_NAME,
+    has_reporter=False,
+    has_error_handler=False,
+)
 adapter = AutomaticAdapter(
-    target=sink, adapter_function=generate_records, name=PRODUCER_NAME, source_name=SOURCE_NAME, has_reporter=False, has_error_handler=False
+    target=sink,
+    adapter_function=generate_records,
+    name=PRODUCER_NAME,
+    source_name=SOURCE_NAME,
+    has_reporter=False,
+    has_error_handler=False,
 )
 
 # Call run() to run the action
-adapter.run()
+if LIMIT > 0:
+    adapter_with_limit.run()
+else:
+    adapter.run()
