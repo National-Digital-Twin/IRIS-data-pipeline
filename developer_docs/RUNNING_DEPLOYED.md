@@ -65,6 +65,7 @@ Before you can run the post processing pipeline please complete the steps below.
 - Stop the main secure agent graph.
 - Run a standalone instance of the secure agent graph using the command `docker run -d -p 3031:3030 --name iris-pipeline-sag-standalone -v $(pwd)/config/standalone-config.ttl:/fuseki/config/config.ttl:ro -e JAVA_OPTIONS="-XX:MinRAMPercentage=80.0 -XX:MaxRAMPercentage=80.0" -e JWKS_URL="disabled" iris-pipeline/secure-agent-graph --config /fuseki/config/config.ttl --compact`. Please run this command when you are in the `developer_resources` directory.
 - Edit the docker compose file found under the `materialised-view-creation/src/create-view` and replace the `<host-ip>` with the internal IP of the container and the `<secure-agent-graph-port>` with the port of the new instance of the secure agent graph.
+- Make sure the host and port in the make command are pointing to the standalone secure agent graph.
 - Run the command `make upload-ies-building-ontology` when in the `materialised-view-creation/src/create-view`.
 
 ### Running the pipeline
@@ -89,3 +90,4 @@ The following observations have been noted while running the pipeline in a deplo
 - If you find that you are running out of space while the secure agent graph container is consuming the mapped records, you can stop the container and start it which will force it to trigger initial compaction which will reduce the size of the triple store significantly. It is worth noting this process usually takes around 4 to 5 hours to complete regardless of the size.
 - It is worth keeping in mind that the compaction process need some storage space in the first place to work. It is good to keep at least 20 GiB of space for this process.
 - Please ensure the secure agent graph is running before running the post processing pipeline.
+- The post processing step is quite CPU intensive.
