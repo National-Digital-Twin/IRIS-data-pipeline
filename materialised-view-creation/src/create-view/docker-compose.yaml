@@ -1,7 +1,7 @@
 version: "3.8"
 
 x-common-variables: &common-variables
-  FUSEKI_URL: http://<host-ip>:3030/knowledge
+  FUSEKI_URL: http://<host-ip>:<secure-agent-graph-port>/knowledge
   RECORD_COUNT_QUERY_FILE: data/get-total-buildings.sparql
   PYTHONUNBUFFERED: 1
   LIMIT: 1000
