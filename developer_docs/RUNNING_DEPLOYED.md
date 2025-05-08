@@ -64,8 +64,8 @@ Before you can run the post processing pipeline please complete the steps below.
 - Create a back up of the main data from the secure agent graph using the comand `curl -X http://<insert-secure-agent-graph-host-and-port-here/knowledge/get >> <insert-path-and-filename-for-the-backup>`.
 - Stop the main secure agent graph.
 - Run a standalone instance of the secure agent graph using the command `docker run -d -p 3031:3030 --name iris-pipeline-sag-standalone -v $(pwd)/config/standalone-config.ttl:/fuseki/config/config.ttl:ro -e JAVA_OPTIONS="-XX:MinRAMPercentage=80.0 -XX:MaxRAMPercentage=80.0" -e JWKS_URL="disabled" iris-pipeline/secure-agent-graph --config /fuseki/config/config.ttl --compact`. Please run this command when you are in the `developer_resources` directory.
+- Edit the docker compose file found under the `materialised-view-creation/src/create-view` and replace the `<host-ip>` with the internal IP of the container and the `<secure-agent-graph-port>` with the port of the new instance of the secure agent graph.
 - Make sure the host and port in the make command are pointing to the standalone secure agent graph.
-- Edit the docker compose file found under the `materialised-view-creation/src/create-view` and replace the `<host-ip>` with the internal IP of the container.
 - Run the command `make upload-ies-building-ontology` when in the `materialised-view-creation/src/create-view`.
 
 ### Running the pipeline
