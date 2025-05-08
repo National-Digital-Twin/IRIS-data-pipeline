@@ -10,7 +10,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ../src/address_profile_to_knowledge_mapper.py .
 COPY ../src/mapping_function.py .
-COPY ../src/ndt_classes.py .
+COPY ../src/namespaces.py .
+COPY ../src/utils.py .
+COPY ../src/models ./models
 
 USER mapperuser
 
