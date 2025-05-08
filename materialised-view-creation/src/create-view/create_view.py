@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 # © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
 # and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
- 
+
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import os, json, requests
+import json
+import os
+
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -23,23 +26,23 @@ load_dotenv()
 fuseki_url = os.environ.get("FUSEKI_URL")
 create_view_query_file = os.environ.get("CREATE_VIEW_QUERY_FILE")
 record_count_query_file = os.environ.get("RECORD_COUNT_QUERY_FILE")
-batch_limit = 10000
+batch_limit = int(os.environ.get("LIMIT", "10000"))
+offset = int(os.environ.get("OFFSET", "0"))
 
 with open(create_view_query_file, "r") as f:
     view_creation_query_template = f.read()
 with open(record_count_query_file, "r") as f:
     count_query = f.read()
 
-offset = 0
-page = 1
+page = ((offset - batch_limit) / batch_limit) if offset > batch_limit else 1
 
 count_result = requests.post(
-        f"{fuseki_url}/query",
-        headers={"Content-Type": "application/sparql-query"},
-        data=count_query.encode("utf-8"),
-    )
+    f"{fuseki_url}/query",
+    headers={"Content-Type": "application/sparql-query"},
+    data=count_query.encode("utf-8"),
+)
 data = json.loads(count_result.text)
-value = data['results']['bindings'][0]['.1']['value']
+value = data["results"]["bindings"][0][".1"]["value"]
 count = int(value)
 
 while offset < count:
@@ -58,7 +61,9 @@ while offset < count:
         offset += batch_limit
         page += 1
         print(f"Results processed {offset}")
-        print(f"Approximately {count // batch_limit - (offset / batch_limit)} pages remaining")
+        print(
+            f"Approximately {count // batch_limit - (offset / batch_limit)} pages remaining"
+        )
     else:
         print(f"Page {page} failed: HTTP {response.status_code}")
         print(response.text)

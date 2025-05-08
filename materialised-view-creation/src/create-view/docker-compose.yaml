@@ -3,6 +3,8 @@ version: "3.8"
 x-common-variables: &common-variables
   FUSEKI_URL: http://<host-ip>:3030/knowledge
   RECORD_COUNT_QUERY_FILE: data/get-total-buildings.sparql
+  PYTHONUNBUFFERED: 1
+  LIMIT: 1000
 
 services:
   create_geo_view:
@@ -11,6 +13,7 @@ services:
     environment:
       <<: *common-variables
       CREATE_VIEW_QUERY_FILE: data/create-geo-view.sparql
+      OFFSET: 0
     extra_hosts:
       - "host.docker.internal:host-gateway"
   create_geo_filter_view_for_roof:
@@ -19,6 +22,7 @@ services:
     environment:
       <<: *common-variables
       CREATE_VIEW_QUERY_FILE: data/create-roof-view.sparql
+      OFFSET: 0
     extra_hosts:
       - "host.docker.internal:host-gateway"
   create_geo_filter_view_for_walls:
@@ -27,6 +31,7 @@ services:
     environment:
       <<: *common-variables
       CREATE_VIEW_QUERY_FILE: data/create-walls-view.sparql
+      OFFSET: 0
     extra_hosts:
       - "host.docker.internal:host-gateway"
   create_geo_filter_view_for_floors:
@@ -35,6 +40,7 @@ services:
     environment:
       <<: *common-variables
       CREATE_VIEW_QUERY_FILE: data/create-floors-view.sparql
+      OFFSET: 0
     extra_hosts:
       - "host.docker.internal:host-gateway"
   create_geo_filter_view_for_windows:
@@ -43,6 +49,7 @@ services:
     environment:
       <<: *common-variables
       CREATE_VIEW_QUERY_FILE: data/create-windows-view.sparql
+      OFFSET: 0
     extra_hosts:
       - "host.docker.internal:host-gateway"
   # create_ward_view:
