@@ -27,6 +27,10 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
         fuseki:name "get"
     ] ;
     fuseki:endpoint [
+        fuseki:operation fuseki:gsp-rw ;
+        fuseki:name "data"
+    ] ;
+    fuseki:endpoint [
         fuseki:operation fuseki:upload ;
         fuseki:name "upload"
     ] ;

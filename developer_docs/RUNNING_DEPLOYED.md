@@ -76,6 +76,14 @@ Once you have built the container you can run it using the command `docker compo
 
 You can edit the `LIMIT` and `OFFSET` parameters of the containers in the docker compose file and set these as you wish. Sensible defaults are in place.
 
+## Creating spatial indexes
+
+Spatial indices are created by the geosparql enabled secure agent graph to optimize the retrieval of geospacial queries. These are created on startup for a geosparql enabled secure agent graph.
+
+- While in the `developer_resources` directory run another instance of the secure agent graph using the command `docker run -d -p 3032:3030 --name iris-pipeline-sag-geo -v $(pwd)/config/config-geosparql.ttl:/fuseki/config/config.ttl:ro -e JAVA_OPTIONS="-XX:MinRAMPercentage=80.0 -XX:MaxRAMPercentage=80.0" -e JWKS_URL="disabled" iris-pipeline/secure-agent-graph --config /fuseki/config/config.ttl`.
+- Upload the backup of the main data to the graph using the command `curl -X POST -H 'Content-Type: text/turtle' -T <insert-back-up-file-here> http://localhost:3032/knowledge/data?default`
+- Restart the instance of the sag using the command `docker restart iris-pipeline-geo`.
+
 ## Logging and monitoring
 
 The logs from the secure agent graph container can be found using the command `docker logs <insert-secure-agent-graph-name>`.

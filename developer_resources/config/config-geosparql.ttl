@@ -1,0 +1,122 @@
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+PREFIX :        <#>
+PREFIX fuseki:  <http://jena.apache.org/fuseki#>
+PREFIX rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geosparql: <http://jena.apache.org/geosparql#>
+
+PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
+
+
+[] rdf:type fuseki:Server ;
+   fuseki:services (
+       :knowledgeService
+       :ontologyService
+   ) .
+
+## --------
+
+:knowledgeService rdf:type fuseki:Service ;
+    fuseki:name "/knowledge" ;
+    fuseki:endpoint [
+        # SPARQL query service on "/knowledge/sparql"
+        fuseki:operation fuseki:query ;
+        fuseki:name "sparql" ;
+    ];
+    fuseki:endpoint [
+        # SPARQL query service on "/knowledge/query"
+        fuseki:operation fuseki:query ;
+        fuseki:name "query" ;
+    ] ;
+
+    fuseki:endpoint [
+         # SPARQL update service on "/knowledge/update"
+        fuseki:operation fuseki:update ;
+        fuseki:name "update"
+    ] ;
+
+    fuseki:endpoint [
+        fuseki:operation fuseki:upload ;
+        fuseki:name "upload"
+    ] ;
+
+    fuseki:endpoint [
+        # SPARQL Graph Store Protocol (read) on "/knowledge/get"
+        fuseki:operation fuseki:gsp-r ;
+        fuseki:name "get"
+    ] ;
+
+    fuseki:endpoint [
+        # SPARQL Graph Store Protocol (read/write) on "/knowledge/data"
+        fuseki:operation fuseki:gsp-rw ;
+        fuseki:name "data"
+    ] ;
+
+    fuseki:dataset :dataset ;
+    .
+
+    :dataset rdf:type geosparql:geosparqlDataset;
+
+    # GeoSPARQL specific settings
+    geosparql:spatialIndexFile "databases/spatial.index" ;
+    # geosparql:inference true ;         # Enable reasoning for spatial inference
+    geosparql:queryRewrite true ;      # Enable query rewriting
+    geosparql:indexEnabled true ;      # Enable spatial index
+    geosparql:applyDefaultGeometry false ;  # Don't apply default geometries
+
+    # Index size and expiration settings
+    geosparql:indexSizes "500000,500000,500000" ;        # Default is unlimited
+    geosparql:indexExpires "3000,3000,3000" ; # Default is time in milliseconds
+
+    # Dataset location
+    geosparql:dataset :datasetBase ;
+    .
+
+:datasetBase rdf:type tdb2:DatasetTDB ;
+tdb2:location "/fuseki/databases/knowledge.tdb" .
+
+## --------
+
+:ontologyService rdf:type fuseki:Service ;
+    fuseki:name "/ontology" ;
+    fuseki:endpoint [
+        # SPARQL query service on "/ontology/sparql"
+        fuseki:operation fuseki:query ;
+        fuseki:name "sparql" ;
+    ];
+    fuseki:endpoint [
+        # SPARQL query service on "/ontology/query"
+        fuseki:operation fuseki:query ;
+        fuseki:name "query" ;
+    ] ;
+
+    fuseki:endpoint [
+         # SPARQL update service on "/ontology/update"
+        fuseki:operation fuseki:update ;
+        fuseki:name "update"
+    ] ;
+
+    fuseki:endpoint [
+        # Upload operation on "/knowledge/upload"
+        fuseki:operation fuseki:upload ;
+        fuseki:name "upload"
+    ] ;
+
+    fuseki:endpoint [
+        # SPARQL Graph Store Protocol (read) on "/ontology/get"
+        fuseki:operation fuseki:gsp-r ;
+        fuseki:name "get"
+    ] ;
+
+    fuseki:endpoint [
+        # SPARQL Graph Store Protocol (read/write) on "/ontology/data"
+        fuseki:operation fuseki:gsp-rw ;
+        fuseki:name "data"
+    ] ;
+
+    fuseki:dataset :ontologyDataset ;
+    .
+
+:ontologyDataset rdf:type tdb2:DatasetTDB ;
+tdb2:location "/fuseki/databases/ontology.tdb" .
+

@@ -24,7 +24,7 @@ services:
   secure-agent-graph:
     container_name: iris-pipeline-sag
     environment:
-      JAVA_OPTIONS: "-XX:MaxRAMPercentage=40.0"
+      JAVA_OPTIONS: "-XX:MaxRAMPercentage=80.0"
       JWKS_URL: "disabled"
     command:
       - --config

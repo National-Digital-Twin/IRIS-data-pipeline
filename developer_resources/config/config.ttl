@@ -27,10 +27,6 @@ PREFIX tdb2:    <http://jena.apache.org/2016/tdb#>
         # SPARQL query service on "/knowledge/sparql"
         fuseki:operation fuseki:query ;
         fuseki:name "sparql" ;
-        ja:context [
-            ja:cxtName "arq:queryTimeout" ;
-            ja:cxtValue "600000,600000"
-        ] ;
     ];
     fuseki:endpoint [
         # SPARQL query service on "/knowledge/query"
