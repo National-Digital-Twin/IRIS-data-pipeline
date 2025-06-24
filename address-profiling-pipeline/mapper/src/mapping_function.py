@@ -28,6 +28,7 @@ from models.roof import Roof
 from models.wall import Wall
 from models.window import Window
 from models.epc_assessment import EpcAssessment
+from models.fuel_type import FuelType
 from namespaces import *
 from utils import *
 
@@ -94,6 +95,7 @@ def map_func(record: dict) -> str:
         Roof(ies, record, structure_unit.state_uri, epc_assessment.uri)
         Wall(ies, record, structure_unit.state_uri, epc_assessment.uri)
         Window(ies, record, structure_unit.state_uri, epc_assessment.uri)
+        FuelType(ies, record, structure_unit.state_uri)
 
     if DEBUG_MODE:
         ies.graph.serialize(destination=f"{uprn}_epc.ttl", format="turtle")

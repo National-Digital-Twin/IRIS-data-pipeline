@@ -1,0 +1,107 @@
+# SPDX-License-Identifier: Apache-2.0
+# © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
+# and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
+ 
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+from ies_tool.ies_tool import IESTool
+from namespaces import iso8601_ns
+from models.structure_unit import StructureUnit
+from utils import *
+
+class FuelType:
+    
+    def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str):
+        """
+        A class representing the `Fuel Type` of a technical system, where the technical system is part of the StructureUnit.
+        
+        Args:
+            ies (IESTool): An instance of the IES Tool, providing utility methods for mapping against the IES ontology.
+            record (dict): A record representing a building.
+            structure_unit (StructureUnitState): An instance of `StructureUnit`, including the state of the structure unit at 
+                the time of the assessment.
+        """
+            
+        self.fuel_type_map: dict = {
+            "Anthracite": "Anthracite",
+            "Biogas": "Fuel",
+            "Biomass": "Biomass",
+            "Coal": "Coal",
+            "DualFuel": "Fuel",
+            "Electricity": "Electricity",
+            "LPG": "LPG",
+            "MainsGas": "NaturalFuelGas",
+            "Oil": "Oil",
+            "Other": "Fuel",
+            "SmokelessCoal": "SmokelessCoal",
+            "WoodChips": "WoodChips",
+            "WoodLogs": "WoodLogs",
+            "WoodPellets": "WoodPellets"
+        }
+
+        self.heating_category_relation_map: dict = {
+            "Anthracite": "isOperableWithFuel",
+            "Biogas": "isOperableWithFuel",
+            "Biomass": "isOperableWithFuel",
+            "Coal": "isOperableWithFuel",
+            "DualFuel": "isOperableWithFuel",
+            "Electricity": "isOperableWithEnergy",
+            "LPG": "isOperableWithFuel",
+            "MainsGas": "isOperableWithFuel",
+            "Oil": "isOperableWithFuel",
+            "Other": "isOperableWithFuel",
+            "SmokelessCoal": "isOperableWithFuel",
+            "WoodChips": "isOperableWithFuel",
+            "WoodLogs": "isOperableWithFuel",
+            "WoodPellets": "isOperableWithFuel"
+        }
+
+        self.ies = ies
+        self.record = record
+        self.structure_unit_state_uri = structure_unit_state_uri
+        self.add_technicalsystem_mapping(record)
+
+
+    def add_technicalsystem_mapping(self, record: dict) -> None:
+        """
+        Adds the technical system mapping.
+        
+        Args:
+            record (dict): A record representing a building.
+            
+        Returns:
+            None
+
+        """
+
+        # get fuel type from data
+        fuel_type = record.get("MainFuelType")
+        print("FUEL TYPE:", fuel_type)
+        
+        # get fuel type class from IES building
+        fuel_type_ies_building = self.fuel_type_map[fuel_type]
+        print("FUEL TYPE IES BUILDING:", fuel_type_ies_building)
+        
+        # instaniate a technical system
+        self.technical_system = create_record_uri(record, type="TechnicalSystem")
+        print("TECHNICAL SYSTEM:", self.technical_system)
+
+        # link technical system back to IES building
+        add_ies_building_type_mappings(self.ies, self.technical_system, ["TechnicalSystem"])
+
+        # link technical system with structure unit
+        self.ies.add_triple(self.structure_unit_state_uri, build_ies_building_uri("isServicedBy"), self.technical_system)
+
+        # link technical system with fuel type
+        self.ies.add_triple(self.technical_system, build_ies_building_uri("isOperableWithFuel"), build_ies_building_uri(fuel_type_ies_building))
