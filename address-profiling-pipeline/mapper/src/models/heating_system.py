@@ -20,11 +20,11 @@ from namespaces import iso8601_ns
 from models.structure_unit import StructureUnit
 from utils import *
 
-class FuelType:
+class HeatingSystem:
     
     def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str):
         """
-        A class representing the `Fuel Type` of a technical system, where the technical system is part of the StructureUnit.
+        A class to represent heating system of a StructureUnit in RDF format.
         
         Args:
             ies (IESTool): An instance of the IES Tool, providing utility methods for mapping against the IES ontology.
@@ -50,32 +50,32 @@ class FuelType:
             "WoodPellets": "WoodPellets"
         }
 
-        self.heating_category_relation_map: dict = {
-            "Anthracite": "isOperableWithFuel",
-            "Biogas": "isOperableWithFuel",
-            "Biomass": "isOperableWithFuel",
-            "Coal": "isOperableWithFuel",
-            "DualFuel": "isOperableWithFuel",
-            "Electricity": "isOperableWithEnergy",
-            "LPG": "isOperableWithFuel",
-            "MainsGas": "isOperableWithFuel",
-            "Oil": "isOperableWithFuel",
-            "Other": "isOperableWithFuel",
-            "SmokelessCoal": "isOperableWithFuel",
-            "WoodChips": "isOperableWithFuel",
-            "WoodLogs": "isOperableWithFuel",
-            "WoodPellets": "isOperableWithFuel"
-        }
+        # self.heating_category_relation_map: dict = {
+        #     "Anthracite": "isOperableWithFuel",
+        #     "Biogas": "isOperableWithFuel",
+        #     "Biomass": "isOperableWithFuel",
+        #     "Coal": "isOperableWithFuel",
+        #     "DualFuel": "isOperableWithFuel",
+        #     "Electricity": "isOperableWithEnergy",
+        #     "LPG": "isOperableWithFuel",
+        #     "MainsGas": "isOperableWithFuel",
+        #     "Oil": "isOperableWithFuel",
+        #     "Other": "isOperableWithFuel",
+        #     "SmokelessCoal": "isOperableWithFuel",
+        #     "WoodChips": "isOperableWithFuel",
+        #     "WoodLogs": "isOperableWithFuel",
+        #     "WoodPellets": "isOperableWithFuel"
+        # }
 
         self.ies = ies
         self.record = record
         self.structure_unit_state_uri = structure_unit_state_uri
-        self.add_technicalsystem_mapping(record)
+        self.add_heatingsystem_mapping(record)
 
 
-    def add_technicalsystem_mapping(self, record: dict) -> None:
+    def add_heatingsystem_mapping(self, record: dict) -> None:
         """
-        Adds the technical system mapping.
+        Adds the heating system mapping.
         
         Args:
             record (dict): A record representing a building.
@@ -87,21 +87,20 @@ class FuelType:
 
         # get fuel type from data
         fuel_type = record.get("MainFuelType")
-        print("FUEL TYPE:", fuel_type)
         
         # get fuel type class from IES building
         fuel_type_ies_building = self.fuel_type_map[fuel_type]
-        print("FUEL TYPE IES BUILDING:", fuel_type_ies_building)
         
         # instaniate a technical system
-        self.technical_system = create_record_uri(record, type="TechnicalSystem")
-        print("TECHNICAL SYSTEM:", self.technical_system)
+        self.heating_system = create_record_uri(record, type="HeatingSystem")
 
         # link technical system back to IES building
-        add_ies_building_type_mappings(self.ies, self.technical_system, ["TechnicalSystem"])
+        add_ies_building_type_mappings(self.ies, self.heating_system, ["HeatingSystem"])
 
         # link technical system with structure unit
-        self.ies.add_triple(self.structure_unit_state_uri, build_ies_building_uri("isServicedBy"), self.technical_system)
+        self.ies.add_triple(self.structure_unit_state_uri, build_ies_building_uri("isServicedBy"), self.heating_system)
+
+        print(self.heating_system, build_ies_building_uri("isOperableWithFuel"), build_ies_building_uri(fuel_type_ies_building))
 
         # link technical system with fuel type
-        self.ies.add_triple(self.technical_system, build_ies_building_uri("isOperableWithFuel"), build_ies_building_uri(fuel_type_ies_building))
+        self.ies.add_triple(self.heating_system, build_ies_building_uri("isOperableWithFuel"), build_ies_building_uri(fuel_type_ies_building))
