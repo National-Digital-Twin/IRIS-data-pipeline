@@ -25,15 +25,19 @@ The address profiling pipeline has two parts, the mapper and the adapter.
 
 ### Adapter
 
-The adapter can be found under the `address-profiling-pipeline/initial-load-adapter` folder. Before you can run this adapter please ensure you have the address profiling csv file downloaded in an accessible location.
+The adapter can be found under the `generic-adapter` folder. Before you can run this adapter please ensure you have the address profiling csv file downloaded in an accessible location.
 The adapter can be run as a docker container. You must build the docker container running the command `make docker-build SOURCE_FILE=<insert-filepath-here>`.
-Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> FILE_NAME=<insert-filename-here>` to run the adapter.
+Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> PRODUCER_NAME=address-profile SOURCE_NAME=epc TARGET_TOPIC=address-profile FILE_NAME=<insert-filename-here>` to run the adapter.
 The adapter container is set to be removed once it has completed.
 
 ### Mapper
 
 The mapper can be found under the `address-profiling-pipeline/mapper` folder. The mapper can be run as a docker container. You must build the docker container using the command `make docker-build`.
-Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password>`.
+Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> MAP_FUNC=<insert-mapping-function>`. The current choices for mapping function are:
+
+- "MAIN": creates triples which are destined for the main graph in the IA node
+- "HEATING": creates triples which are destined for the heating-v1 graph in the IA node
+
 The mapper container is not set to be automatically removed once it has done processing. Please remove the container manually using the command `docker rm -f <insert-address-profiling-mapper-container-name>`.
 
 ## UPRN lat long pipeline
@@ -42,9 +46,9 @@ The uprn lat long pipeline has two parts, the mapper and the adapter.
 
 ### Adapter
 
-The adapter can be found under the `uprn-lat-long-pipeline/adapter` folder. Before you can run this adapter please ensure you have the address base plus csv file downloaded in an accessible location.
-The adapter can be run as a docker container. You must build the docker container by running the command `make docker-build SOURCE_FILE=<insert-filepath-here>`.
-Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> FILE_NAME=<insert-filename-here>` to run the adapter.
+The adapter can be found under the `generic-adapter` folder. Before you can run this adapter please ensure you have the address profiling csv file downloaded in an accessible location.
+The adapter can be run as a docker container. You must build the docker container running the command `make docker-build SOURCE_FILE=<insert-filepath-here>`.
+Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> PRODUCER_NAME=address-base TARGET_TOPIC=lat-long FILE_NAME=<insert-filename-here>` to run the adapter.
 The adapter container is set to be removed once it has completed.
 
 ### Mapper
