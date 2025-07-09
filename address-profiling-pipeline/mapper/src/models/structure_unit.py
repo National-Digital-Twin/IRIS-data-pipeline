@@ -15,7 +15,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from utils import *
+from utils import (add_attribute_of_state_mapping,
+                   create_record_uri,
+                   build_ies_uri,
+                   add_ies_building_type_mappings,
+                   add_part_mappings,
+                   create_stateful_record_uri,
+                   add_state_mappings
+                   )
 from ies_tool.ies_tool import IESTool
 
 class StructureUnit:

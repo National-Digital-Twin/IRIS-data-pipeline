@@ -29,8 +29,8 @@ from models.wall import Wall
 from models.window import Window
 from models.epc_assessment import EpcAssessment
 from models.heating_system import HeatingSystem
-from namespaces import *
-from utils import *
+import namespaces
+from utils import create_record_uri, add_ies_building_type_mappings, build_ies_uri, get_uprn, create_stateful_record_uri
 import os
 
 DEBUG_MODE = False # output to local file if True
@@ -46,15 +46,15 @@ def bind_namespaces() -> None:
     Returns:
         None
     """
-    ies.graph.namespace_manager.bind("ies", ies_ns)
-    ies.graph.namespace_manager.bind("building", ies_building_ns)
-    ies.graph.namespace_manager.bind("data", data_ns)
-    ies.graph.namespace_manager.bind("iesuncertainty", ies_uncertainty_ns)
-    ies.graph.namespace_manager.bind("epc", epc_ns)
-    ies.graph.namespace_manager.bind("geoplace", geoplace_ns)
-    ies.graph.namespace_manager.bind("qudt", qudt)
-    ies.graph.namespace_manager.bind("unit", qudt_unit)
-    ies.graph.namespace_manager.bind("quantitykind", qudt_quantitykind)
+    ies.graph.namespace_manager.bind("ies", namespaces.ies_ns)
+    ies.graph.namespace_manager.bind("building", namespaces.ies_building_ns)
+    ies.graph.namespace_manager.bind("data", namespaces.data_ns)
+    ies.graph.namespace_manager.bind("iesuncertainty", namespaces.ies_uncertainty_ns)
+    ies.graph.namespace_manager.bind("epc", namespaces.epc_ns)
+    ies.graph.namespace_manager.bind("geoplace", namespaces.geoplace_ns)
+    ies.graph.namespace_manager.bind("qudt", namespaces.qudt)
+    ies.graph.namespace_manager.bind("unit", namespaces.qudt_unit)
+    ies.graph.namespace_manager.bind("quantitykind", namespaces.qudt_quantitykind)
     
 
 def add_building_mapping(record: dict) -> str:

@@ -15,7 +15,11 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-from utils import *
+from utils import (add_attribute_mapping,
+                   create_record_uri,
+                   add_attribute_of_state_mapping,
+                   build_ies_building_uri
+                   )
 from ies_tool.ies_tool import IESTool
 
 class Roof:

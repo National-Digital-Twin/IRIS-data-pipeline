@@ -18,7 +18,17 @@
 from ies_tool.ies_tool import IESTool
 from namespaces import iso8601_ns
 from models.structure_unit import StructureUnit
-from utils import *
+from utils import (create_stateful_record_uri, 
+                   add_ies_building_type_mappings, 
+                   build_ies_building_uri, 
+                   build_uri, 
+                   build_ies_uri, 
+                   add_ies_type_mappings, 
+                   add_state_mappings,
+                   add_part_mappings,
+                   add_bnode_with_ies_type_and_value,
+                   add_attribute_of_state_mapping
+                   )
 
 class EpcAssessment:
     """

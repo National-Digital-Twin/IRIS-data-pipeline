@@ -18,7 +18,9 @@
 from ies_tool.ies_tool import IESTool
 from namespaces import iso8601_ns
 from models.structure_unit import StructureUnit
-from utils import *
+from utils import (create_record_uri,
+                   add_ies_building_type_mappings,
+                   build_ies_building_uri)
 
 class HeatingSystem:
     
