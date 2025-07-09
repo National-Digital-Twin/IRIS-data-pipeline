@@ -35,7 +35,7 @@ import os
 
 DEBUG_MODE = False # output to local file if True
 
-ies = ies_tool.IESTool(data_ns)
+ies = ies_tool.IESTool(namespaces.data_ns)
 
 def bind_namespaces() -> None:
     """

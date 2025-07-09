@@ -29,6 +29,9 @@ from utils import (create_stateful_record_uri,
                    add_bnode_with_ies_type_and_value,
                    add_attribute_of_state_mapping
                    )
+from rdflib import BNode, URIRef
+from ies_tool.ies_tool import IESTool, RDF_TYPE
+
 
 class EpcAssessment:
     """

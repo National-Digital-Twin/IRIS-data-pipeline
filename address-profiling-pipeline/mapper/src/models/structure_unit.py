@@ -24,6 +24,7 @@ from utils import (add_attribute_of_state_mapping,
                    add_state_mappings
                    )
 from ies_tool.ies_tool import IESTool
+from namespaces import data_ns
 
 class StructureUnit:
     """
