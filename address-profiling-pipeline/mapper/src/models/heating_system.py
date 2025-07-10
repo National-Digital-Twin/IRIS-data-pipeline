@@ -52,23 +52,6 @@ class HeatingSystem:
             "WoodPellets": "WoodPellets"
         }
 
-        # self.heating_category_relation_map: dict = {
-        #     "Anthracite": "isOperableWithFuel",
-        #     "Biogas": "isOperableWithFuel",
-        #     "Biomass": "isOperableWithFuel",
-        #     "Coal": "isOperableWithFuel",
-        #     "DualFuel": "isOperableWithFuel",
-        #     "Electricity": "isOperableWithEnergy",
-        #     "LPG": "isOperableWithFuel",
-        #     "MainsGas": "isOperableWithFuel",
-        #     "Oil": "isOperableWithFuel",
-        #     "Other": "isOperableWithFuel",
-        #     "SmokelessCoal": "isOperableWithFuel",
-        #     "WoodChips": "isOperableWithFuel",
-        #     "WoodLogs": "isOperableWithFuel",
-        #     "WoodPellets": "isOperableWithFuel"
-        # }
-
         self.ies = ies
         self.record = record
         self.structure_unit_state_uri = structure_unit_state_uri
