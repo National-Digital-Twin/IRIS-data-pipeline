@@ -1,2 +1,2 @@
 python-dotenv
-telicent-lib==2.0.1
+node-lib @ git+https://${GITHUB_ACCESS_TOKEN}@github.com/National-Digital-Twin/node-lib.git@pre#egg=node-lib

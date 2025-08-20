@@ -26,10 +26,10 @@ from json import dumps
 from typing import Iterable
 
 from dotenv import load_dotenv
-from telicent_lib import AutomaticAdapter, Record, RecordUtils
-from telicent_lib.access import EDHSecurityLabelsV2, SecurityLabelBuilder
-from telicent_lib.config import Configurator
-from telicent_lib.sinks import KafkaSink
+from ia_map_lib import AutomaticAdapter, Record, RecordUtils
+from ianode_labels import IANodeSecurityLabelsV2, SecurityLabelBuilder
+from ia_map_lib.config import Configurator
+from ia_map_lib.sinks import KafkaSink
 
 load_dotenv()
 config = Configurator()
@@ -56,11 +56,6 @@ TARGET_TOPIC = config.get(
 PRODUCER_NAME = config.get(
     "PRODUCER_NAME", required=True, description="Specifies the name of the producer"
 )
-SOURCE_NAME = config.get(
-    "SOURCE_NAME",
-    required=True,
-    description="Specifies the source that the data has originated from",
-)
 FILENAME = config.get(
     "FILENAME",
     required=True,
@@ -79,7 +74,7 @@ permitted_nationalities = ["GBR", "NZL"]
 default_security_label = (
     SecurityLabelBuilder()
     .add_multiple(
-        EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.value, *permitted_nationalities
+        IANodeSecurityLabelsV2.PERMITTED_NATIONALITIES.value, *permitted_nationalities
     )
     .build()
 )
@@ -102,7 +97,6 @@ def create_record(data, security_labels):
         RecordUtils.to_headers(
             {
                 "Content-Type": "application/json",
-                "Data-Source": SOURCE_NAME,
                 "Data-Producer": PRODUCER_NAME,
                 "Security-Label": security_labels,
             }
@@ -140,17 +134,17 @@ adapter_with_limit = AutomaticAdapter(
     target=sink,
     adapter_function=generate_records_with_limit,
     name=PRODUCER_NAME,
-    source_name=SOURCE_NAME,
     has_reporter=False,
     has_error_handler=False,
+    has_data_catalog=False
 )
 adapter = AutomaticAdapter(
     target=sink,
     adapter_function=generate_records,
     name=PRODUCER_NAME,
-    source_name=SOURCE_NAME,
     has_reporter=False,
     has_error_handler=False,
+    has_data_catalog=False
 )
 
 # Call run() to run the action

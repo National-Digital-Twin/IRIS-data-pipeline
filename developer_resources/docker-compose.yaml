@@ -29,7 +29,9 @@ services:
     command:
       - --config
       - /fuseki/config/config.ttl
-    image: iris-pipeline/secure-agent-graph
+    build:
+      context: .
+      dockerfile: Dockerfile
     depends_on:
       - kafka
     ports:
