@@ -1,0 +1,24 @@
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+
+data:MainPurposeOfUse_10094231108_20240311 a building:Commercial ;
+    ies:isPartOf data:StructureUnitState_10094231108_20240311 ;
+    ies:isStateOf data:StructureUnit_10094231108 .
+
+data:Building_10094231108 a building:Building ;
+    ies:inLocation data:Location_10094231108 .
+
+data:StructureUnitState_10094231108_20240311 a building:StructureUnitState ;
+    ies:isStateOf data:StructureUnit_10094231108 .
+
+data:StructureUnit_10094231108 a building:StructureUnit ;
+    ies:inLocation data:AddressableLocation_10094231108,
+        data:LocationPoint_10094231108,
+        data:Location_10094231108 ;
+    ies:isIdentifiedBy data:FirstLineOfAddress_10094231108,
+        data:PCODE_PO36_9PH,
+        data:UPRN_10094231108,
+        data:TOID_10094231108 ;
+    ies:isPartOf data:Building_10094231108 .
+

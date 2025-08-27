@@ -32,9 +32,9 @@ class NgdKafkaMapper(GenericKafkaMapper):
     ies = ies_tool.IESTool(data_ns)
     
     def get_uprn(self, record: dict):
-        uprn_reference = ast.literal_eval(record["uprnreference"])
+        
         #TODO: a building can contain multiple UPRNs, so we need to ensure we create a mapping for each one
-        return uprn_reference[0]["uprn"]
+        return record['uprn']
 
     def map_record(self, record: dict) -> str:
         """
@@ -51,8 +51,12 @@ class NgdKafkaMapper(GenericKafkaMapper):
         self.ies.graph.namespace_manager.bind("data", self.data_ns)
         self.ies.graph.namespace_manager.bind("ies", self.ies_ns)
 
+        # identify uprn
+        uprn = self.get_uprn(record)
+        
+
         if DEBUG_MODE:
-            self.ies.graph.serialize(destination=f"{self.get_uprn(record)}_os_ngd.ttl", format="turtle")
+            self.ies.graph.serialize(destination=f"{uprn}_os_ngd.ttl", format="turtle")
             return
         
         record = self.ies.graph.serialize(format="turtle")

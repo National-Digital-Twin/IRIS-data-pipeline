@@ -1,0 +1,154 @@
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+@prefix iso8601: <http://iso8601.iso.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix quantitykind: <http://qudt.org/vocab/quantitykind/> .
+
+# define building
+data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f a building:Building .
+
+# create roof and link to building
+data:BuildingRoof_0007ccdb-aa65-4c39-b044-294ae0689a4f a building:Roof .
+data:BuildingRoof_0007ccdb-aa65-4c39-b044-294ae0689a4f ies:isPartOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# create roof state and link to roof
+data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:RoofState .
+data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isStateOf data:BuildingRoof_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# define roof material
+data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:isMadeOf building:WaterproofMembraneOrConcrete .
+
+# solar panel presence
+data:BuildingSolarState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:BuildingState .
+data:BuildingSolarState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NoSolarPanels .
+data:BuildingSolarState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isStateOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# east facing aspect
+data:BuildingEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:EastFacingRoofSectionSum .
+data:BuildingEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# north facing aspect
+data:BuildingNorthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NorthFacingRoofSectionSum .
+data:BuildingNorthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingNorthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 37.2
+        ]
+    ] .
+
+# north east facing aspect
+data:BuildingNorthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NorthEastFacingRoofSectionSum . 
+data:BuildingNorthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingNorthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# north west facing aspect
+data:BuildingNorthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NorthWestFacingRoofSectionSum .
+data:BuildingNorthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingNorthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# south facing aspect
+data:BuildingSouthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:SouthFacingRoofSectionSum .
+data:BuildingSouthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingSouthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 24
+        ]
+    ] .
+
+# south east facing aspect
+data:BuildingSouthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:SouthEastFacingRoofSectionSum .
+data:BuildingSouthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingSouthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# south west facing aspect
+data:BuildingSouthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:SouthWestFacingRoofSectionSum .
+data:BuildingSouthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingSouthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# west facing aspect
+data:BuildingWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:WestFacingRoofSectionSum .
+data:BuildingWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# roof aspect area indeterminable
+data:BuildingAreaIndeterminable_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:AreaIndeterminableRoofSectionSum .
+data:BuildingAreaIndeterminable_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingAreaIndeterminable_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+
+# roof shape
+data:BuildingRoofShape_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:RoofState .
+data:BuildingRoofShape_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:PitchedRoofShape .
+data:BuildingRoofShape_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isStateOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# link back to UPRNs
+data:StructureUnit_100100262355 ies:isPartOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .

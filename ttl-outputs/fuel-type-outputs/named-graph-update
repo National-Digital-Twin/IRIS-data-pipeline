@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# -------- defaults --------
+ENDPOINT=http://localhost:3030/knowledge/update
+DIR=                    # -d  /path/to/chunks   (required)
+GRAPH=                  # -g  http://…          (required)
+LOGFILE=                # -l  /path/to/log
+CLEAR_FIRST=false       # -c  wipe before load
+# --------------------------
+
+usage() {
+  echo "Usage: $0 -d DIR -g GRAPH [-e ENDPOINT] [-l LOGFILE] [-c]" >&2
+  exit 1
+}
+
+# -------- option parsing --------
+while getopts ":d:g:e:l:c" opt; do
+  case $opt in
+    d) DIR=$OPTARG ;;
+    g) GRAPH=$OPTARG ;;
+    e) ENDPOINT=$OPTARG ;;
+    l) LOGFILE=$OPTARG ;;
+    c) CLEAR_FIRST=true ;;
+    *) usage ;;
+  esac
+done
+shift $((OPTIND-1))
+[[ -z $DIR || -z $GRAPH ]] && usage
+[[ -d $DIR ]] || { echo "Directory '$DIR' not found"; exit 2; }
+
+LOGFILE=${LOGFILE:-"$DIR/uploaded.log"}
+touch "$LOGFILE"
+
+# -------- read list of chunks already done --------
+declare -A DONE
+while IFS= read -r line; do
+  DONE["$line"]=1
+done < "$LOGFILE"
+
+# -------- clear graph if requested & not yet populated --------
+if $CLEAR_FIRST && [[ ! -s $LOGFILE ]]; then
+  echo "Clearing <$GRAPH>"
+  curl -sf -X POST -H "Content-Type: application/sparql-update" \
+       --data "CLEAR SILENT GRAPH <${GRAPH}>" \
+       "$ENDPOINT"
+fi
+
+# -------- process chunks in numeric order --------
+mapfile -t CHUNKS < <(ls "$DIR"/chunk_*.ttl | sort -V)
+
+for f in "${CHUNKS[@]}"; do
+  base=$(basename "$f")
+  if [[ -n "${DONE[$base]:-}" ]]; then
+    echo "Skipping   $base (already uploaded)"
+    continue
+  fi
+
+  echo "Uploading  $base …"
+  if curl -sf -X POST -H "Content-Type: application/sparql-update" \
+          --data "LOAD <file://${f}> INTO GRAPH <${GRAPH}>" \
+          "$ENDPOINT"; then
+    echo "$base" >> "$LOGFILE"
+    DONE["$base"]=1
+    echo "✓ Finished $base"
+  else
+    echo "✗ Failed   $base — stopping"
+    exit 1
+  fi
+done
+
+echo "All chunks processed."
