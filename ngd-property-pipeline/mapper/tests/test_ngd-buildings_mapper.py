@@ -1,8 +1,8 @@
 import pytest
 import importlib
-import mapping_function
-importlib.reload(mapping_function)
-from mapping_function import map_func
+import ngd_kafka_mapper
+importlib.reload(ngd_kafka_mapper)
+from ngd_kafka_mapper import map_record
 import json
 import os
 from rdflib import Graph
@@ -33,12 +33,12 @@ def check_equivalent_graphs(expected_graph, actual_graph):
         print("🔺 Extra in actual_graph:\n", in_second.serialize(format="nt"))
     assert graphs_equal
 
-@pytest.mark.address_profiling_pipeline     
+@pytest.mark.ngd_property_pipeline     
 def test_map_func():
     input_data = load_json('inputs.json')
     for record in input_data:
-        expected_graph = Graph().parse(f"{os.getcwd()}/address-profiling-pipeline/mapper/tests/output_{record.get('UPRN')}.txt", format="turtle", publicID="")     
-        mapped_result = map_func(record).strip()
+        expected_graph = Graph().parse(f"{os.getcwd()}/ngd-property-pipeline/mapper/tests/output_{record.get('osid')}.txt", format="turtle", publicID="")     
+        mapped_result = map_record(record).strip()
         actual_graph = Graph().parse(data=mapped_result, format="turtle")
         check_equivalent_graphs(expected_graph, actual_graph)
 
