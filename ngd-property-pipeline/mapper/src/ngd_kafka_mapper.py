@@ -89,6 +89,12 @@ def _to_number(value: str) -> Optional[Tuple[Literal, bool]]:
 
 def _material_class(value: str) -> str:
     mapping = {
+        "Fabric": "fabric",
+        "Glass or Polycarbonate": "GlassOrPolycarbonate",
+        "Green Roof": "GreenRoof",
+        "Metal": "metal",
+        "Mixed": "MixedRoofMaterial",
+        "Thatch": "thatch",
         "Tile Or Stone Or Slate": "TileOrStoneOrSlate",
         "Unknown": "UnknownRoofMaterial",
         "Other": "OtherRoofMaterial",
@@ -108,6 +114,7 @@ def _solar_class(value: str) -> str:
 
 def _shape_class(value: str) -> str:
     mapping = {
+        "Flat": "FlatRoofShape",
         "Pitched": "PitchedRoofShape",
         "Mixed": "MixedRoofShape",
         "Unknown": "UnknownRoofShape",
