@@ -1,0 +1,9 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "generic_projectors"
+version = "0.1.0"
+description = "A generic set of projectors that can be implemented with a variety of sources and destinations."
+requires-python = ">=3.9"

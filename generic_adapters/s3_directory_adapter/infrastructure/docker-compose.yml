@@ -1,0 +1,14 @@
+services:
+  s3-directory-adapter:
+    container_name: s3-directory-adapter
+    image: s3-directory-adapter:latest
+    networks:
+      - host
+    environment:
+      - BOOTSTRAP_SERVERS=localhost:9092
+      - TARGET_TOPIC=roof-cleanser-data
+      - PRODUCER_NAME=roof-producer
+      - SOURCE_NAME=os-ngd
+      - S3_BUCKET=537124944113-data-adapter-bucket
+      - S3_DIRECTORY=os-ngd/
+      - DEFAULT_SECURITY_LABEL=

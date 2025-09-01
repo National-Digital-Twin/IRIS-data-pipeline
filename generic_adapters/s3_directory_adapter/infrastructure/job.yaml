@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: s3-directory-adapter
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: s3-directory-adapter-sa
+          containers:
+            - name: s3-directory-adapter
+              image: REPLACE_ME
+              imagePullPolicy: Always
+              env:
+                - name: BOOTSTRAP_SERVERS
+                  value: REPLACE_ME
+                - name: TARGET_TOPIC
+                  value: REPLACE_ME
+                - name: PRODUCER_NAME
+                  value: REPLACE_ME
+                - name: SOURCE_NAME
+                  value: REPLACE_ME
+                - name: S3_BUCKET
+                  value: REPLACE_ME
+                - name: S3_DIRECTORY
+                  value: REPLACE_ME
+                - name: DEFAULT_SECURITY_LABEL
+                  value: ""
+              resources:
+                limits:
+                  cpu: "500m"
+                  memory: "512Mi"
+                requests:
+                  cpu: "250m"
+                  memory: "256Mi"

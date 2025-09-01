@@ -21,10 +21,11 @@
 # All support, maintenance and further development of this code is now the responsibility
 # of the National Digital Twin Programme.
 
-from telicent_lib.sinks import KafkaSink
-from telicent_lib import AutomaticAdapter, Record, RecordUtils
-from telicent_lib.config import Configurator
-from telicent_lib.logging import CoreLoggerFactory
+from ia_map_lib.sinks import KafkaSink
+from ia_map_lib import AutomaticAdapter, Record, RecordUtils
+from ia_map_lib.config import Configurator
+from ia_map_lib.logging import LoggerFactory
+
 from logging import StreamHandler
 import boto3
 from json import dumps
@@ -32,7 +33,7 @@ import io
 import csv
 from typing import Iterable
 from dotenv import load_dotenv
-from label_mapper import string_to_label
+from utils.label_mapper import string_to_label
 
 # Mapper Configuration
 load_dotenv()
@@ -50,12 +51,14 @@ PRODUCER_NAME = config.get("PRODUCER_NAME", required=True,
 SOURCE_NAME = config.get("SOURCE_NAME", required=True, 
                     description="Specifies the source that the data has originated from")
 S3_BUCKET = config.get("S3_BUCKET", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the S3 bucket which holds the file")
+S3_BUCKET_EXPECTED_OWNER = config.get("S3_BUCKET", required=True, 
+                    description="Specifies the expected owner of the S3 bucket")
 S3_FILENAME = config.get("S3_FILENAME", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the name of the data file within S3")
 
 DEFAULT_SECURITY_LABEL = config.get("DEFAULT_SECURITY_LABEL", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the default security label for the data")
 
 default_security_label = string_to_label(DEFAULT_SECURITY_LABEL)
 
@@ -68,13 +71,13 @@ kafka_config = {
     "allow.auto.create.topics": True,
 }
 
-logger = CoreLoggerFactory.get_logger(__name__, kafka_config=kafka_config)
+logger = LoggerFactory.get_logger(__name__, kafka_config=kafka_config)
 logger.logger.addHandler(StreamHandler())
 
 s3 = boto3.client('s3')
 
 def fetch_file(bucket, file):
-    obj = s3.get_object(Bucket=bucket, Key=file)
+    obj = s3.get_object(Bucket=bucket, Key=file, ExpectedBucketOwner=S3_BUCKET_EXPECTED_OWNER)
     text_content = obj['Body'].read().decode('utf-8')
     file_received = io.StringIO(text_content)
     reader = csv.DictReader(file_received)
@@ -114,9 +117,9 @@ adapter = AutomaticAdapter(
     target=sink, 
     adapter_function=generate_records, 
     name=PRODUCER_NAME, 
-    source_name=SOURCE_NAME,
     has_error_handler=False,
-    has_reporter=False
+    has_reporter=False,
+    has_data_catalog=False
 )
 logger.info("Adapter created")
 adapter.run()
