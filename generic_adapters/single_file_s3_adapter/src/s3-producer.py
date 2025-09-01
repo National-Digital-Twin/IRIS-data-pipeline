@@ -21,10 +21,11 @@
 # All support, maintenance and further development of this code is now the responsibility
 # of the National Digital Twin Programme.
 
-from telicent_lib.sinks import KafkaSink
-from telicent_lib import AutomaticAdapter, Record, RecordUtils
-from telicent_lib.config import Configurator
-from telicent_lib.logging import CoreLoggerFactory
+from ia_map_lib.sinks import KafkaSink
+from ia_map_lib import AutomaticAdapter, Record, RecordUtils
+from ia_map_lib.config import Configurator
+from ia_map_lib.logging import LoggerFactory
+
 from logging import StreamHandler
 import boto3
 from json import dumps
@@ -68,7 +69,7 @@ kafka_config = {
     "allow.auto.create.topics": True,
 }
 
-logger = CoreLoggerFactory.get_logger(__name__, kafka_config=kafka_config)
+logger = LoggerFactory.get_logger(__name__, kafka_config=kafka_config)
 logger.logger.addHandler(StreamHandler())
 
 s3 = boto3.client('s3')
@@ -114,9 +115,9 @@ adapter = AutomaticAdapter(
     target=sink, 
     adapter_function=generate_records, 
     name=PRODUCER_NAME, 
-    source_name=SOURCE_NAME,
     has_error_handler=False,
-    has_reporter=False
+    has_reporter=False,
+    has_data_catalog=False
 )
 logger.info("Adapter created")
 adapter.run()

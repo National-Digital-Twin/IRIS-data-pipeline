@@ -21,7 +21,7 @@
 # All support, maintenance and further development of this code is now the responsibility
 # of the National Digital Twin Programme.
 
-from telicent_lib.access import SecurityLabelBuilder, EDHSecurityLabelsV2
+from ianode_labels import IANodeSecurityLabelsV2, SecurityLabelBuilder
 
 def string_to_label(security_label: str, delimiter:str = ","):
     labels = security_label.split(delimiter)
@@ -37,16 +37,16 @@ def string_to_label(security_label: str, delimiter:str = ","):
             continue
         value = attribute_value[1]
         match attribute:
-            case EDHSecurityLabelsV2.PERMITTED_ORGANISATIONS.value.name:
-                if EDHSecurityLabelsV2.PERMITTED_ORGANISATIONS.name not in attrs:
-                    attrs[EDHSecurityLabelsV2.PERMITTED_ORGANISATIONS.name] = []
-                attrs[EDHSecurityLabelsV2.PERMITTED_ORGANISATIONS.name].append(value)
-            case EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.value.name:
-                if EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.name not in attrs:
-                    attrs[EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.name] = []
-                attrs[EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.name].append(value)
-            case EDHSecurityLabelsV2.CLASSIFICATION.value.name:
-                attrs[EDHSecurityLabelsV2.CLASSIFICATION.name] = value
+            case IANodeSecurityLabelsV2.PERMITTED_ORGANISATIONS.value.name:
+                if IANodeSecurityLabelsV2.PERMITTED_ORGANISATIONS.name not in attrs:
+                    attrs[IANodeSecurityLabelsV2.PERMITTED_ORGANISATIONS.name] = []
+                attrs[IANodeSecurityLabelsV2.PERMITTED_ORGANISATIONS.name].append(value)
+            case IANodeSecurityLabelsV2.PERMITTED_NATIONALITIES.value.name:
+                if IANodeSecurityLabelsV2.PERMITTED_NATIONALITIES.name not in attrs:
+                    attrs[IANodeSecurityLabelsV2.PERMITTED_NATIONALITIES.name] = []
+                attrs[IANodeSecurityLabelsV2.PERMITTED_NATIONALITIES.name].append(value)
+            case IANodeSecurityLabelsV2.CLASSIFICATION.value.name:
+                attrs[IANodeSecurityLabelsV2.CLASSIFICATION.name] = value
             case _: 
                 print(f"Attribute {attribute}, not valid in handling model")
     for group in groups:
@@ -54,21 +54,21 @@ def string_to_label(security_label: str, delimiter:str = ","):
         group_type = details[-1]
         match group_type:
             case "and":
-                if EDHSecurityLabelsV2.AND_GROUPS.value.name not in attrs:
-                    attrs[EDHSecurityLabelsV2.AND_GROUPS.name] = []
-                attrs[EDHSecurityLabelsV2.AND_GROUPS.name].append(":".join(details[:-1]))
+                if IANodeSecurityLabelsV2.AND_GROUPS.value.name not in attrs:
+                    attrs[IANodeSecurityLabelsV2.AND_GROUPS.name] = []
+                attrs[IANodeSecurityLabelsV2.AND_GROUPS.name].append(":".join(details[:-1]))
             case "or":
-                if EDHSecurityLabelsV2.OR_GROUPS.value.name not in attrs:
-                    attrs[EDHSecurityLabelsV2.OR_GROUPS.name] = []
-                attrs[EDHSecurityLabelsV2.OR_GROUPS.name].append(":".join(details[:-1]))
+                if IANodeSecurityLabelsV2.OR_GROUPS.value.name not in attrs:
+                    attrs[IANodeSecurityLabelsV2.OR_GROUPS.name] = []
+                attrs[IANodeSecurityLabelsV2.OR_GROUPS.name].append(":".join(details[:-1]))
             case _: 
                 print(f"Group {group}, is not valid in handling model, must be an and or or group")
    
     for k in attrs: 
         if isinstance(type(attrs[k]), list):
-            slb.add_multiple(EDHSecurityLabelsV2[k].value, *attrs[k])
+            slb.add_multiple(IANodeSecurityLabelsV2[k].value, *attrs[k])
         else: 
-            slb.add(EDHSecurityLabelsV2[k].value, attrs[k])
+            slb.add(IANodeSecurityLabelsV2[k].value, attrs[k])
     return slb.build()
             
 

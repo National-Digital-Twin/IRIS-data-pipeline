@@ -1,0 +1,4 @@
+boto3
+python-dotenv
+node-lib @ git+https://${GITHUB_ACCESS_TOKEN}@github.com/National-Digital-Twin/node-lib.git@bugfix/non-req/kafka-sink-issue
+ianode-label-builder @ git+https://${GITHUB_ACCESS_TOKEN}@github.com/National-Digital-Twin/label-builder.git@pre

@@ -1,26 +1,27 @@
+version: "3.8"
+
 services:
   zookeeper:
-    container_name: iris-pipeline-zookeeper
-    image: bitnami/zookeeper:latest
+    image: confluentinc/cp-zookeeper:7.6.0
+    container_name: zookeeper
     ports:
       - "2181:2181"
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      ZOOKEEPER_CLIENT_PORT: 2181
+
   kafka:
-    container_name: iris-pipeline-kafka
-    image: "bitnami/kafka:3.5.1"
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
       - "9092:9092"
-    volumes:
-      - ./kafka/server.properties:/bitnami/kafka/config/server.properties
-      - ./kafka/producer.properties:/bitnami/kafka/config/producer.properties
-      - ./kafka/consumer.properties:/bitnami/kafka/config/consumer.properties
     environment:
-      - BITNAMI_DEBUG=true
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
   secure-agent-graph:
     container_name: iris-pipeline-sag
     environment:
