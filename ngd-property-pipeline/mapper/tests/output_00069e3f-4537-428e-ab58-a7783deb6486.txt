@@ -1,0 +1,66 @@
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+@prefix iso8601: <http://iso8601.iso.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix quantitykind: <http://qudt.org/vocab/quantitykind/> .
+
+# define building
+data:Building_00069e3f-4537-428e-ab58-a7783deb6486 a building:Building .
+
+# create roof and link to building
+data:BuildingRoof_00069e3f-4537-428e-ab58-a7783deb6486 a building:Roof .
+data:BuildingRoof_00069e3f-4537-428e-ab58-a7783deb6486 ies:isPartOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+# create roof state and link to roof
+data:BuildingRoofState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:RoofState .
+data:BuildingRoofState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 ies:isStateOf data:BuildingRoof_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+# define roof material
+data:BuildingRoofState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 building:isMadeOf building:UnknownRoofMaterial .
+
+
+# solar panel presence
+data:BuildingSolarState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:BuildingState .
+data:BuildingSolarState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:UnknownSolarPanelPresence .
+data:BuildingSolarState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 ies:isStateOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+
+# east facing aspect
+
+
+# north facing aspect
+
+
+# north east facing aspect
+
+
+# north west facing aspect
+
+
+# south facing aspect
+
+
+# south east facing aspect
+
+
+# south west facing aspect
+
+
+# west facing aspect
+
+
+# roof aspect area indeterminable
+
+
+
+# roof shape
+data:BuildingRoofShape_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:RoofState .
+data:BuildingRoofShape_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:UnknownRoofShape .
+data:BuildingRoofShape_00069e3f-4537-428e-ab58-a7783deb6486_15052025 ies:isStateOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+# link back to UPRNs
+data:StructureUnit_10094365947 ies:isPartOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
