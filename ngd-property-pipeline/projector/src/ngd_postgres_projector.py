@@ -90,7 +90,6 @@ class NgdPostgresProjector(GenericPostgresProjector):
         """
 
         self.execute_sql(insert_query)
-        pass
     
 if __name__ == "__main__":
     projector = NgdPostgresProjector(db_url=f"postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")

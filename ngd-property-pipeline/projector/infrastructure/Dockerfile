@@ -9,8 +9,8 @@ COPY ../src/ngd_postgres_projector.py .
 COPY ../../../generic_projectors .
 
 COPY ../requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-RUN pip install -e /generic_projectors
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install -e /generic_projectors
 
 USER projectoruser
 

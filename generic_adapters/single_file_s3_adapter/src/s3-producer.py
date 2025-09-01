@@ -51,14 +51,14 @@ PRODUCER_NAME = config.get("PRODUCER_NAME", required=True,
 SOURCE_NAME = config.get("SOURCE_NAME", required=True, 
                     description="Specifies the source that the data has originated from")
 S3_BUCKET = config.get("S3_BUCKET", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the S3 bucket which holds the file")
 S3_BUCKET_EXPECTED_OWNER = config.get("S3_BUCKET", required=True, 
                     description="Specifies the expected owner of the S3 bucket")
 S3_FILENAME = config.get("S3_FILENAME", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the name of the data file within S3")
 
 DEFAULT_SECURITY_LABEL = config.get("DEFAULT_SECURITY_LABEL", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the default security label for the data")
 
 default_security_label = string_to_label(DEFAULT_SECURITY_LABEL)
 

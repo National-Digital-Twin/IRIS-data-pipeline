@@ -67,7 +67,7 @@ def process_groups(groups, attrs):
 def string_to_label(security_label: str, delimiter:str = ","):
     groups = []
     slb = SecurityLabelBuilder()
-    attrs = dict()
+    attrs = {}
     process_labels(security_label, delimiter, attrs, groups)
     process_groups(groups, attrs)
    

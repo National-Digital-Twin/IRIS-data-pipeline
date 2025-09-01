@@ -124,7 +124,6 @@ def get_next_file_key():
 
     if not files or len(files) == 0:
         logger.info("No new files found.")
-        return
     else:
         return files[0] # only ever take the first file
     
