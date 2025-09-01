@@ -1,43 +1,38 @@
 apiVersion: batch/v1
-kind: Job
+kind: CronJob
 metadata:
-  name: address-profile-adapter-job
-  namespace: default
+  name: s3-single-file-adapter
 spec:
-  template:
-    metadata:
-      labels:
-        app: address-profile-adapter
+  jobTemplate:
     spec:
-      containers:
-      - name: address-profile-adapter
-        image: 503561419905.dkr.ecr.eu-west-2.amazonaws.com/iris/address-profile-adapter:1.0.0
-        resources:
-          limits:
-            memory: "8Gi"
-          requests:
-            cpu: 1
-            memory: "2Gi"
-            ephemeral-storage: "10Gi"
-        env:
-        - name: BOOTSTRAP_SERVERS
-          value: ia-kafka.default.svc.cluster.local:9092
-        - name: SASL_USERNAME
-          value: replace_me
-        - name: SASL_PASSWORD
-          value: replace_me
-        - name: TARGET_TOPIC
-          value: address-profiling
-        - name: PRODUCER_NAME
-          value: address-profile-adapter
-        - name: SOURCE_NAME
-          value: replace_me
-        - name: S3_BUCKET
-          value: iris-data-cleasner-output
-        - name: S3_FILENAME
-          value: replace_me
-        - name: DEFAULT_SECURITY_LABEL
-          value:
-        command: ["python", "./address_profile_to_knowledge_mapper.py"]
-      restartPolicy: Never
-  ttlSecondsAfterFinished: 10
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: s3-single-file-adapter-sa
+          containers:
+            - name: s3-single-file-adapter
+              image: REPLACE_ME
+              imagePullPolicy: Always
+              env:
+                - name: BOOTSTRAP_SERVERS
+                  value: REPLACE_ME
+                - name: TARGET_TOPIC
+                  value: REPLACE_ME
+                - name: PRODUCER_NAME
+                  value: REPLACE_ME
+                - name: SOURCE_NAME
+                  value: REPLACE_ME
+                - name: S3_BUCKET
+                  value: REPLACE_ME
+                - name: S3_FILENAME
+                  value: REPLACE_ME
+                - name: DEFAULT_SECURITY_LABEL
+                  value: ""
+              resources:
+                limits:
+                  cpu: "500m"
+                  memory: "512Mi"
+                requests:
+                  cpu: "250m"
+                  memory: "256Mi"
