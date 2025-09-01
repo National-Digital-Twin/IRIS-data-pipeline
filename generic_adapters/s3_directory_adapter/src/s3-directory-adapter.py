@@ -29,7 +29,7 @@ import io
 import csv
 from typing import Iterable
 from dotenv import load_dotenv
-from label_mapper import string_to_label
+from utils.label_mapper import string_to_label
 
 # Mapper Configuration
 load_dotenv()
@@ -47,14 +47,16 @@ PRODUCER_NAME = config.get("PRODUCER_NAME", required=True,
 SOURCE_NAME = config.get("SOURCE_NAME", required=True, 
                     description="Specifies the source that the data has originated from")
 S3_BUCKET = config.get("S3_BUCKET", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the S3 bucket that the data should be fetched from")
+S3_BUCKET_EXPECTED_OWNER = config.get("S3_BUCKET", required=True, 
+                    description="Specifies the expected owner of the S3 bucket")
 S3_DIRECTORY = config.get("S3_DIRECTORY", required=True, 
                     description="Specifies the S3 directory that holds the files")
 PENDING_TAG = {"Key": "status", "Value": "pending"}
 PROCESSED_TAG = {"Key": "status", "Value": "processed"}
 
 DEFAULT_SECURITY_LABEL = config.get("DEFAULT_SECURITY_LABEL", required=True, 
-                    description="Specifies the source that the data has originated from")
+                    description="Specifies the default security label for the data")
 
 
 default_security_label = string_to_label(DEFAULT_SECURITY_LABEL)
@@ -89,7 +91,7 @@ def get_unprocessed_files():
 
             # Check object tags to see if already pending or processed
             try:
-                tags = s3.get_object_tagging(Bucket=S3_BUCKET, Key=key)
+                tags = s3.get_object_tagging(Bucket=S3_BUCKET, Key=key, ExpectedBucketOwner=S3_BUCKET_EXPECTED_OWNER)
                 tagset = {t["Key"]: t["Value"] for t in tags.get("TagSet", [])}
                 if tagset.get("status") in ("pending", "processed"):
                     continue
@@ -108,6 +110,7 @@ def claim_file(key):
             Bucket=S3_BUCKET,
             Key=key,
             Tagging={"TagSet": [PENDING_TAG]},
+            ExpectedBucketOwner=S3_BUCKET_EXPECTED_OWNER,
         )
         logger.info(f"Claimed file {key} as pending.")
         return True
@@ -128,7 +131,7 @@ def get_next_file_key():
 
 def fetch_file(bucket, file_key):
     if claim_file(file_key):
-        obj = s3.get_object(Bucket=bucket, Key=file_key)
+        obj = s3.get_object(Bucket=bucket, Key=file_key, ExpectedBucketOwner=S3_BUCKET_EXPECTED_OWNER)
         stream = io.TextIOWrapper(obj['Body'], encoding='utf-8')
         return csv.DictReader(stream)
 
@@ -140,6 +143,7 @@ def mark_file_processed(file_key):
             Bucket=S3_BUCKET,
             Key=file_key,
             Tagging={"TagSet": [PROCESSED_TAG]},
+            ExpectedBucketOwner=S3_BUCKET_EXPECTED_OWNER,
         )
     except ClientError as e:
         logger.error(f"Failed to mark {file_key} as processed: {e}")

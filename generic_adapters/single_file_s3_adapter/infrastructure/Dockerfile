@@ -8,7 +8,7 @@ WORKDIR /app
 COPY ../requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ../src/label_mapper.py .
+COPY ../../utils .
 COPY ../src/s3-producer.py .
 
 USER adapteruser

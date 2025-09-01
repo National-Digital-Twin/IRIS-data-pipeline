@@ -33,7 +33,7 @@ import io
 import csv
 from typing import Iterable
 from dotenv import load_dotenv
-from label_mapper import string_to_label
+from utils.label_mapper import string_to_label
 
 # Mapper Configuration
 load_dotenv()
@@ -52,6 +52,8 @@ SOURCE_NAME = config.get("SOURCE_NAME", required=True,
                     description="Specifies the source that the data has originated from")
 S3_BUCKET = config.get("S3_BUCKET", required=True, 
                     description="Specifies the source that the data has originated from")
+S3_BUCKET_EXPECTED_OWNER = config.get("S3_BUCKET", required=True, 
+                    description="Specifies the expected owner of the S3 bucket")
 S3_FILENAME = config.get("S3_FILENAME", required=True, 
                     description="Specifies the source that the data has originated from")
 
@@ -75,7 +77,7 @@ logger.logger.addHandler(StreamHandler())
 s3 = boto3.client('s3')
 
 def fetch_file(bucket, file):
-    obj = s3.get_object(Bucket=bucket, Key=file)
+    obj = s3.get_object(Bucket=bucket, Key=file, ExpectedBucketOwner=S3_BUCKET_EXPECTED_OWNER)
     text_content = obj['Body'].read().decode('utf-8')
     file_received = io.StringIO(text_content)
     reader = csv.DictReader(file_received)

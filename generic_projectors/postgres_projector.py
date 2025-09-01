@@ -112,7 +112,7 @@ class GenericPostgresProjector(ABC):
         
     
     @abstractmethod
-    def project_record(data: any):
+    def project_record(self, record: any):
         """Projector-specific logic"""
         pass
 

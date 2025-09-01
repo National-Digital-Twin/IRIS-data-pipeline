@@ -23,11 +23,8 @@
 
 from ianode_labels import IANodeSecurityLabelsV2, SecurityLabelBuilder
 
-def string_to_label(security_label: str, delimiter:str = ","):
+def process_labels(security_label, delimiter, attrs, groups):
     labels = security_label.split(delimiter)
-    groups = []
-    slb = SecurityLabelBuilder()
-    attrs = dict() 
     for label in labels:
         attribute_value = label.split("=")
         attribute = attribute_value[0]
@@ -49,6 +46,9 @@ def string_to_label(security_label: str, delimiter:str = ","):
                 attrs[IANodeSecurityLabelsV2.CLASSIFICATION.name] = value
             case _: 
                 print(f"Attribute {attribute}, not valid in handling model")
+    
+
+def process_groups(groups, attrs):
     for group in groups:
         details = group.split(":")
         group_type = details[-1]
@@ -63,6 +63,13 @@ def string_to_label(security_label: str, delimiter:str = ","):
                 attrs[IANodeSecurityLabelsV2.OR_GROUPS.name].append(":".join(details[:-1]))
             case _: 
                 print(f"Group {group}, is not valid in handling model, must be an and or or group")
+
+def string_to_label(security_label: str, delimiter:str = ","):
+    groups = []
+    slb = SecurityLabelBuilder()
+    attrs = dict()
+    process_labels(security_label, delimiter, attrs, groups)
+    process_groups(groups, attrs)
    
     for k in attrs: 
         if isinstance(type(attrs[k]), list):

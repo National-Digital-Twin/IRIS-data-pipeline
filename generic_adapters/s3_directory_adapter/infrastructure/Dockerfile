@@ -2,7 +2,7 @@ FROM python:3.13-slim
 
 # Install git and cleanup to reduce image size
 RUN apt-get update && \
-    apt-get install -y git && \
+    apt-get --no-install-recommends install -y git && \
     rm -rf /var/lib/apt/lists/*
 
 # Create a non-root user and group
@@ -16,7 +16,7 @@ RUN --mount=type=secret,id=pat_token \
     export GITHUB_ACCESS_TOKEN=$(cat /run/secrets/pat_token) && \
     pip install --no-cache-dir --upgrade -r requirements.txt
 
-COPY ../src/label_mapper.py .
+COPY ../../utils .
 COPY ../src/s3-directory-adapter.py .
 
 USER adapteruser
