@@ -14,3 +14,4 @@ __pycache__/
 *.egg-info
 
 *.ttl
+!sample-ia-node-with-os-ngd.ttl
