@@ -101,7 +101,7 @@ class GenericKafkaMapper(ABC):
         
     
     @abstractmethod
-    def map_record(data: any):
+    def map_record(self, record: any):
         """Mapper-specific logic"""
         pass
 
