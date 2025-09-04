@@ -16,3 +16,5 @@ __pycache__/
 *.ttl
 
 **/docker-context/
+
+!sample-ia-node-with-os-ngd.ttl

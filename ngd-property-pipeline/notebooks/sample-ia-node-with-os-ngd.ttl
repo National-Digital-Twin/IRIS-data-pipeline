@@ -1,0 +1,724 @@
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+@prefix iso8601: <http://iso8601.iso.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+data:Building_10003320518 a building:Building ; #ex:769214a3
+	ies:inLocation data:Location_10003320518 .
+
+data:StructureUnit_10003320518 a building:StructureUnit ; #PROTO_da6be1e8
+    ies:inLocation data:Location_10003320518, data:AddressableLocation_10003320518, data:LocationPoint_10003320518 ;
+    ies:isIdentifiedBy data:PCODE_PO36_0HN,
+        data:UPRN_10003320518,
+        data:FirstLineOfAddress_10003320518,
+		data:TOID_10003320518 ;
+    ies:isPartOf data:Building_10003320518 .
+
+data:StructureUnitState_10003320518_20241031 a building:StructureUnitState ; #ex:PROTO_ST_5a5
+	ies:isStateOf data:StructureUnit_10003320518 .
+	
+data:MainPurposeOfUse_10003320518_20241031 a building:ResidentialDwelling ;
+	ies:isPartOf data:StructureUnitState_10003320518_20241031 ;
+	ies:isStateOf data:StructureUnit_10003320518 .
+
+data:StructureUnitType_10003320518_20241031 a building:Bungalow ;
+	ies:isPartOf data:StructureUnitState_10003320518_20241031 ;
+	ies:isStateOf data:StructureUnit_10003320518 .
+
+data:BuiltForm_10003320518_20241031 a building:SemiDetached ;
+	ies:isPartOf data:StructureUnitState_10003320518_20241031 ;
+	ies:isStateOf data:StructureUnit_10003320518 .
+	
+data:AllAssessedFloors_10003320518 a building:AllAssessedFloor ;
+	ies:isPartOf data:Building_10003320518 .
+
+data:AllAssessedFloorSections_10003320518 a building:AllAssessedFloorSection ;
+    ies:isPartOf data:AllAssessedFloors_10003320518 .
+	
+data:AllAssessedFloorsNoInsulationInFloor_10003320518_20241031 a building:AllAssessedFloor, building:NoInsulationInFloor ;
+    ies:isStateOf data:AllAssessedFloors_10003320518 ; 
+    ies:isPartOf  data:StructureUnitState_10003320518_20241031 .
+
+data:AllAssessedFloorSectionsNoInsulationInFloor_10003320518_20241031 a building:AllAssessedFloorSection ;
+    ies:isPartOf data:AllAssessedFloorsNoInsulationInFloor_10003320518_20241031, data:AllAssessedFloorSections_10003320518 .
+
+data:AllAssessedFloorsSuspended_10003320518_20241031 a building:AllAssessedFloor, building:Suspended ;
+    ies:isStateOf data:AllAssessedFloors_10003320518 ;
+    ies:isPartOf data:StructureUnitState_10003320518_20241031 .
+
+data:AllAssessedFloorSectionsSuspended_10003320518_20241031 a building:AllAssessedFloorSection ;
+    ies:isPartOf data:AllAssessedFloorsSuspended_10003320518_20241031, data:AllAssessedFloorSections_10003320518 .
+
+data:AssessFloorConstruction_10003320518_20241031 a building:AssessFloorConstruction ;
+    ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    building:assessedStateForEnergyPerformance data:AllAssessedFloorSectionsSuspended_10003320518_20241031 .
+	
+data:AllAssessedWalls_10003320518 a building:AllAssessedWall ;
+    ies:isPartOf data:Building_10003320518 .
+
+data:AllAssessedWallSections_10003320518 a building:AllAssessedWallSection ;
+    ies:isPartOf data:AllAssessedWalls_10003320518 .
+	
+data:AllAssessedWallsInsulatedWall_10003320518_20241031 a building:AllAssessedWall, building:InsulatedWall ;
+    ies:isStateOf data:AllAssessedWalls_10003320518 ; 
+    ies:isPartOf  data:StructureUnitState_10003320518_20241031 .
+
+data:AllAssessedWallSectionsInsulatedWall_10003320518_20241031 a building:AllAssessedWallSection ;
+    ies:isPartOf data:AllAssessedWallsInsulatedWall_10003320518_20241031, data:AllAssessedWallSections_10003320518 .
+
+data:AssessWallInsulation_10003320518_20241031 a building:AssessWallInsulation ;
+    ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    building:assessedStateForEnergyPerformance data:AllAssessedWallSectionsInsulatedWall_10003320518_20241031 .
+	
+data:AllAssessedWallsCavityWall_10003320518_20241031 a building:AllAssessedWall, building:CavityWall ;
+    ies:isStateOf data:AllAssessedWalls_10003320518 ;
+    ies:isPartOf data:StructureUnitState_10003320518_20241031 .
+
+data:AllAssessedWallSectionsCavityWall_10003320518_20241031 a building:AllAssessedWallSection ;
+    ies:isPartOf data:AllAssessedWallsCavityWall_10003320518_20241031, data:AllAssessedWallSections_10003320518 .
+
+data:AssessWallConstruction_10003320518_20241031 a building:AssessWallConstruction ;
+    ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    building:assessedStateForEnergyPerformance data:AllAssessedWallSectionsCavityWall_10003320518_20241031 .
+	
+data:AllAssessedRoof_10003320518 a building:AllAssessedRoof ;
+    ies:isPartOf data:Building_10003320518 .
+
+data:AllAssessedRoofSections_10003320518 a building:AllAssessedRoofSection ;
+    ies:isPartOf data:AllAssessedRoof_10003320518 .
+
+data:AllAssessedRoof_10003320518_20241031 a building:AllAssessedRoof, building:100mm_Insulation, building:LoftInsulation, building:PitchedRoof ;
+    ies:isStateOf data:AllAssessedRoof_10003320518 ; 
+    ies:isPartOf  data:StructureUnitState_10003320518_20241031 .
+
+data:AllAssessedRoofSections_10003320518_20241031 a building:AllAssessedRoofSection ;
+    ies:isPartOf data:AllAssessedRoof_10003320518_20241031, data:AllAssessedRoofSections_10003320518.
+	
+data:AssessRoofInsulation_10003320518_20241031 a building:DetermineRoofInsulationLocation ;
+    ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    building:assessedStateForEnergyPerformance data:AllAssessedRoofSections_10003320518_20241031 .
+	
+data:AllAssessedWindows_10003320518 a building:AllAssessedWindows ;
+    ies:isPartOf data:StructureUnit_10003320518 .
+
+data:AllAssessedWindowsDoubleGlazingAfter2002_10003320518_20241031 a building:AllAssessedWindows, building:DoubleGlazingAfter2002 ;
+    ies:isStateOf data:AllAssessedWindows_10003320518 ;
+    ies:isPartOf data:StructureUnitState_10003320518_20241031 .
+
+data:AssessWindowInsulation_10003320518_20241031 a building:AssessWindowInsulation ;
+    ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    building:assessedStateForEnergyPerformance data:AllAssessedWindowsDoubleGlazingAfter2002_10003320518_20241031 .
+
+data:EPCAssessment_10003320518_20241031 a building:EPCAssessment ; #EV_4d3a20ce
+	building:assessedStateForEnergyPerformance data:StructureUnitState_10003320518_20241031 .
+	
+data:EnergyPerformanceAssessmentResult_10003320518_20241031 a building:EnergyPerformanceAssessmentResult ;
+    building:lodgementDate iso8601:2024-10-31 ;
+	ies:isParticipantIn data:EPCAssessment_10003320518_20241031 .
+
+data:EnergyPerformanceCertificate_10003320518_20241031 a building:UK_DOM_EPC_D .
+
+data:EnergyPerformanceCertificateCreated_10003320518_20241031 a ies:Created ;
+	ies:isStateOf data:EnergyPerformanceCertificate_10003320518_20241031 ;
+	ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    ies:inPeriod iso8601:2024-10-31 .
+	
+data:SAPRating_10003320518_20241031 a building:SAPRating ;
+    ies:allHaveCharacteristic [
+                        a building:SAPRatingValue ;
+                        ies:hasValue [ 
+                            a ies:MeasureValue ;
+                            ies:representationValue 65 
+                            ] 
+    ].
+
+data:SAPRatingCalculation_10003320518_20241031 a building:SAPRatingCalculation ;
+    ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    building:assessedStateForEnergyPerformance [
+                a data:SAPRating_10003320518_20241031 ;
+                ies:isPartOf data:StructureUnitState_10003320518_20241031 ;
+                ies:isStateOf data:StructureUnit_10003320518 ;
+                ] .
+
+data:EnvironmentalImpactRating_10003320518_20241031 a building:EnvironmentalImpactRating ;
+    ies:allHaveCharacteristic [
+        a building:EnvironmentalImpactRatingValue ;
+        ies:hasValue [
+            a ies:MeasureValue ;
+            ies:representationValue 57 
+        ]
+    ] .
+
+data:EnvironmentalImpactRatingCalculation_10003320518_20241031 a building:EnvironmentalImpactRatingCalculation ;
+    ies:isPartOf data:EPCAssessment_10003320518_20241031 ;
+    building:assessedStateForEnergyPerformance [
+                    a data:EnvironmentalImpactRating_10003320518_20241031 ;
+                    ies:isPartOf data:StructureUnitState_10003320518_20241031 ;
+                    ies:isStateOf data:StructureUnit_10003320518 ; 
+                ].
+
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+@prefix iso8601: <http://iso8601.iso.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix quantitykind: <http://qudt.org/vocab/quantitykind/> .
+
+# define building
+data:Building_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 a building:Building .
+
+# create roof and link to building
+data:BuildingRoof_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 a building:Roof .
+data:BuildingRoof_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 ies:isPartOf data:Building_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 .
+
+# create roof state and link to roof
+data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:RoofState .
+data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isStateOf data:BuildingRoof_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 .
+
+# define roof material
+data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:isMadeOf building:TileOrStoneOrSlate .
+
+# solar panel presence
+data:BuildingSolarState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:BuildingState .
+data:BuildingSolarState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:HasSolarPanels .
+data:BuildingSolarState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isStateOf data:Building_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 .
+
+# east facing aspect
+data:BuildingEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:EastFacingRoofSectionSum .
+data:BuildingEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# north facing aspect
+data:BuildingNorthFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:NorthFacingRoofSectionSum .
+data:BuildingNorthFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingNorthFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# north east facing aspect
+data:BuildingNorthEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:NorthEastFacingRoofSectionSum . 
+data:BuildingNorthEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingNorthEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# north west facing aspect
+data:BuildingNorthWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:NorthWestFacingRoofSectionSum .
+data:BuildingNorthWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingNorthWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 67.1
+        ]
+    ] .
+
+# south facing aspect
+data:BuildingSouthFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:SouthFacingRoofSectionSum .
+data:BuildingSouthFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingSouthFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# south east facing aspect
+data:BuildingSouthEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:SouthEastFacingRoofSectionSum .
+data:BuildingSouthEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingSouthEastFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 54
+        ]
+    ] .
+
+# south west facing aspect
+data:BuildingSouthWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:SouthWestFacingRoofSectionSum .
+data:BuildingSouthWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingSouthWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# west facing aspect
+data:BuildingWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:WestFacingRoofSectionSum .
+data:BuildingWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingWestFacingRoofSections_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# roof aspect area indeterminable
+data:BuildingAreaIndeterminable_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:AreaIndeterminableRoofSectionSum .
+data:BuildingAreaIndeterminable_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isPartOf data:BuildingRoofState_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 .
+data:BuildingAreaIndeterminable_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+
+# roof shape
+data:BuildingRoofShape_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:RoofState .
+data:BuildingRoofShape_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 a building:PitchedRoofShape .
+data:BuildingRoofShape_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64_11032025 ies:isStateOf data:Building_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 .
+
+# link back to UPRNs
+data:StructureUnit_10003320518 ies:isPartOf data:Building_0007ac4d-10a3-4453-9c9b-2b4e6b7b8c64 .
+
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+data:AllAssessedFloorSectionsNoInsulationInFloor_10067623656_20240330 a building:AllAssessedFloorSection ;
+    ies:isPartOf data:AllAssessedFloorSections_10067623656,
+        data:AllAssessedFloorsNoInsulationInFloor_10067623656_20240330 .
+
+data:AssessFloorConstruction_10067623656_20240330 a building:AssessFloorConstruction ;
+    building:assessedStateForEnergyPerformance data:AllAssessedFloorSectionsSuspended_10067623656_20240330 ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 .
+
+data:AssessRoofInsulation_10067623656_20240330 a building:DetermineRoofInsulationLocation ;
+    building:assessedStateForEnergyPerformance data:AllAssessedRoofSections_10067623656_20240330 ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 .
+
+data:AssessWallConstruction_10067623656_20240330 a building:AssessWallConstruction ;
+    building:assessedStateForEnergyPerformance data:AllAssessedWallSectionsCavityWall_10067623656_20240330 ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 .
+
+data:AssessWallInsulation_10067623656_20240330 a building:AssessWallInsulation ;
+    building:assessedStateForEnergyPerformance data:AllAssessedWallSectionsInsulatedWall_10067623656_20240330 ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 .
+
+data:AssessWindowInsulation_10067623656_20240330 a building:AssessWindowInsulation ;
+    building:assessedStateForEnergyPerformance data:AllAssessedWindowsDoubleGlazingAfter2002_10067623656_20240330 ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 .
+
+data:BuiltForm_10067623656_20240330 a building:SemiDetached ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:StructureUnit_10067623656 .
+
+data:EnergyPerformanceAssessmentResult_10067623656_20240330 a building:EnergyPerformanceAssessmentResult ;
+    building:lodgementDate <http://iso8601.iso.org/2024-03-30> ;
+    ies:isParticipantIn data:EPCAssessment_10067623656_20240330 .
+
+data:EnergyPerformanceCertificateCreated_10067623656_20240330 a ies:Created ;
+    ies:inPeriod <http://iso8601.iso.org/2024-03-30> ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 ;
+    ies:isStateOf data:EnergyPerformanceCertificate_10067623656_20240330 .
+
+data:EnvironmentalImpactRatingCalculation_10067623656_20240330 a building:EnvironmentalImpactRatingCalculation ;
+    building:assessedStateForEnergyPerformance [ a data:EnvironmentalImpactRating_10067623656_20240330 ;
+            ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+            ies:isStateOf data:StructureUnit_10067623656 ] ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 .
+
+data:MainPurposeOfUse_10067623656_20240330 a building:ResidentialDwelling ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:StructureUnit_10067623656 .
+
+data:SAPRatingCalculation_10067623656_20240330 a building:SAPRatingCalculation ;
+    building:assessedStateForEnergyPerformance [ a data:SAPRating_10067623656_20240330 ;
+            ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+            ies:isStateOf data:StructureUnit_10067623656 ] ;
+    ies:isPartOf data:EPCAssessment_10067623656_20240330 .
+
+data:StructureUnitType_10067623656_20240330 a building:House ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:StructureUnit_10067623656 .
+
+data:AllAssessedFloorSectionsSuspended_10067623656_20240330 a building:AllAssessedFloorSection ;
+    ies:isPartOf data:AllAssessedFloorSections_10067623656,
+        data:AllAssessedFloorsSuspended_10067623656_20240330 .
+
+data:AllAssessedFloorsNoInsulationInFloor_10067623656_20240330 a building:AllAssessedFloor,
+        building:NoInsulationInFloor ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:AllAssessedFloors_10067623656 .
+
+data:AllAssessedFloorsSuspended_10067623656_20240330 a building:AllAssessedFloor,
+        building:Suspended ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:AllAssessedFloors_10067623656 .
+
+data:AllAssessedRoofSections_10067623656 a building:AllAssessedRoofSection ;
+    ies:isPartOf data:AllAssessedRoof_10067623656 .
+
+data:AllAssessedRoofSections_10067623656_20240330 a building:AllAssessedRoofSection ;
+    ies:isPartOf data:AllAssessedRoofSections_10067623656,
+        data:AllAssessedRoof_10067623656_20240330 .
+
+data:AllAssessedRoof_10067623656_20240330 a building:AllAssessedRoof,
+        building:InsulatedAssumed,
+        building:RoofRooms ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:AllAssessedRoof_10067623656 .
+
+data:AllAssessedWallSectionsCavityWall_10067623656_20240330 a building:AllAssessedWallSection ;
+    ies:isPartOf data:AllAssessedWallSections_10067623656,
+        data:AllAssessedWallsCavityWall_10067623656_20240330 .
+
+data:AllAssessedWallSectionsInsulatedWall_10067623656_20240330 a building:AllAssessedWallSection ;
+    ies:isPartOf data:AllAssessedWallSections_10067623656,
+        data:AllAssessedWallsInsulatedWall_10067623656_20240330 .
+
+data:AllAssessedWallsCavityWall_10067623656_20240330 a building:AllAssessedWall,
+        building:CavityWall ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:AllAssessedWalls_10067623656 .
+
+data:AllAssessedWallsInsulatedWall_10067623656_20240330 a building:AllAssessedWall,
+        building:InsulatedWall ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:AllAssessedWalls_10067623656 .
+
+data:AllAssessedWindowsDoubleGlazingAfter2002_10067623656_20240330 a building:AllAssessedWindows,
+        building:DoubleGlazingAfter2002 ;
+    ies:isPartOf data:StructureUnitState_10067623656_20240330 ;
+    ies:isStateOf data:AllAssessedWindows_10067623656 .
+
+data:AllAssessedWindows_10067623656 a building:AllAssessedWindows ;
+    ies:isPartOf data:StructureUnit_10067623656 .
+
+data:EnergyPerformanceCertificate_10067623656_20240330 a building:UK_DOM_EPC_C .
+
+data:EnvironmentalImpactRating_10067623656_20240330 a building:EnvironmentalImpactRating ;
+    ies:allHaveCharacteristic [ a building:EnvironmentalImpactRatingValue ;
+            ies:hasValue [ a ies:MeasureValue ;
+                    ies:representationValue 70 ] ] .
+
+data:SAPRating_10067623656_20240330 a building:SAPRating ;
+    ies:allHaveCharacteristic [ a building:SAPRatingValue ;
+            ies:hasValue [ a ies:MeasureValue ;
+                    ies:representationValue 73 ] ] .
+
+data:AllAssessedFloorSections_10067623656 a building:AllAssessedFloorSection ;
+    ies:isPartOf data:AllAssessedFloors_10067623656 .
+
+data:AllAssessedRoof_10067623656 a building:AllAssessedRoof ;
+    ies:isPartOf data:Building_10067623656 .
+
+data:AllAssessedWallSections_10067623656 a building:AllAssessedWallSection ;
+    ies:isPartOf data:AllAssessedWalls_10067623656 .
+
+data:AllAssessedFloors_10067623656 a building:AllAssessedFloor ;
+    ies:isPartOf data:Building_10067623656 .
+
+data:AllAssessedWalls_10067623656 a building:AllAssessedWall ;
+    ies:isPartOf data:Building_10067623656 .
+
+data:Building_10067623656 a building:Building ;
+    ies:inLocation data:Location_10067623656 .
+
+data:StructureUnit_10067623656 a building:StructureUnit ;
+    ies:inLocation data:AddressableLocation_10067623656,
+        data:LocationPoint_10067623656,
+        data:Location_10067623656 ;
+    ies:isIdentifiedBy data:FirstLineOfAddress_10067623656,
+        data:PCODE_PO32_6FE,
+        data:UPRN_10067623656,
+        data:TOID_10067623656 ;
+    ies:isPartOf data:Building_10067623656 .
+
+data:EPCAssessment_10067623656_20240330 a building:EPCAssessment ;
+    building:assessedStateForEnergyPerformance data:StructureUnitState_10067623656_20240330 .
+
+data:StructureUnitState_10067623656_20240330 a building:StructureUnitState ;
+    ies:isStateOf data:StructureUnit_10067623656 .
+
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+@prefix iso8601: <http://iso8601.iso.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix quantitykind: <http://qudt.org/vocab/quantitykind/> .
+
+# define building
+data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f a building:Building .
+
+# create roof and link to building
+data:BuildingRoof_0007ccdb-aa65-4c39-b044-294ae0689a4f a building:Roof .
+data:BuildingRoof_0007ccdb-aa65-4c39-b044-294ae0689a4f ies:isPartOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# create roof state and link to roof
+data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:RoofState .
+data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isStateOf data:BuildingRoof_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# define roof material
+data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:isMadeOf building:WaterproofMembraneOrConcrete .
+
+# solar panel presence
+data:BuildingSolarState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:BuildingState .
+data:BuildingSolarState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NoSolarPanels .
+data:BuildingSolarState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isStateOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# east facing aspect
+data:BuildingEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:EastFacingRoofSectionSum .
+data:BuildingEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# north facing aspect
+data:BuildingNorthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NorthFacingRoofSectionSum .
+data:BuildingNorthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingNorthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 37.2
+        ]
+    ] .
+
+# north east facing aspect
+data:BuildingNorthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NorthEastFacingRoofSectionSum . 
+data:BuildingNorthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingNorthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# north west facing aspect
+data:BuildingNorthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:NorthWestFacingRoofSectionSum .
+data:BuildingNorthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingNorthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# south facing aspect
+data:BuildingSouthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:SouthFacingRoofSectionSum .
+data:BuildingSouthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingSouthFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 24
+        ]
+    ] .
+
+# south east facing aspect
+data:BuildingSouthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:SouthEastFacingRoofSectionSum .
+data:BuildingSouthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingSouthEastFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# south west facing aspect
+data:BuildingSouthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:SouthWestFacingRoofSectionSum .
+data:BuildingSouthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingSouthWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# west facing aspect
+data:BuildingWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:WestFacingRoofSectionSum .
+data:BuildingWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingWestFacingRoofSections_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+# roof aspect area indeterminable
+data:BuildingAreaIndeterminable_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:AreaIndeterminableRoofSectionSum .
+data:BuildingAreaIndeterminable_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isPartOf data:BuildingRoofState_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 .
+data:BuildingAreaIndeterminable_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 building:hasCombinedSurfaceArea [
+        a building:SurfaceArea ;
+        building:hasQuantity [
+            a qudt:Quantity ;
+            qudt:hasQuantityKind quantitykind:Area ;
+            qudt:unit unit:M2 ;
+            qudt:value 0
+        ]
+    ] .
+
+
+# roof shape
+data:BuildingRoofShape_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:RoofState .
+data:BuildingRoofShape_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 a building:PitchedRoofShape .
+data:BuildingRoofShape_0007ccdb-aa65-4c39-b044-294ae0689a4f_11032025 ies:isStateOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+# link back to UPRNs
+data:StructureUnit_10067623656 ies:isPartOf data:Building_0007ccdb-aa65-4c39-b044-294ae0689a4f .
+
+
+
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+
+data:MainPurposeOfUse_10094231108_20240311 a building:Commercial ;
+    ies:isPartOf data:StructureUnitState_10094231108_20240311 ;
+    ies:isStateOf data:StructureUnit_10094231108 .
+
+data:Building_10094231108 a building:Building ;
+    ies:inLocation data:Location_10094231108 .
+
+data:StructureUnitState_10094231108_20240311 a building:StructureUnitState ;
+    ies:isStateOf data:StructureUnit_10094231108 .
+
+data:StructureUnit_10094231108 a building:StructureUnit ;
+    ies:inLocation data:AddressableLocation_10094231108,
+        data:LocationPoint_10094231108,
+        data:Location_10094231108 ;
+    ies:isIdentifiedBy data:FirstLineOfAddress_10094231108,
+        data:PCODE_PO36_9PH,
+        data:UPRN_10094231108,
+        data:TOID_10094231108 ;
+    ies:isPartOf data:Building_10094231108 .
+
+@prefix building: <http://ies.data.gov.uk/ontology/ies-building1#> .
+@prefix data: <http://ndtp.co.uk/data#> .
+@prefix ies: <http://informationexchangestandard.org/ont/ies#> .
+@prefix iso8601: <http://iso8601.iso.org/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix qudt: <http://qudt.org/schema/qudt/> .
+@prefix unit: <http://qudt.org/vocab/unit/> .
+@prefix quantitykind: <http://qudt.org/vocab/quantitykind/> .
+
+# define building
+data:Building_00069e3f-4537-428e-ab58-a7783deb6486 a building:Building .
+
+# create roof and link to building
+data:BuildingRoof_00069e3f-4537-428e-ab58-a7783deb6486 a building:Roof .
+data:BuildingRoof_00069e3f-4537-428e-ab58-a7783deb6486 ies:isPartOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+# create roof state and link to roof
+data:BuildingRoofState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:RoofState .
+data:BuildingRoofState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 ies:isStateOf data:BuildingRoof_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+# define roof material
+data:BuildingRoofState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 building:isMadeOf building:UnknownRoofMaterial .
+
+
+# solar panel presence
+data:BuildingSolarState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:BuildingState .
+data:BuildingSolarState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:UnknownSolarPanelPresence .
+data:BuildingSolarState_00069e3f-4537-428e-ab58-a7783deb6486_15052025 ies:isStateOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+
+# east facing aspect
+
+
+# north facing aspect
+
+
+# north east facing aspect
+
+
+# north west facing aspect
+
+
+# south facing aspect
+
+
+# south east facing aspect
+
+
+# south west facing aspect
+
+
+# west facing aspect
+
+
+# roof aspect area indeterminable
+
+
+
+# roof shape
+data:BuildingRoofShape_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:RoofState .
+data:BuildingRoofShape_00069e3f-4537-428e-ab58-a7783deb6486_15052025 a building:UnknownRoofShape .
+data:BuildingRoofShape_00069e3f-4537-428e-ab58-a7783deb6486_15052025 ies:isStateOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
+
+# link back to UPRNs
+data:StructureUnit_10094231108 ies:isPartOf data:Building_00069e3f-4537-428e-ab58-a7783deb6486 .
