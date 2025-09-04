@@ -18,6 +18,7 @@
 from generic_projectors.postgres_projector import GenericPostgresProjector
 from ia_map_lib.config import Configurator
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 config = Configurator()
@@ -50,13 +51,36 @@ DB_PASSWORD = config.get(
 DEBUG_MODE = True  # output to local file if True
 
 class NgdPostgresProjector(GenericPostgresProjector):
-    
     def get_uprn(self, record: dict):
         return record["uprn"]
-    
+
+
+    def get_uprn_refs(self, record: dict):
+        if ("uprnreference" in record.keys()):
+            # data is given with single quotes e.g. "[{'uprn': 10010726548...
+            uprn_reference = record["uprnreference"].replace("'", "\"")
+            return json.loads(uprn_reference)
+        else:
+            return []
+            
+
+
+    def get_uprns(self, record: dict):
+        uprn_refs = self.get_uprn_refs(record)
+        return [ref["uprn"] for ref in uprn_refs]
+
+
     def has_solar_panels(self, record: dict):
         solar_panels = record['roofmaterial_solarpanelpresence']
         return solar_panels == 'Present'
+    
+    
+    def get_nullable_numerical_field(self, record: dict, field: str):
+        value = record[field]
+        if value is not None and value != "":
+            return value
+        else:
+            return 0
     
 
     def project_record(self, record: dict) -> str:
@@ -69,27 +93,29 @@ class NgdPostgresProjector(GenericPostgresProjector):
         Returns:
             str: The RDF graph serialized into triples.
         """
-        self.logger.info("Beginning projection")
-            
-        insert_query = f"""
-            UPDATE iris.structure_unit s SET
-                has_roof_solar_panels = {self.has_solar_panels(record)},
-                roof_material = '{record['roofmaterial_primarymaterial']}',
-                roof_aspect_area_facing_north_m2 = {record['roofshapeaspect_areafacingnorth_m2']},
-                roof_aspect_area_facing_east_m2 = {record['roofshapeaspect_areafacingeast_m2']},
-                roof_aspect_area_facing_south_m2 = {record['roofshapeaspect_areafacingsouth_m2']},
-                roof_aspect_area_facing_west_m2 = {record['roofshapeaspect_areafacingwest_m2']},
-                roof_aspect_area_facing_north_east_m2 = {record['roofshapeaspect_areafacingnortheast_m2']},
-                roof_aspect_area_facing_south_east_m2 = {record['roofshapeaspect_areafacingsoutheast_m2']},
-                roof_aspect_area_facing_south_west_m2 = {record['roofshapeaspect_areafacingsouthwest_m2']},
-                roof_aspect_area_facing_north_west_m2 = {record['roofshapeaspect_areafacingnorthwest_m2']},
-                roof_aspect_area_indeterminable_m2 = {record['roofshapeaspect_areaindeterminable_m2']},
-                FROM iris.epc_assessment e
-                WHERE s.epc_assessment_id = e.id
-                AND e.uprn = '{self.get_uprn(record)}';
-        """
+        self.logger.debug("Beginning projection")
+        
+        uprns = self.get_uprns(record)
+        for uprn in uprns:          
+            insert_query = f"""
+                UPDATE iris.structure_unit s SET
+                    has_roof_solar_panels = {self.has_solar_panels(record)},
+                    roof_material = '{record['roofmaterial_primarymaterial']}',
+                    roof_aspect_area_facing_north_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingnorth_m2')},
+                    roof_aspect_area_facing_east_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingeast_m2')},
+                    roof_aspect_area_facing_south_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingsouth_m2')},
+                    roof_aspect_area_facing_west_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingwest_m2')},
+                    roof_aspect_area_facing_north_east_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingnortheast_m2')},
+                    roof_aspect_area_facing_south_east_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingsoutheast_m2')},
+                    roof_aspect_area_facing_south_west_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingsouthwest_m2')},
+                    roof_aspect_area_facing_north_west_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areafacingnorthwest_m2')},
+                    roof_aspect_area_indeterminable_m2 = {self.get_nullable_numerical_field(record, 'roofshapeaspect_areaindeterminable_m2')}
+                    FROM iris.epc_assessment e
+                    WHERE s.epc_assessment_id = e.id
+                    AND e.uprn = '{uprn}';
+            """
 
-        self.execute_sql(insert_query)
+            self.execute_sql(insert_query)
     
 if __name__ == "__main__":
     projector = NgdPostgresProjector(db_url=f"postgresql+psycopg2://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}")

@@ -232,7 +232,7 @@ def map_record(record: dict) -> str:
 
 if __name__ == "__main__":
     # Delay import so tests don't require kafka libs
-    from generic_mapper.src.generic_kafka_mapper import GenericKafkaMapper
+    from generic_mappers.generic_kafka_mapper import GenericKafkaMapper
     from dotenv import load_dotenv
 
     load_dotenv()

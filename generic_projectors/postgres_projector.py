@@ -36,11 +36,11 @@ BROKER = config.get(
     description="Specifies the Kafka Bootstrap Servers to connect to.",
 )
 SASL_USERNAME = config.get(
-    "SASL_USERNAME", required=True,
+    "SASL_USERNAME", required=False,
     description="The username for the SASL authentication."
 )
 SASL_PASSWORD = config.get(
-    "SASL_PASSWORD", required=True,
+    "SASL_PASSWORD", required=False,
     description="The password for the SASL authentication."
 )
 SOURCE_TOPIC = config.get(
@@ -60,25 +60,20 @@ DEBUG = config.get(
 class GenericPostgresProjector(ABC):
     kafka_config = {
         "bootstrap.servers": BROKER,
-        "security.protocol": "SASL_PLAINTEXT",
-        "sasl.mechanisms": "PLAIN",
-        "sasl.username": SASL_USERNAME,
-        "sasl.password": SASL_PASSWORD,
+        "security.protocol": "PLAINTEXT",
+        "allow.auto.create.topics": True,
         "group.id": [SOURCE_TOPIC_GROUP_ID],
     }
-
-    kafka_producer_config = {
-        "bootstrap.servers": BROKER,
-        "security.protocol": "SASL_PLAINTEXT",
-        "sasl.mechanisms": "PLAIN",
-        "sasl.username": SASL_USERNAME,
-        "sasl.password": SASL_PASSWORD,
-        "allow.auto.create.topics": True,
-    }
+    
+    if (SASL_USERNAME and SASL_PASSWORD):
+        kafka_config["security.protocol"] = "SASL_PLAINTEXT"
+        kafka_config["sasl.mechanism"] = "PLAIN"
+        kafka_config["sasl.username"] = SASL_USERNAME
+        kafka_config["sasl.password"] = SASL_PASSWORD
 
     logger = LoggerFactory.get_logger(
         "{source}-to-database-projector".format(source=SOURCE_TOPIC),
-        kafka_config=kafka_producer_config,
+        kafka_config,
         level = logging.DEBUG,
         topic="logging",
     )
@@ -100,10 +95,11 @@ class GenericPostgresProjector(ABC):
 
 
     def handle_record_mapping(self, record: Record) -> Union[Record, List[Record], None]:
-        self.logger.info("Beginning processing of record")
+        self.logger.debug("Beginning processing of record")
         data = loads(record.value)
 
         mapped = self.project_record(data)
+        self.logger.debug("Record has completed processing")
         return RecordUtils.add_header(
             Record(record.headers, record.key, mapped, None),
             "Content-Type",

@@ -40,12 +40,12 @@ BROKER = config.get(
 )
 SASL_USERNAME = config.get(
     "SASL_USERNAME",
-    required=True,
+    required=False,
     description="The username for the SASL authentication.",
 )
 SASL_PASSWORD = config.get(
     "SASL_PASSWORD",
-    required=True,
+    required=False,
     description="The password for the SASL authentication.",
 )
 TARGET_TOPIC = config.get(
@@ -84,12 +84,15 @@ default_security_label = (
 
 kafka_config = {
     "bootstrap.servers": BROKER,
-    "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanism": "PLAIN",
-    "sasl.username": SASL_USERNAME,
-    "sasl.password": SASL_PASSWORD,
+    "security.protocol": "PLAINTEXT",
     "allow.auto.create.topics": True,
 }
+
+if (SASL_USERNAME and SASL_PASSWORD):
+    kafka_config["security.protocol"] = "SASL_PLAINTEXT"
+    kafka_config["sasl.mechanism"] = "PLAIN"
+    kafka_config["sasl.username"] = SASL_USERNAME
+    kafka_config["sasl.password"] = SASL_PASSWORD
 
 
 def create_record(data, security_labels):

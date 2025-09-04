@@ -1,0 +1,10 @@
+services:
+  ngd-property-mapper:
+    container_name: ngd-property-mapper
+    image: ngd-property-mapper:latest
+    network_mode: "host"
+    environment:
+      - BOOTSTRAP_SERVERS=localhost:9092
+      - TARGET_TOPIC=knowledge
+      - SOURCE_TOPIC=os-ngd
+      - SOURCE_TOPIC_GROUP_ID=os-ngd

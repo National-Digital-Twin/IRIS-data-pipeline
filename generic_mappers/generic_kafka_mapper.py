@@ -40,11 +40,11 @@ BROKER = config.get(
     description="Specifies the Kafka Bootstrap Servers to connect to.",
 )
 SASL_USERNAME = config.get(
-    "SASL_USERNAME", required=True,
+    "SASL_USERNAME", required=False,
     description="The username for the SASL authentication."
 )
 SASL_PASSWORD = config.get(
-    "SASL_PASSWORD", required=True,
+    "SASL_PASSWORD", required=False,
     description="The password for the SASL authentication."
 )
 SOURCE_TOPIC = config.get(
@@ -69,25 +69,20 @@ DEBUG = config.get(
 class GenericKafkaMapper(ABC):
     kafka_config = {
         "bootstrap.servers": BROKER,
-        "security.protocol": "SASL_PLAINTEXT",
-        "sasl.mechanisms": "PLAIN",
-        "sasl.username": SASL_USERNAME,
-        "sasl.password": SASL_PASSWORD,
+        "security.protocol": "PLAINTEXT",
+        "allow.auto.create.topics": True,
         "group.id": [SOURCE_TOPIC_GROUP_ID],
     }
-
-    kafka_producer_config = {
-        "bootstrap.servers": BROKER,
-        "security.protocol": "SASL_PLAINTEXT",
-        "sasl.mechanisms": "PLAIN",
-        "sasl.username": SASL_USERNAME,
-        "sasl.password": SASL_PASSWORD,
-        "allow.auto.create.topics": True,
-    }
+    
+    if (SASL_USERNAME and SASL_PASSWORD):
+        kafka_config["security.protocol"] = "SASL_PLAINTEXT"
+        kafka_config["sasl.mechanism"] = "PLAIN"
+        kafka_config["sasl.username"] = SASL_USERNAME
+        kafka_config["sasl.password"] = SASL_PASSWORD
 
     logger = LoggerFactory.get_logger(
         "{source}-to-{target}-mapper".format(source=SOURCE_TOPIC, target=TARGET_TOPIC),
-        kafka_config=kafka_producer_config,
+        kafka_config,
         level = logging.DEBUG,
         topic="logging",
     )
@@ -115,7 +110,7 @@ class GenericKafkaMapper(ABC):
         source = KafkaSource(
             topic=SOURCE_TOPIC, kafka_config=self.kafka_config
         )
-        target = KafkaSink(topic=TARGET_TOPIC, kafka_config=self.kafka_producer_config)
+        target = KafkaSink(topic=TARGET_TOPIC, kafka_config=self.kafka_config)
         mapper = Mapper(
             source,
             target,
