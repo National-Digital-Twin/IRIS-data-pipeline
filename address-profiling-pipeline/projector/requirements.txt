@@ -1,0 +1,4 @@
+python-dotenv
+node-lib @ git+https://${GITHUB_ACCESS_TOKEN}@github.com/National-Digital-Twin/node-lib.git@bugfix/non-req/kafka-sink-issue
+SQLAlchemy~=2.0.0
+psycopg2-binary~=2.9.10

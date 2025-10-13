@@ -61,24 +61,37 @@ class GenericPostgresProjector(ABC):
     kafka_config = {
         "bootstrap.servers": BROKER,
         "security.protocol": "PLAINTEXT",
-        "allow.auto.create.topics": True,
         "group.id": [SOURCE_TOPIC_GROUP_ID],
     }
     
+    kafka_producer_config = {
+        "bootstrap.servers": BROKER,
+        "security.protocol": "PLAINTEXT",
+        "allow.auto.create.topics": True
+    }
+    
     if (SASL_USERNAME and SASL_PASSWORD):
+        kafka_producer_config["security.protocol"]="SASL_PLAINTEXT"
+        kafka_producer_config["sasl.mechanism"]="PLAIN"
+        kafka_producer_config["sasl.username"]=SASL_USERNAME
+        kafka_producer_config["sasl.password"]=SASL_PASSWORD
+        
         kafka_config["security.protocol"] = "SASL_PLAINTEXT"
         kafka_config["sasl.mechanism"] = "PLAIN"
         kafka_config["sasl.username"] = SASL_USERNAME
         kafka_config["sasl.password"] = SASL_PASSWORD
+        
+    print(kafka_producer_config)
+    print(kafka_config)
 
     logger = LoggerFactory.get_logger(
         "{source}-to-database-projector".format(source=SOURCE_TOPIC),
-        kafka_config,
+        kafka_producer_config,
         level = logging.DEBUG,
         topic="logging",
     )
     
-    
+
     def __init__(self, db_url=None):
         self.db_url = db_url
         self.SessionLocal = None
