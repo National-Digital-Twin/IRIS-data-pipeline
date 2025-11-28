@@ -10,8 +10,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ${SOURCE_FILE} .
-COPY src/producer.py .
+COPY src/s3_producer.py .
 
 USER adapteruser
 
-CMD ["python", "./producer.py"]
+CMD ["python", "./s3_producer.py"]
