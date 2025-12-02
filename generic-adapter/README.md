@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-- Bring up the required services like Kafka, Secure agent graph and minio using the command `make developer-resources-up` while in the main directory.
+- Bring up the required services like Kafka, Secure agent graph and minio using the command `make developer-resources-up MINIO_ROOT_USER=<your-minio-root-user> MINIO_ROOT_PASSWORD=<your-minio-root-password>` while in the main directory.
 - If you want to run the local version of the adapter please ensure the source file is present in the infrastructure directory before building the image.
 
 ## Build the image

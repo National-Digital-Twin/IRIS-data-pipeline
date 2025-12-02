@@ -36,3 +36,18 @@ services:
       - 3030:3030
     extra_hosts:
       - "host.docker.internal:host-gateway"
+  minio:
+    image: minio/minio
+    container_name: airflow-minio
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: ["server", "--console-address", ":9001", "/data"]
+
+volumes:
+  minio-data:

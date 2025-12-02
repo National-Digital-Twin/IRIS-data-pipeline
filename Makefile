@@ -10,6 +10,6 @@ run-sonar-scan:
 		-e SONAR_TOKEN="${SONAR_TOKEN}" \
 		sonarsource/sonar-scanner-cli
 developer-resources-up:
-	docker compose -f developer_resources/docker-compose.yaml -d up
+	(MINIO_ROOT_USER=$(MINIO_ROOT_USER) MINIO_ROOT_PASSWORD=$(MINIO_ROOT_PASSWORD) docker compose -f developer_resources/docker-compose.yaml -d up)
 developer-resources-down:
 	docker compose -f developer_resources/docker-compose.yaml down
