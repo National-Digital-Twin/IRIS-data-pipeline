@@ -25,10 +25,7 @@ The address profiling pipeline has two parts, the mapper and the adapter.
 
 ### Adapter
 
-The adapter can be found under the `generic-adapter` folder. Before you can run this adapter please ensure you have the address profiling csv file downloaded in an accessible location.
-The adapter can be run as a docker container. You must build the docker container running the command `make docker-build SOURCE_FILE=<insert-filepath-here>`.
-Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> PRODUCER_NAME=address-profile TARGET_TOPIC=address-profile FILE_NAME=<insert-filename-here>` to run the adapter.
-The adapter container is set to be removed once it has completed.
+Please follow the instructions outlined in the [README.md](../generic-adapter/README.md) file to run the adapter in a deployed environment.
 
 ### Mapper
 
