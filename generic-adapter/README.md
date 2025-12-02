@@ -1,5 +1,8 @@
 # README
 
+A generic adapter is a tool that allows a user to ingest records from a source file in CSV format and stream them
+to a target Kafka topic. Currently the generic adapter has two modes of operation, one is without any integration with AWS S3 using the source file bundled with the image. The other is with AWS S3 integration which expects the user to have either a local S3 service or a remote one with the correct permissions for access.
+
 ## Pre-requisites
 
 - Bring up the required services like Kafka, Secure agent graph and minio using the command `make developer-resources-up MINIO_ROOT_USER=<your-minio-root-user> MINIO_ROOT_PASSWORD=<your-minio-root-password>` while in the main directory.
