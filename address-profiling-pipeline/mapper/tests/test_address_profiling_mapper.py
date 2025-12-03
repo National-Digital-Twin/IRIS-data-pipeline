@@ -1,12 +1,16 @@
-import pytest
+mport pytest
 import importlib
+
 import mapping_function
+
 importlib.reload(mapping_function)
-from mapping_function import map_func
 import json
 import os
+
+from mapping_function import get_mapping_function
 from rdflib import Graph
-from rdflib.compare import to_isomorphic, graph_diff
+from rdflib.compare import graph_diff, to_isomorphic
+
 
 def load_file(file_name):
     file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), file_name))
@@ -38,7 +42,7 @@ def test_map_func():
     input_data = load_json('inputs.json')
     for record in input_data:
         expected_graph = Graph().parse(f"{os.getcwd()}/address-profiling-pipeline/mapper/tests/output_{record.get('UPRN')}.txt", format="turtle", publicID="")     
-        mapped_result = map_func(record).strip()
+        mapped_result = get_mapping_function(record).strip()
         actual_graph = Graph().parse(data=mapped_result, format="turtle")
         check_equivalent_graphs(expected_graph, actual_graph)
 

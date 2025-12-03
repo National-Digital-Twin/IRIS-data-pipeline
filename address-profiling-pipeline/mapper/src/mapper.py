@@ -21,21 +21,24 @@
 # All support, maintenance and further development of this code is now the responsibility
 # of the National Digital Twin Programme.
 
+import sys
 from json import loads
 from typing import List, Union
 
 from dotenv import load_dotenv
-from mapping_function import map_func
-from telicent_lib import Mapper, Record, RecordUtils
+from ies_tool.ies_tool import IESTool
+from mapping_function import get_mapping_function
+from namespaces import data_ns
+from telicent_lib import Record, RecordUtils
 from telicent_lib.config import Configurator
-from telicent_lib.errors import PrintErrorHandler
-from telicent_lib.logging import CoreLoggerFactory
-from telicent_lib.sinks import KafkaSink
-from telicent_lib.sources import KafkaSource
+from utils import reset_ies_graph
+
+from custom_mappers.one_of_mapper import OneOffMapper
 
 load_dotenv()
 config = Configurator()
-BROKER = config.get(
+
+BOOTSTRAP_SERVERS = config.get(
     "BOOTSTRAP_SERVERS",
     required=True,
     description="Specifies the Kafka Bootstrap Servers to connect to.",
@@ -62,25 +65,26 @@ TARGET_TOPIC = config.get(
 )
 SOURCE_TOPIC_GROUP_ID = config.get(
     "SOURCE_TOPIC_GROUP_ID",
-    required=True,
     description="The group id for the topic to consume",
 )
 DEBUG = config.get(
     "DEBUG", required=False, default=False, converter=bool, required_type=bool
 )
+MAPPER_SUB_TYPE = config.get(
+    "MAPPER_SUB_TYPE", required=True, description="The sub type of the mapper to run"
+)
 
-kafka_config = {
-    "bootstrap.servers": BROKER,
+kafka_consumer_config = {
+    "bootstrap.servers": BOOTSTRAP_SERVERS,
     "security.protocol": "SASL_PLAINTEXT",
     "sasl.mechanisms": "PLAIN",
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
-    "group.id": SOURCE_TOPIC_GROUP_ID,
-    "enable.auto.commit": True,
+    "group.id": [SOURCE_TOPIC_GROUP_ID],
 }
 
 kafka_producer_config = {
-    "bootstrap.servers": BROKER,
+    "bootstrap.servers": BOOTSTRAP_SERVERS,
     "security.protocol": "SASL_PLAINTEXT",
     "sasl.mechanisms": "PLAIN",
     "sasl.username": SASL_USERNAME,
@@ -88,14 +92,11 @@ kafka_producer_config = {
     "allow.auto.create.topics": True,
 }
 
-logger = CoreLoggerFactory.get_logger(
-    "{source}-to-{target}-mapper".format(source=SOURCE_TOPIC, target=TARGET_TOPIC),
-    kafka_config=kafka_producer_config,
-    topic="logging",
-)
+ies = IESTool(data_ns)
+mapping_function = get_mapping_function(MAPPER_SUB_TYPE)
 
 
-def mapping_function(record: Record) -> Union[Record, List[Record], None]:
+def unwrap_and_map(record: Record) -> Union[Record, List[Record], None]:
     """
     Loads the underlying data for a building and orchestates the call to the main mapper method.
 
@@ -106,24 +107,25 @@ def mapping_function(record: Record) -> Union[Record, List[Record], None]:
         Union[Record, List[Record], None]: The Record containing the mapped RDF building data.
     """
     data = loads(record.value)
-    mapped = map_func(data)
+    reset_ies_graph(ies)
+    mapped_data = mapping_function(data, ies)
+
     return RecordUtils.add_header(
-        Record(record.headers, record.key, mapped, None),
+        Record(record.headers, record.key, mapped_data, None),
         "Content-Type",
         "application/n-triples",
     )
 
 
-source = KafkaSource(topic=SOURCE_TOPIC, kafka_config=kafka_config)
-target = KafkaSink(topic=TARGET_TOPIC, kafka_config=kafka_producer_config)
-mapper = Mapper(
-    source,
-    target,
-    mapping_function,
-    name=SOURCE_TOPIC + " to " + TARGET_TOPIC + " Mapper",
-    has_reporter=False,
-    has_error_handler=True,
-    error_handler=PrintErrorHandler("Mapper"),
+mapper = OneOffMapper(
+    BOOTSTRAP_SERVERS,
+    SASL_USERNAME,
+    SASL_PASSWORD,
+    SOURCE_TOPIC,
+    TARGET_TOPIC,
+    kafka_consumer_config,
+    kafka_producer_config,
+    unwrap_and_map,
 )
 
 mapper.run()
