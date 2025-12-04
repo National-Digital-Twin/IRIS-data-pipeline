@@ -7,13 +7,13 @@ from .structure_unit import bind_and_get_structure_unit
 
 def roof_function(record: dict, ies, debug_mode=False):
     """
-    Creates triples for the main graph.
+    Creates a graph serialized to n-triples containing details about the roof of a property.
 
     Args:
         record (dict): A record representing a building.
 
     Returns:
-        str: The RDF graph serialized into triples.
+        str: The RDF graph serialized into n-triples containing details about the roof of a property.
     """
 
     # only add more detail if the certificate is related to a domestic property
@@ -29,4 +29,5 @@ def roof_function(record: dict, ies, debug_mode=False):
             ies.graph.serialize(destination=f"{uprn}_roof.ttl", format="turtle")
             return
 
-        return (ies.graph.serialize(format="nt"),)
+        return ies.graph.serialize(format="nt")
+    return None

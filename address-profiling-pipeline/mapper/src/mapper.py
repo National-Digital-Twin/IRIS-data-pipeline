@@ -27,7 +27,7 @@ from typing import List, Union
 
 from dotenv import load_dotenv
 from ies_tool.ies_tool import IESTool
-from mapping_function import get_mapping_function
+from mapping_functions.mapping_function_factory import get_mapping_function
 from namespaces import data_ns
 from telicent_lib import Record, RecordUtils
 from telicent_lib.config import Configurator
@@ -110,11 +110,13 @@ def unwrap_and_map(record: Record) -> Union[Record, List[Record], None]:
     reset_ies_graph(ies)
     mapped_data = mapping_function(data, ies)
 
-    return RecordUtils.add_header(
-        Record(record.headers, record.key, mapped_data, None),
-        "Content-Type",
-        "application/n-triples",
-    )
+    if mapped_data:
+        return RecordUtils.add_header(
+            Record(record.headers, record.key, mapped_data, None),
+            "Content-Type",
+            "application/n-triples",
+        )
+    return None
 
 
 mapper = OneOffMapper(

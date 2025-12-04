@@ -13,13 +13,13 @@ def bind_and_get_epc_assessment(
 
 def epc_assessment_function(record: dict, ies, debug_mode=False):
     """
-    Creates triples for the main graph.
+    Creates a graph serialized to n-triples for the EPC assessment of a property.
 
     Args:
         record (dict): A record representing a building.
 
     Returns:
-        str: The RDF graph serialized into triples.
+        str: The RDF graph serialized into n-triples for the EPC assessment of a property.
     """
 
     # only add more detail if the certificate is related to a domestic property
@@ -36,4 +36,5 @@ def epc_assessment_function(record: dict, ies, debug_mode=False):
             )
             return
 
-        return (ies.graph.serialize(format="nt"),)
+        return ies.graph.serialize(format="nt")
+    return None

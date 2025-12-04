@@ -21,13 +21,13 @@
 #  © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
 #  and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
 
-from mapping_functions.epc_assessment import epc_assessment_function
-from mapping_functions.floor import floor_function
-from mapping_functions.heating import heating_function
-from mapping_functions.roof import roof_function
-from mapping_functions.structure_unit import structure_unit_function
-from mapping_functions.wall import wall_function
-from mapping_functions.window import window_function
+from .epc_assessment import epc_assessment_function
+from .floor import floor_function
+from .heating import heating_function
+from .roof import roof_function
+from .structure_unit import structure_unit_function
+from .wall import wall_function
+from .window import window_function
 
 
 def get_mapping_function(mapper_sub_type: str) -> str:

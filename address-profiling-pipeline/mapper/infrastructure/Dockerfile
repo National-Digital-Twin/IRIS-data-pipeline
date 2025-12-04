@@ -9,7 +9,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/mapper.py .
-COPY src/mapping_function.py .
 COPY src/namespaces.py .
 COPY src/utils.py .
 COPY src/models ./models

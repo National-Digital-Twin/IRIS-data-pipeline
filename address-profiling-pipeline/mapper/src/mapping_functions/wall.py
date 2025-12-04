@@ -7,13 +7,13 @@ from .structure_unit import bind_and_get_structure_unit
 
 def wall_function(record: dict, ies, debug_mode=False):
     """
-    Creates triples for the main graph.
+    Creates a graph serialized to n-triples containing details about the walls of a property.
 
     Args:
         record (dict): A record representing a building.
 
     Returns:
-        str: The RDF graph serialized into triples.
+        str: The RDF graph serialized into n-triples containing details about the walls of a property.
     """
 
     # only add more detail if the certificate is related to a domestic property
@@ -30,3 +30,4 @@ def wall_function(record: dict, ies, debug_mode=False):
             return
 
         return ies.graph.serialize(format="nt")
+    return None

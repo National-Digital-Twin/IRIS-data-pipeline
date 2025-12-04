@@ -47,9 +47,15 @@ class OneOffMapper:
                             if total_records_to_map is None:
                                 total_records_to_map = source.remaining()
 
-                            mapped_data = self.mapping_function(record)
-                            target.send(mapped_data)
                             total_records_mapped += 1
+                            mapped_data = self.mapping_function(record)
+
+                            if mapped_data:
+                                target.send(mapped_data)
+                            else:
+                                logger.info(
+                                    f"None returned by mapping function for offset {index}"
+                                )
 
                             if index > 0 and index % 500 == 0:
                                 logger.info(
@@ -70,11 +76,8 @@ class OneOffMapper:
                             target_dlq.send(record)
 
     def __create_logger(self) -> CoreLoggerAdapter:
-        logger_name = "{source}-to-{target}-mapper".format(
-            source=self.source_topic, target=self.target_topic
-        )
         return CoreLoggerFactory.get_logger(
-            logger_name,
+            f"{self.target_topic}-logger",
             kafka_config=self.kafka_producer_config,
-            topic=logger_name,
+            topic=f"{self.target_topic}-logging",
         )

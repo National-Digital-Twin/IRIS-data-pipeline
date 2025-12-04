@@ -32,17 +32,17 @@ def bind_and_get_structure_unit(record: dict, ies) -> StructureUnit:
 
 def structure_unit_function(record: dict, ies, debug_mode=False):
     """
-    Creates triples for the main graph.
+    Creates a graph serialized to n-triples for the structure unit of a property.
 
     Args:
         record (dict): A record representing a building.
 
     Returns:
-        str: The RDF graph serialized into triples.
+        str: The RDF graph serialized into n triples for the structure unit of a property.
     """
 
     uprn = get_uprn(record)
-    structure_unit = bind_and_get_structure_unit(record, ies)
+    bind_and_get_structure_unit(record, ies)
 
     if debug_mode:
         ies.graph.serialize(destination=f"{uprn}_structure_unit.ttl", format="turtle")
