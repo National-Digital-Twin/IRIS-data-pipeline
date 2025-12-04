@@ -56,6 +56,6 @@ def get_mapping_function(mapper_sub_type: str) -> str:
     elif mapper_sub_type == "HEATING":
         return heating_function
     else:
-        raise Exception(
-            "Error no mapping function provided please provide one of STRUCTURE_UNIT, EPC_ASSESSMENT, FLOOR, ROOF, WALL, WINDOW OR HEATING"
+        raise NotImplementedError(
+            "Error no mapping function exists for the provided sub type please provide one of STRUCTURE_UNIT, EPC_ASSESSMENT, FLOOR, ROOF, WALL, WINDOW OR HEATING"
         )
