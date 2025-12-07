@@ -33,7 +33,7 @@ from telicent_lib import Record, RecordUtils
 from telicent_lib.config import Configurator
 from utils import reset_ies_graph
 
-from custom_mappers.one_of_mapper import OneOffMapper
+from custom_mappers.one_off_mapper import OneOffMapper
 
 load_dotenv()
 config = Configurator()
