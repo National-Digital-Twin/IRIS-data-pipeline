@@ -49,29 +49,6 @@ class Roof:
         "": None,
     }
     
-    roof_insulation_map = {
-        "Rafters": "InsulatedAtRafters",
-        "InsulatedAtRafters": "InsulatedAtRafters",
-        "CeilingInsulated": "CeilingInsulated",
-        "Unknown": "NoInsulationInRoof",
-        "None": "NoInsulationInRoof",
-        "FlatRoofInsulation": "FlatRoofInsulation",
-        "NoInsulation": "NoInsulationInRoof",
-        "NoInsulation(Assumed)": "NoInsulationAssumedInRoof ",
-        "NoInsulationAssumed": "NoInsulationAssumedInRoof",
-        "LoftInsulation(Assumed)": "AssumedLoftInsulation",
-        "LoftInsulation": "LoftInsulation",
-        "LimitedInsulationAssumed": "LimitedInsulationAssumed",
-        "LimitedInsulation": "LimitedInsulation",
-        "InsulatedAssumed": "InsulatedAssumed",
-        "Other": "Insulated",
-        "Insulated": "Insulated",
-        "Thatched": "InsulatedWithThatched",
-        "ThatchedWithAdditionalInsulation": "ThatchedWithAdditionalInsulation",
-        "NULL": "NoInsulationInRoof",
-        "": "NoInsulationInRoof",
-    }
-    
     def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
         """
         Initializes the `Roof` class and adds the common mapping as well as specific insulation mappings.
@@ -133,7 +110,7 @@ class Roof:
         """
         insulation_thickness = record.get("RoofInsulationThickness")
         roof_type = self.roof_type_map.get(record.get("RoofConstruction"))
-        insulation_type = self.roof_insulation_map.get(record.get("RoofInsulationLocation"))
+        insulation_type = record.get("RoofInsulationLocation")
         roof_types = ["AllAssessedRoof", f"{insulation_type}", f"{roof_type}"]
         if (insulation_thickness):
             roof_types.append(f"{insulation_thickness}_Insulation")

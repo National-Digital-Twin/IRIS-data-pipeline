@@ -45,19 +45,6 @@ class Wall:
         "": None,
         "Other": "Wall",
     }
-    
-    wall_insulation_map = {
-        "AsBuilt": "InsulatedWall",
-        "FilledCavity": "InsulatedWall",
-        "FilledCavityAndInternalInsulation": "InternalInsulation",
-        "FilledCavityAndExternalInsulation": "ExternalInsulation",
-        "WithAdditionalInsulation": "InsulatedWall",
-        "WithInternalInsulation": "InternalInsulation",
-        "WithExternalInsulation": "ExternalInsulation",
-        "Unknown": "WallInsulation",
-        "NULL": "NoInsulationInWall",
-        "": "NoInsulationInWall",
-    }
         
     def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
         """
@@ -100,7 +87,7 @@ class Wall:
         Returns:
             None
         """
-        wall_insulation = self.wall_insulation_map.get(record.get("WallInsulationType"))
+        wall_insulation = record.get("WallInsulationType")
         all_walls_insulation_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWalls{wall_insulation}", ["AllAssessedWall", f"{wall_insulation}"], 
             [self.all_asssessed_wall_uri], [structure_unit_state_uri])
         all_walls_sections_insulation_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWallSections{wall_insulation}", ["AllAssessedWallSection"], 
