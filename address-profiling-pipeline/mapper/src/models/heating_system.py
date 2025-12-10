@@ -40,19 +40,19 @@ class HeatingSystem:
 
         self.fuel_type_map: dict = {
             "Anthracite": "Anthracite",
-            "Biogas": "Fuel",
+            "Fuel": "Fuel",
             "Biomass": "Biomass",
             "Coal": "Coal",
-            "DualFuel": "Fuel",
+            "Fuel": "Fuel",
             "Electricity": "Electricity",
             "LPG": "LPG",
-            "MainsGas": "NaturalFuelGas",
+            "NaturalFuelGas": "NaturalFuelGas",
             "Oil": "Oil",
-            "Other": "Fuel",
             "SmokelessCoal": "SmokelessCoal",
             "WoodChips": "WoodChips",
             "WoodLogs": "WoodLogs",
             "WoodPellets": "WoodPellets",
+            "NULL", None
         }
 
         self.ies = ies

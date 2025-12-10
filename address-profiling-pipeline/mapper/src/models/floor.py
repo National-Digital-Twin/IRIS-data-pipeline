@@ -32,7 +32,7 @@ class Floor:
     """
 
     floor_construction_map: dict = {
-        "Solid": "SolidFloor",
+        "Solid": "Solid",
         "Suspended": "Suspended",
         "OtherPremisesBelow": "OtherPremisesBelowFloor",
         "AnotherDwellingBelow": "AnotherDwellingBelowFloor",
@@ -40,13 +40,10 @@ class Floor:
     }
 
     floor_insulation_map: dict = {
-        "AsBuilt": None,
-        "RetroFitted": "InsulatedFloor",
-        "NoInsulation": "NoInsulationInFloor",
-        "Insulated": "InsulatedFloor",
+        "InsulatedFloor": "InsulatedFloor",
         "LimitedInsulation": "LimitedFloorInsulation",
+        "NoInsulationInFloor": "NoInsulationInFloor",
         "NULL": None,
-        "": None,
     }
     
     def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
