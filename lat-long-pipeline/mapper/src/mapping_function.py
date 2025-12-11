@@ -100,7 +100,7 @@ def get_uprn(record: dict):
     Returns:
         str: The UPRN of the building.
     """
-    return record["UPRN"].replace(".0", "")
+    return record["uprn"].replace(".0", "")
     
 def add_typed_field(record: dict, type: str, type_ns: str, record_field: str) -> str:
     """
@@ -150,7 +150,7 @@ def add_postcode_identifier(record: dict, addressable_location: str) -> None:
     Returns:
         None
     """
-    postcode = record.get("PostcodeLocator")
+    postcode = record.get("postcode")
     identifier_uri = f"{data_ns}PCODE_{postcode.replace(" ", "_")}"
     ies.add_triple(identifier_uri, RDF_TYPE, build_ies_uri("PostalCode"))
     ies.add_triple(subject=identifier_uri, predicate=build_ies_uri("representationValue"), obj=postcode, 
@@ -169,9 +169,9 @@ def add_addressable_location_identifiers(record: dict, addressable_location: str
     Returns:
         None
     """
-    add_typed_identifier(record, addressable_location, "UPRN", ies_building_ns, "UPRN")
-    add_typed_identifier(record, addressable_location, "FirstLineOfAddress", ies_ns, "Address")
-    add_typed_field(record, "TOID", ies_ns, "TOID")
+    add_typed_identifier(record, addressable_location, "UPRN", ies_building_ns, "uprn")
+    add_typed_identifier(record, addressable_location, "FirstLineOfAddress", ies_ns, "fulladdress")
+    # add_typed_field(record, "TOID", ies_ns, "TOID")
     add_postcode_identifier(record, addressable_location)
     
 
@@ -204,10 +204,10 @@ def add_geographic_mapping(record: dict) -> None:
     location_point_uri = create_record_uri(record, "LocationPoint")
     ies.add_triple(subject=location_point_uri, predicate=RDF_TYPE, obj=build_ies_uri("PointOnEarthSurface"))
     
-    long = record.get("Longitude")
+    long = record.get("longitude")
     long_node = add_bnode_with_ies_type_and_value("Longitude", long)
     ies.graph.add((URIRef(location_point_uri), URIRef(build_ies_uri("isIdentifiedBy")), long_node))
-    lat = record.get("Latitude")
+    lat = record.get("latitude")
     lat_node = add_bnode_with_ies_type_and_value("Latitude", lat)
     ies.graph.add((URIRef(location_point_uri), URIRef(build_ies_uri("isIdentifiedBy")), lat_node))
     
