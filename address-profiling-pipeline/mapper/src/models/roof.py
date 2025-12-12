@@ -32,21 +32,31 @@ class Roof:
         roof_insulation_map (dict): A map of roof insulations against IES Building ontology.
     """
 
-    roof_type_map = {
-        "Flat": "FlatRoof",
+    roof_construction_type_map = {
+        "FlatRoof": "FlatRoof",
         "AnotherDwellingAbove": "AnotherDwellingAbove",
         "OtherPremisesAbove": "OtherPremisesAbove",
-        "Pitched": "PitchedRoof",
-        "PitchedNormalLoftAccess": "PitchedRoof",
-        "PitchedNormalNoLoftAccess": "PitchedRoof",
-        "PitchedThatched": "ThatchedRoof",
-        "PitchedWithSlopingCeiling": "PitchedRoof",
-        "ParkHomeRoof": "RoofConstruction",
-        "Thatched": "ThatchedRoof",
+        "PitchedRoof": "PitchedRoof",
+        "ThatchedRoof": "ThatchedRoof",
         "RoofRooms": "RoofRooms",
-        "Other": "RoofConstruction",
         "NULL": None,
-        "": None,
+    }
+    
+    roof_insulation_type_map = {
+        "InsulatedAtRafters": "InsulatedAtRafters",
+        "CeilingInsulated": "CeilingInsulated",
+        "FlatRoofInsulation": "FlatRoofInsulation",
+        "ThatchedWithAdditionalInsulation": "ThatchedWithAdditionalInsulation",
+        "InsulatedWithThatched": "InsulatedWithThatched",
+        "LimitedInsulationAssumed": "LimitedInsulationAssumed",
+        "LimitedInsulation": "LimitedInsulation",
+        "InsulatedAssumed": "InsulatedAssumed",
+        "Insulated": "Insulated",
+        "LoftInsulationAssumed": "LoftInsulationAssumed",
+        "LoftInsulation": "LoftInsulation",
+        "NoInsulationAssumedInRoof": "NoInsulationAssumedInRoof",
+        "NoInsulationInRoof": "NoInsulationInRoof",
+        "NULL": None,
     }
     
     def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
@@ -109,8 +119,8 @@ class Roof:
             list[str]: A list of types for the roof.
         """
         insulation_thickness = record.get("RoofInsulationThickness")
-        roof_type = self.roof_type_map.get(record.get("RoofConstruction"))
-        insulation_type = record.get("RoofInsulationLocation")
+        roof_type = self.roof_construction_type_map.get(record.get("RoofConstruction"))
+        insulation_type = self.roof_insulation_type_map.get(record.get("RoofInsulationLocation"))
         roof_types = ["AllAssessedRoof", f"{insulation_type}", f"{roof_type}"]
         if (insulation_thickness):
             roof_types.append(f"{insulation_thickness}_Insulation")

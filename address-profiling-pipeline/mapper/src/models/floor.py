@@ -34,14 +34,13 @@ class Floor:
     floor_construction_map: dict = {
         "Solid": "Solid",
         "Suspended": "Suspended",
-        "OtherPremisesBelow": "OtherPremisesBelowFloor",
-        "AnotherDwellingBelow": "AnotherDwellingBelowFloor",
+        "AnotherDwellingBelow": "AnotherDwellingBelow",
         "NULL": None,
     }
 
     floor_insulation_map: dict = {
         "InsulatedFloor": "InsulatedFloor",
-        "LimitedInsulation": "LimitedFloorInsulation",
+        "LimitedFloorInsulation": "LimitedFloorInsulation",
         "NoInsulationInFloor": "NoInsulationInFloor",
         "NULL": None,
     }

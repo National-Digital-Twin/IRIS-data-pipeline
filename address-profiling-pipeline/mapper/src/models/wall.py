@@ -32,7 +32,7 @@ class Wall:
         wall_insulation_map (dict): A map of wall insulations against IES Building ontology.
     """
     
-    wall_type_map = {
+    wall_construction_type_map = {
         "CavityWall": "CavityWall",
         "Cob": "Cob",
         "GraniteOrWhinstone": "GraniteOrWhinstone",
@@ -41,9 +41,18 @@ class Wall:
         "SolidBrick": "SolidBrick",
         "SystemBuilt": "SystemBuilt",
         "TimberFrame": "TimberFrame",
-        "NULL": None,
-        "": None,
         "Other": "Wall",
+        "NULL": None
+    }
+    
+    wall_insulation_type_map = {
+        "InternalInsulation": "InternalInsulation",
+        "ExternalInsulation": "ExternalInsulation",
+        "InsulatedWall": "InsulatedWall",
+        "PartialInsulation": "PartialInsulation",
+        "NoInsulationInWall": "NoInsulationInWall",
+        "WallInsulation": "WallInsulation",
+        "NULL": None
     }
         
     def __init__(self, ies: IESTool, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str):
@@ -87,7 +96,7 @@ class Wall:
         Returns:
             None
         """
-        wall_insulation = record.get("WallInsulationType")
+        wall_insulation = self.wall_insulation_type_map.get(record.get("WallInsulationType"))
         all_walls_insulation_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWalls{wall_insulation}", ["AllAssessedWall", f"{wall_insulation}"], 
             [self.all_asssessed_wall_uri], [structure_unit_state_uri])
         all_walls_sections_insulation_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWallSections{wall_insulation}", ["AllAssessedWallSection"], 
@@ -109,7 +118,7 @@ class Wall:
         Returns:
             None
         """
-        wall_construction = record.get("WallConstruction")
+        wall_construction = self.wall_construction_type_map.get(record.get("WallConstruction"))
         all_walls_construction_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWalls{wall_construction}", ["AllAssessedWall", f"{wall_construction}"], 
             [self.all_asssessed_wall_uri], [structure_unit_state_uri])
         all_walls_sections_construction_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWallSections{wall_construction}", ["AllAssessedWallSection"], 
