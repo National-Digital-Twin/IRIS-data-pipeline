@@ -41,13 +41,13 @@ class OneOffMapper:
                     kafka_config=self.kafka_producer_config,
                 ) as target_dlq:
                     total_records_to_map = source.remaining()
-                    total_records_mapped = 0
+                    total_records_processed = 0
                     for index, record in enumerate(source.data()):
                         try:
                             if total_records_to_map is None:
                                 total_records_to_map = source.remaining()
 
-                            total_records_mapped += 1
+                            total_records_processed += 1
                             mapped_data = self.mapping_function(record)
 
                             if mapped_data:
@@ -63,7 +63,7 @@ class OneOffMapper:
                                 )
 
                             if (
-                                total_records_mapped >= total_records_to_map
+                                total_records_processed >= total_records_to_map
                                 and source.remaining() == 0
                             ):
                                 logger.info(
@@ -73,7 +73,17 @@ class OneOffMapper:
 
                         except Exception as err:
                             logger.error(f"Error occured at offset {index}: {err}")
+
                             target_dlq.send(record)
+
+                            if (
+                                total_records_processed >= total_records_to_map
+                                and source.remaining() == 0
+                            ):
+                                logger.info(
+                                    f"Finished processing all records in {self.source_topic}!"
+                                )
+                                break
 
     def __create_logger(self) -> CoreLoggerAdapter:
         return CoreLoggerFactory.get_logger(

@@ -52,7 +52,7 @@ class HeatingSystem:
             "WoodChips": "WoodChips",
             "WoodLogs": "WoodLogs",
             "WoodPellets": "WoodPellets",
-            "NULL", None
+            "NULL": None,
         }
 
         self.ies = ies
