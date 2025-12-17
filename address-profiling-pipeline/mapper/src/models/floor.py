@@ -35,7 +35,8 @@ class Floor:
         "Solid": "Solid",
         "Suspended": "Suspended",
         "AnotherDwellingBelow": "AnotherDwellingBelow",
-        "NULL": None,
+        "OtherPremisesBelow": "OtherPremisesBelow",
+        "NULL": None
     }
 
     floor_insulation_map: dict = {
