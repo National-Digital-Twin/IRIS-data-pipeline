@@ -121,7 +121,11 @@ class Roof:
         insulation_thickness = record.get("RoofInsulationThickness")
         roof_type = self.roof_construction_type_map.get(record.get("RoofConstruction"))
         insulation_type = self.roof_insulation_type_map.get(record.get("RoofInsulationLocation"))
-        roof_types = ["AllAssessedRoof", f"{insulation_type}", f"{roof_type}"]
-        if (insulation_thickness):
+        roof_types = ["AllAssessedRoof"]
+        if insulation_type:
+            roof_types.append(f"{insulation_type}")
+        if roof_type:
+            roof_types.append(f"{roof_type}")
+        if insulation_thickness:
             roof_types.append(f"{insulation_thickness}_Insulation")
         return roof_types

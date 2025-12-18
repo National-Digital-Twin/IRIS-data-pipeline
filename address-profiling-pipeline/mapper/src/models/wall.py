@@ -96,14 +96,40 @@ class Wall:
         Returns:
             None
         """
-        wall_insulation = self.wall_insulation_type_map.get(record.get("WallInsulationType"))
-        all_walls_insulation_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWalls{wall_insulation}", ["AllAssessedWall", f"{wall_insulation}"], 
-            [self.all_asssessed_wall_uri], [structure_unit_state_uri])
-        all_walls_sections_insulation_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWallSections{wall_insulation}", ["AllAssessedWallSection"], 
-            [], [all_walls_insulation_state, self.all_assessed_wall_sections_uri])
-        assess_wall_insulation_uri = add_attribute_of_state_mapping(self.ies, record, "AssessWallInsulation", ["AssessWallInsulation"], 
-            [], [epc_assessment_uri])
-        self.ies.add_triple(assess_wall_insulation_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_walls_sections_insulation_state)
+        wall_insulation = (self.wall_insulation_type_map.get(record.get("WallInsulationType")) or "").strip()
+        attribute_types = ["AllAssessedWall"]
+        if wall_insulation:
+            attribute_types.append(wall_insulation)
+
+        all_walls_insulation_state = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedWalls{wall_insulation}" if wall_insulation else "AllAssessedWalls",
+            attribute_types,
+            [self.all_asssessed_wall_uri],
+            [structure_unit_state_uri],
+        )
+        all_walls_sections_insulation_state = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedWallSections{wall_insulation}" if wall_insulation else "AllAssessedWallSections",
+            ["AllAssessedWallSection"],
+            [],
+            [all_walls_insulation_state, self.all_assessed_wall_sections_uri],
+        )
+        assess_wall_insulation_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            "AssessWallInsulation",
+            ["AssessWallInsulation"],
+            [],
+            [epc_assessment_uri],
+        )
+        self.ies.add_triple(
+            assess_wall_insulation_uri,
+            build_ies_building_uri("assessedStateForEnergyPerformance"),
+            all_walls_sections_insulation_state,
+        )
 
     def add_wall_construction_mapping(self, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str) -> None:
         """
@@ -118,11 +144,37 @@ class Wall:
         Returns:
             None
         """
-        wall_construction = self.wall_construction_type_map.get(record.get("WallConstruction"))
-        all_walls_construction_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWalls{wall_construction}", ["AllAssessedWall", f"{wall_construction}"], 
-            [self.all_asssessed_wall_uri], [structure_unit_state_uri])
-        all_walls_sections_construction_state = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWallSections{wall_construction}", ["AllAssessedWallSection"], 
-            [], [all_walls_construction_state, self.all_assessed_wall_sections_uri])
-        assess_wall_construction_uri = add_attribute_of_state_mapping(self.ies, record, "AssessWallConstruction", ["AssessWallConstruction"], 
-            [], [epc_assessment_uri])
-        self.ies.add_triple(assess_wall_construction_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_walls_sections_construction_state)
+        wall_construction = (self.wall_construction_type_map.get(record.get("WallConstruction")) or "").strip()
+        attribute_types = ["AllAssessedWall"]
+        if wall_construction:
+            attribute_types.append(wall_construction)
+
+        all_walls_construction_state = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedWalls{wall_construction}" if wall_construction else "AllAssessedWalls",
+            attribute_types,
+            [self.all_asssessed_wall_uri],
+            [structure_unit_state_uri],
+        )
+        all_walls_sections_construction_state = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedWallSections{wall_construction}" if wall_construction else "AllAssessedWallSections",
+            ["AllAssessedWallSection"],
+            [],
+            [all_walls_construction_state, self.all_assessed_wall_sections_uri],
+        )
+        assess_wall_construction_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            "AssessWallConstruction",
+            ["AssessWallConstruction"],
+            [],
+            [epc_assessment_uri],
+        )
+        self.ies.add_triple(
+            assess_wall_construction_uri,
+            build_ies_building_uri("assessedStateForEnergyPerformance"),
+            all_walls_sections_construction_state,
+        )

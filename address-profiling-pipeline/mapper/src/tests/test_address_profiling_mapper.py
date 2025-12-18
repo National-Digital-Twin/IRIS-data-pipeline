@@ -23,6 +23,21 @@ def load_json(file_name):
         return json.load(file)
 
 
+def build_expected_file_path(record: dict, output_file_suffix: str) -> str:
+    """
+    Builds the expected output file path, using the LMK_KEY when available to
+    differentiate multiple certificates for the same UPRN. Falls back to
+    UPRN+LodgementDate if LMK_KEY is missing.
+    """
+    record_id = record.get("LMK_KEY") or f"{record.get('UPRN')}_{record.get('LodgementDate')}"
+    return os.path.abspath(
+        os.path.join(
+            os.path.dirname(__file__),
+            f"assets/output_{record_id}_{output_file_suffix}.txt",
+        )
+    )
+
+
 def check_equivalent_graphs(expected_graph, actual_graph):
     i_expected_g = to_isomorphic(expected_graph)
     i_actual_g = to_isomorphic(actual_graph)
@@ -40,12 +55,7 @@ def check_equivalent_graphs(expected_graph, actual_graph):
 def __test_mapping_function(output_file_suffix: str, mapper_sub_type: str):
     input_data = load_json("assets/inputs.json")
     for record in input_data:
-        file_path = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                f"assets/output_{record.get('UPRN')}_{output_file_suffix}.txt",
-            )
-        )
+        file_path = build_expected_file_path(record, output_file_suffix)
         try:
             expected_graph = Graph().parse(
                 file_path,

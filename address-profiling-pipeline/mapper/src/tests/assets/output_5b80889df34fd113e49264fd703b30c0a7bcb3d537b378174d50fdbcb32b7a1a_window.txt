@@ -1,0 +1,5 @@
+<http://ndtp.co.uk/data#AllAssessedWindows_10003320518> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedWindows> .
+<http://ndtp.co.uk/data#AssessWindowInsulation_10003320518_20241031> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#EPCAssessment_10003320518_20241031> .
+<http://ndtp.co.uk/data#AssessWindowInsulation_10003320518_20241031> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AssessWindowInsulation> .
+<http://ndtp.co.uk/data#AllAssessedWindows_10003320518> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#StructureUnit_10003320518> .
+

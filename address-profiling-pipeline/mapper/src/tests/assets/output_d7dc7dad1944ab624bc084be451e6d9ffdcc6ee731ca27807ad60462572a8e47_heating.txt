@@ -1,0 +1,4 @@
+<http://ndtp.co.uk/data#StructureUnitState_10067623656_20240330> <http://ies.data.gov.uk/ontology/ies-building1#isServicedBy> <http://ndtp.co.uk/data#HeatingSystem_10067623656> .
+<http://ndtp.co.uk/data#HeatingSystem_10067623656> <http://ies.data.gov.uk/ontology/ies-building1#isOperableWithFuel> <http://ies.data.gov.uk/ontology/ies-building1#NaturalFuelGas> .
+<http://ndtp.co.uk/data#HeatingSystem_10067623656> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#HeatingSystem> .
+

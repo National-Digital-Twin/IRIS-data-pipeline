@@ -88,11 +88,27 @@ class Floor:
         Returns:
             None
         """
-        floor_insulation = self.floor_insulation_map.get(record.get("FloorInsulation"))
-        all_assessed_floors_insulated_uri = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedFloors{floor_insulation}", ["AllAssessedFloor", f"{floor_insulation}"], 
-            [self.all_asssessed_floors_uri], [structure_unit_state_uri])
-        add_attribute_of_state_mapping(self.ies, record, f"AllAssessedFloorSections{floor_insulation}", ["AllAssessedFloorSection"], 
-            [], [all_assessed_floors_insulated_uri, self.all_asssessed_floor_sections_uri])
+        floor_insulation = (self.floor_insulation_map.get(record.get("FloorInsulation")) or "").strip()
+        attribute_types = ["AllAssessedFloor"]
+        if floor_insulation:
+            attribute_types.append(floor_insulation)
+
+        all_assessed_floors_insulated_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedFloors{floor_insulation}" if floor_insulation else "AllAssessedFloors",
+            attribute_types,
+            [self.all_asssessed_floors_uri],
+            [structure_unit_state_uri],
+        )
+        add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedFloorSections{floor_insulation}" if floor_insulation else "AllAssessedFloorSections",
+            ["AllAssessedFloorSection"],
+            [],
+            [all_assessed_floors_insulated_uri, self.all_asssessed_floor_sections_uri],
+        )
         
     def add_floor_construction_mapping(self, record: dict, structure_unit_state_uri: str, epc_assessment_uri: str) -> None:
         """
@@ -107,11 +123,37 @@ class Floor:
         Returns:
             None
         """
-        floor_construction = self.floor_construction_map.get(record.get("FloorConstruction"))
-        all_assessed_floors_constructed_uri = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedFloors{floor_construction}", ["AllAssessedFloor", floor_construction], 
-            [self.all_asssessed_floors_uri], [structure_unit_state_uri])
-        all_assessed_floor_sections_constructed_uri = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedFloorSections{floor_construction}", ["AllAssessedFloorSection"], 
-            [], [all_assessed_floors_constructed_uri, self.all_asssessed_floor_sections_uri])
-        assess_floor_construction_uri = add_attribute_of_state_mapping(self.ies, record, "AssessFloorConstruction", ["AssessFloorConstruction"], 
-            [], [epc_assessment_uri])
-        self.ies.add_triple(assess_floor_construction_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), all_assessed_floor_sections_constructed_uri)
+        floor_construction = (self.floor_construction_map.get(record.get("FloorConstruction")) or "").strip()
+        attribute_types = ["AllAssessedFloor"]
+        if floor_construction:
+            attribute_types.append(floor_construction)
+
+        all_assessed_floors_constructed_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedFloors{floor_construction}" if floor_construction else "AllAssessedFloors",
+            attribute_types,
+            [self.all_asssessed_floors_uri],
+            [structure_unit_state_uri],
+        )
+        all_assessed_floor_sections_constructed_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedFloorSections{floor_construction}" if floor_construction else "AllAssessedFloorSections",
+            ["AllAssessedFloorSection"],
+            [],
+            [all_assessed_floors_constructed_uri, self.all_asssessed_floor_sections_uri],
+        )
+        assess_floor_construction_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            "AssessFloorConstruction",
+            ["AssessFloorConstruction"],
+            [],
+            [epc_assessment_uri],
+        )
+        self.ies.add_triple(
+            assess_floor_construction_uri,
+            build_ies_building_uri("assessedStateForEnergyPerformance"),
+            all_assessed_floor_sections_constructed_uri,
+        )
