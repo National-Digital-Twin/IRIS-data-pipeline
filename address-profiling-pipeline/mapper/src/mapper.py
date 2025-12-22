@@ -76,8 +76,8 @@ MAPPER_SUB_TYPE = config.get(
 
 kafka_consumer_config = {
     "bootstrap.servers": BOOTSTRAP_SERVERS,
-    "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanisms": "PLAIN",
+    "security.protocol": "SASL_SSL",
+    "sasl.mechanism": "SCRAM-SHA-512",
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
     "group.id": [SOURCE_TOPIC_GROUP_ID],
@@ -85,8 +85,8 @@ kafka_consumer_config = {
 
 kafka_producer_config = {
     "bootstrap.servers": BOOTSTRAP_SERVERS,
-    "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanisms": "PLAIN",
+    "security.protocol": "SASL_SSL",
+    "sasl.mechanism": "SCRAM-SHA-512",
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
