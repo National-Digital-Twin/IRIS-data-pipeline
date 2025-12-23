@@ -41,6 +41,16 @@ BROKER = config.get(
     required=True,
     description="Specifies the Kafka Bootstrap Servers to connect to.",
 )
+KAFKA_SECURITY_PROTOCOL = config.get(
+    "KAFKA_SECURITY_PROTOCOL",
+    required=False,
+    default="SASL_SSL",
+)
+KAFKA_SASL_MECHANISM = config.get(
+    "KAFKA_SASL_MECHANISM",
+    required=False,
+    default="SCRAM-SHA-512",
+)
 SASL_USERNAME = config.get(
     "SASL_USERNAME",
     required=True,
@@ -107,8 +117,8 @@ default_security_label = (
 
 kafka_config = {
     "bootstrap.servers": BROKER,
-    "security.protocol": "SASL_SSL",
-    "sasl.mechanism": "SCRAM-SHA-512",
+    "security.protocol": KAFKA_SECURITY_PROTOCOL,
+    "sasl.mechanism": KAFKA_SASL_MECHANISM,
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
