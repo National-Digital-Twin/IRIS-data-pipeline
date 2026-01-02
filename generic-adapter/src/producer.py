@@ -48,6 +48,16 @@ SASL_PASSWORD = config.get(
     required=True,
     description="The password for the SASL authentication.",
 )
+KAFKA_SECURITY_PROTOCOL = config.get(
+    "KAFKA_SECURITY_PROTOCOL",
+    required=False,
+    default="SASL_PLAINTEXT",
+)
+KAFKA_SASL_MECHANISM = config.get(
+    "KAFKA_SASL_MECHANISM",
+    required=False,
+    default="PLAIN",
+)
 TARGET_TOPIC = config.get(
     "TARGET_TOPIC",
     required=True,
@@ -89,8 +99,8 @@ default_security_label = (
 
 kafka_config = {
     "bootstrap.servers": BROKER,
-    "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanism": "PLAIN",
+    "security.protocol": KAFKA_SECURITY_PROTOCOL,
+    "sasl.mechanism": KAFKA_SASL_MECHANISM,
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,

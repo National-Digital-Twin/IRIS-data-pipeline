@@ -44,12 +44,12 @@ BROKER = config.get(
 KAFKA_SECURITY_PROTOCOL = config.get(
     "KAFKA_SECURITY_PROTOCOL",
     required=False,
-    default="SASL_SSL",
+    default="SASL_PLAINTEXT",
 )
 KAFKA_SASL_MECHANISM = config.get(
     "KAFKA_SASL_MECHANISM",
     required=False,
-    default="SCRAM-SHA-512",
+    default="PLAIN",
 )
 SASL_USERNAME = config.get(
     "SASL_USERNAME",
