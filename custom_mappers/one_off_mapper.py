@@ -42,6 +42,7 @@ class OneOffMapper:
                 ) as target_dlq:
                     total_records_to_map = source.remaining()
                     total_records_processed = 0
+                    total_records_sent_to_dlq = 0
                     for index, record in enumerate(source.data()):
                         try:
                             if total_records_to_map is None:
@@ -57,9 +58,9 @@ class OneOffMapper:
                                     f"None returned by mapping function for offset {index}"
                                 )
 
-                            if index > 0 and index % 500 == 0:
+                            if index > 0 and index % 25000 == 0:
                                 logger.info(
-                                    f"Processed {index} records, {source.remaining()} records remaining"
+                                    f"Processed {index} records, {total_records_sent_to_dlq} records sent to DLQ, {source.remaining()} records remaining"
                                 )
 
                             if (
@@ -75,6 +76,7 @@ class OneOffMapper:
                             logger.error(f"Error occured at offset {index}: {err}")
 
                             target_dlq.send(record)
+                            total_records_sent_to_dlq += 1
 
                             if (
                                 total_records_processed >= total_records_to_map
