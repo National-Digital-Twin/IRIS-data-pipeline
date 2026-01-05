@@ -21,7 +21,7 @@
 # All support, maintenance and further development of this code is now the responsibility
 # of the National Digital Twin Programme.
 
-import sys
+import logging
 from json import loads
 from typing import List, Union
 
@@ -83,6 +83,12 @@ DEBUG = config.get(
 MAPPER_SUB_TYPE = config.get(
     "MAPPER_SUB_TYPE", required=True, description="The sub type of the mapper to run"
 )
+LOG_LEVEL = config.get(
+    "LOG_LEVEL",
+    required=False,
+    description="Logging level for the mapper",
+    default="INFO",
+)
 
 kafka_consumer_config = {
     "bootstrap.servers": BOOTSTRAP_SERVERS,
@@ -104,6 +110,11 @@ kafka_producer_config = {
 
 ies = IESTool(data_ns)
 mapping_function = get_mapping_function(MAPPER_SUB_TYPE)
+
+# set log level for external libraries
+logging.getLogger("ies_tool.ies_tool").setLevel(LOG_LEVEL)
+logging.getLogger("telicent_lib").setLevel(LOG_LEVEL)
+logging.getLogger("telicent_lib.config").setLevel(LOG_LEVEL)
 
 
 def unwrap_and_map(record: Record) -> Union[Record, List[Record], None]:
