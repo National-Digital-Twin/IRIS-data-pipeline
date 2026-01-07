@@ -1,5 +1,0 @@
-PY ?= python3
-ROOT := $(abspath ..)
-
-bridge:
-	PYTHONPATH=$(ROOT) SOURCE_TOPIC=${SOURCE_TOPIC} SOURCE_TOPIC_GROUP_ID=${SOURCE_TOPIC_GROUP_ID} TARGET_TOPIC=$(TARGET_TOPIC) $(PY) -m custom_mappers.bridge

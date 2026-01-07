@@ -1,18 +1,18 @@
 FROM python:3.12
 
 # Create a non-root user and group
-RUN groupadd -r bridgeuser && useradd -r -g bridgeuser bridgeuser
+RUN groupadd -r passthroughuser && useradd -r -g passthroughuser passthroughuser
 
 WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /app/custom_mappers
+COPY . /app/passthrough_mapper
 
-USER bridgeuser
+USER passthroughuser
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
 
-CMD ["python", "-m", "custom_mappers.bridge"]
+CMD ["python", "-m", "passthrough_mapper.passthrough"]
