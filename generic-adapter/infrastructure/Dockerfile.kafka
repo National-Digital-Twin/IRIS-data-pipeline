@@ -5,8 +5,8 @@ RUN groupadd -r adapteruser && useradd -r -g adapteruser adapteruser
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-kafka.txt .
+RUN pip install --no-cache-dir -r requirements-kafka.txt
 
 COPY src/kafka_producer.py .
 COPY config/topic_mappings.json .

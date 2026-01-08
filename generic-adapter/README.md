@@ -39,6 +39,8 @@ to a target Kafka topic. Currently the generic adapter has three modes of operat
 
 To run the Kafka-to-Kafka adapter, you only need these variables defined:
   - BOOTSTRAP_SERVERS
+  - KAFKA_SECURITY_PROTOCOL (optional, defaults to "SASL_PLAINTEXT")
+  - KAFKA_SASL_MECHANISM (optional, defaults to "PLAIN")
   - SASL_USERNAME
   - SASL_PASSWORD
   - TOPIC_MAPPINGS_FILEPATH: the filepath of the topic mappings JSON file within the container (alternative is for this to be supplied via Airflow UI). The JSON value itself must be in this format:
