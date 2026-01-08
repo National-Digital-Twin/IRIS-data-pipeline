@@ -1,0 +1,19 @@
+FROM python:3.12
+
+# Create a non-root user and group
+RUN groupadd -r adapteruser && useradd -r -g adapteruser adapteruser
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src/kafka_producer.py .
+COPY config/topic_mappings.json .
+
+USER adapteruser
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+
+CMD ["python", "./kafka_producer.py"]
