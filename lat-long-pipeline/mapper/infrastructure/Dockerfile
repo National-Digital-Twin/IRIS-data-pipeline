@@ -5,12 +5,13 @@ RUN groupadd -r mapperuser && useradd -r -g mapperuser mapperuser
 
 WORKDIR /app
 
-COPY ../requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ../src/osopenuprn_to_knowledge_mapper.py .
-COPY ../src/mapping_function.py .
+COPY src/mapper.py .
+COPY src/mapping_function.py .
+COPY custom_mappers ./custom_mappers
 
 USER mapperuser
 
-CMD ["python", "./osopenuprn_to_knowledge_mapper.py"]
+CMD ["python", "./mapper.py"]

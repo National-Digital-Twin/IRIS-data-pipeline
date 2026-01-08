@@ -1,7 +1,7 @@
 #!/bin/sh
 
 TAG="latest"
-IMAGE="iris-data-pipeline/epc-mapper:$TAG"
+IMAGE="iris-data-pipeline/os-ngd-address-mapper:$TAG"
 
 if [ -z "$(docker images -q $IMAGE 2> /dev/null)" ]; then
   echo "Image: $IMAGE does not exist, exiting..."

@@ -21,31 +21,44 @@
 # All support, maintenance and further development of this code is now the responsibility
 # of the National Digital Twin Programme.
 
-from telicent_lib.sinks import KafkaSink
-from telicent_lib.sources import KafkaSource
-from telicent_lib.config import Configurator
-from telicent_lib.logging import CoreLoggerFactory
-from telicent_lib import Mapper, Record, RecordUtils
-from typing import Union, List
 import logging
 from json import loads
-from mapping_function import map_func
+from typing import List, Union
+
 from dotenv import load_dotenv
+from mapping_function import map_func
+from telicent_lib import Record, RecordUtils
+from telicent_lib.config import Configurator
+
+from custom_mappers.one_off_mapper import OneOffMapper
 
 load_dotenv()
 config = Configurator()
+
 BROKER = config.get(
     "BOOTSTRAP_SERVERS",
     required=True,
     description="Specifies the Kafka Bootstrap Servers to connect to.",
 )
+KAFKA_SECURITY_PROTOCOL = config.get(
+    "KAFKA_SECURITY_PROTOCOL",
+    required=False,
+    default="SASL_PLAINTEXT",
+)
+KAFKA_SASL_MECHANISM = config.get(
+    "KAFKA_SASL_MECHANISM",
+    required=False,
+    default="PLAIN",
+)
 SASL_USERNAME = config.get(
-    "SASL_USERNAME", required=True,
-    description="The username for the SASL authentication."
+    "SASL_USERNAME",
+    required=True,
+    description="The username for the SASL authentication.",
 )
 SASL_PASSWORD = config.get(
-    "SASL_PASSWORD", required=True,
-    description="The password for the SASL authentication."
+    "SASL_PASSWORD",
+    required=True,
+    description="The password for the SASL authentication.",
 )
 SOURCE_TOPIC = config.get(
     "SOURCE_TOPIC",
@@ -65,11 +78,17 @@ TARGET_TOPIC = config.get(
 DEBUG = config.get(
     "DEBUG", required=False, default=False, converter=bool, required_type=bool
 )
+LOG_LEVEL = config.get(
+    "LOG_LEVEL",
+    required=False,
+    description="Logging level for the mapper",
+    default="INFO",
+)
 
-kafka_config = {
+kafka_consumer_config = {
     "bootstrap.servers": BROKER,
-    "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanisms": "PLAIN",
+    "security.protocol": KAFKA_SECURITY_PROTOCOL,
+    "sasl.mechanism": KAFKA_SASL_MECHANISM,
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
     "group.id": [SOURCE_TOPIC_GROUP_ID],
@@ -77,33 +96,25 @@ kafka_config = {
 
 kafka_producer_config = {
     "bootstrap.servers": BROKER,
-    "security.protocol": "SASL_PLAINTEXT",
-    "sasl.mechanisms": "PLAIN",
+    "security.protocol": KAFKA_SECURITY_PROTOCOL,
+    "sasl.mechanism": KAFKA_SASL_MECHANISM,
     "sasl.username": SASL_USERNAME,
     "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
 }
 
-logger = CoreLoggerFactory.get_logger(
-    "{source}-to-{target}-mapper".format(source=SOURCE_TOPIC, target=TARGET_TOPIC),
-    kafka_config=kafka_producer_config,
-    level = logging.DEBUG,
-    topic="logging",
-)
+# set log level for external libraries
+logging.getLogger("ies_tool.ies_tool").setLevel(LOG_LEVEL)
+logging.getLogger("telicent_lib").setLevel(LOG_LEVEL)
+logging.getLogger("telicent_lib.config").setLevel(LOG_LEVEL)
 
 
 # Function each record on the source topic is passed to.
-def mapping_function(record: Record) -> Union[Record, List[Record], None]:
-    logger.info("Beginning processing of address_base record")
+def unwrap_and_map(record: Record) -> Union[Record, List[Record], None]:
     data = loads(record.value)
 
     mapped = map_func(data)
     if mapped is None:
-        logger.warning(
-            "{uprn}, {address} does not contain a lat/lon lookup".format(
-                uprn=data["UPRN"], address=data["Address"]
-            ),
-        )
         return mapped
     return RecordUtils.add_header(
         Record(record.headers, record.key, mapped, None),
@@ -112,18 +123,15 @@ def mapping_function(record: Record) -> Union[Record, List[Record], None]:
     )
 
 
-source = KafkaSource(
-    topic=SOURCE_TOPIC, kafka_config=kafka_config
+mapper = OneOffMapper(
+    BROKER,
+    SASL_USERNAME,
+    SASL_PASSWORD,
+    SOURCE_TOPIC,
+    TARGET_TOPIC,
+    kafka_consumer_config,
+    kafka_producer_config,
+    unwrap_and_map,
 )
-target = KafkaSink(topic=TARGET_TOPIC, kafka_config=kafka_producer_config)
-mapper = Mapper(
-    source,
-    target,
-    mapping_function,
-    name=SOURCE_TOPIC + " to " + TARGET_TOPIC + " Mapper",
-    has_reporter=False,
-    reporting_batch_size=500,
-    has_error_handler=False
-)
-logger.info("Mapper instantiated")
+
 mapper.run()
