@@ -1,0 +1,17 @@
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10003320518_20250402> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoofSection> .
+<http://ndtp.co.uk/data#AssessRoofInsulation_10003320518_20250402> <http://ies.data.gov.uk/ontology/ies-building1#assessedStateForEnergyPerformance> <http://ndtp.co.uk/data#AllAssessedRoofSections_10003320518_20250402> .
+<http://ndtp.co.uk/data#AssessRoofInsulation_10003320518_20250402> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#DetermineRoofInsulationLocation> .
+<http://ndtp.co.uk/data#AssessRoofInsulation_10003320518_20250402> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#EPCAssessment_10003320518_20250402> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoof> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10003320518_20250402> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#AllAssessedRoofSections_10003320518> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10003320518_20250402> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#AllAssessedRoof_10003320518_20250402> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518_20250402> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#PitchedRoof> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518_20250402> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#LoftInsulation> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10003320518> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#AllAssessedRoof_10003320518> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#Building_10003320518> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518_20250402> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#150mm_Insulation> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518_20250402> <http://informationexchangestandard.org/ont/ies#isStateOf> <http://ndtp.co.uk/data#AllAssessedRoof_10003320518> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518_20250402> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoof> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10003320518> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoofSection> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10003320518_20250402> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#StructureUnitState_10003320518_20250402> .
+

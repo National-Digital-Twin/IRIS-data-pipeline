@@ -25,20 +25,20 @@ The address profiling pipeline has two parts, the mapper and the adapter.
 
 ### Adapter
 
-The adapter can be found under the `generic-adapter` folder. Before you can run this adapter please ensure you have the address profiling csv file downloaded in an accessible location.
-The adapter can be run as a docker container. You must build the docker container running the command `make docker-build SOURCE_FILE=<insert-filepath-here>`.
-Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> PRODUCER_NAME=address-profile TARGET_TOPIC=address-profile FILE_NAME=<insert-filename-here>` to run the adapter.
-The adapter container is set to be removed once it has completed.
+Please follow the instructions outlined in the [README.md](../generic-adapter/README.md) file to run the adapter in a deployed environment.
 
 ### Mapper
 
-The mapper can be found under the `address-profiling-pipeline/mapper` folder. The mapper can be run as a docker container. You must build the docker container using the command `make docker-build`.
-Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> MAP_FUNC=<insert-mapping-function>`. The current choices for mapping function are:
+The mapper can be found under the `address-profiling-pipeline/mapper` folder. The mapper can be run as a docker container. You must build the docker container using the command `make docker-build IMAGE_TAG="address-profiling-mapper"`.
+Once the container has been built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> SOURCE_TOPIC=<address-profiling-source-topic> SOURCE_TOPIC_GROUP_ID=<id-to-use-for-the-source-topic-consumer-group> TARGE_TOPIC=<topic-to-stream-mapped-records-to> MAPPER_SUB_TYPE=<sub-type-of-the-mapper-one-of[STRUCTURE_UNIT, EPC_ASSESSMENT, FLOOR, ROOF, WALL, WINDOW, HEATING]>`. The current choices for mapping function are:
 
-- "MAIN": creates triples which are destined for the main graph in the IA node
+- "STRUCTURE_UNIT": creates triples which are a representation of the structure unit of the dwelling
+- "EPC_ASSESSMENT": creates triples which are a represenation of the epc assessment conducted for the dwelling
+- "FLOOR": creates triples which are a representation of the floor details within the epc assessment of the dwelling
+- "ROOF": creates triples which are a represenation of the roof details within the epc assessment of the dwelling
+- "WALL": creates triples which are a representation of the wall details within the epc assessment of the dwelling
+- "WINDOW": creates triples which are a representation of the window details within the epc assessment of the dwelling
 - "HEATING": creates triples which are destined for the heating-v1 graph in the IA node
-
-The mapper container is not set to be automatically removed once it has done processing. Please remove the container manually using the command `docker rm -f <insert-address-profiling-mapper-container-name>`.
 
 ## UPRN lat long pipeline
 

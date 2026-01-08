@@ -76,7 +76,7 @@ class StructureUnit:
         uprn_uri = create_record_uri(record, "UPRN")
         first_line_of_address_uri = create_record_uri(record, "FirstLineOfAddress")
         toid_uri = create_record_uri(record, "TOID")
-        postcode_uri = f"{data_ns}PCODE_{record["Postcode"].replace(" ", "_")}"
+        postcode_uri = f"{data_ns}PCODE_{record['Postcode'].replace(' ', '_')}"
         return [uprn_uri, first_line_of_address_uri, toid_uri, postcode_uri]
     
     def add_identifiers(self, subject: str, identifiers: list[str]) -> None:

@@ -67,10 +67,32 @@ class Window:
         Returns:
             None
         """
-        window_glazing = record.get("MultipleGlazingType")
-        self.window_glazing_state_uri = add_attribute_of_state_mapping(self.ies, record, f"AllAssessedWindows{window_glazing}", ["AllAssessedWindows", window_glazing], 
-            [self.all_asssessed_window_uri], [structure_unit_state_uri])
-        assess_window_insulation_uri = add_attribute_of_state_mapping(self.ies, record, "AssessWindowInsulation", ["AssessWindowInsulation"], 
-            [], [epc_assessment_uri])
-        self.ies.add_triple(assess_window_insulation_uri, build_ies_building_uri("assessedStateForEnergyPerformance"), self.window_glazing_state_uri)
         
+        window_glazing = (record.get("MultipleGlazingType") or "").strip()
+        # Always create the assessment container so EPC structure is present
+        assess_window_insulation_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            "AssessWindowInsulation",
+            ["AssessWindowInsulation"],
+            [],
+            [epc_assessment_uri],
+        )
+
+        # If no glazing detail, stop here (no glazing state)
+        if not window_glazing or window_glazing.upper() == "NULL":
+            return
+
+        self.window_glazing_state_uri = add_attribute_of_state_mapping(
+            self.ies,
+            record,
+            f"AllAssessedWindows{window_glazing}",
+            ["AllAssessedWindows", window_glazing],
+            [self.all_asssessed_window_uri],
+            [structure_unit_state_uri],
+        )
+        self.ies.add_triple(
+            assess_window_insulation_uri,
+            build_ies_building_uri("assessedStateForEnergyPerformance"),
+            self.window_glazing_state_uri,
+        )

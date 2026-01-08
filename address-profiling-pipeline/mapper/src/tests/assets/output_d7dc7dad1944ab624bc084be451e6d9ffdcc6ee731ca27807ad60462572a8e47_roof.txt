@@ -1,0 +1,15 @@
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10067623656_20240330> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoofSection> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10067623656_20240330> <http://informationexchangestandard.org/ont/ies#isStateOf> <http://ndtp.co.uk/data#AllAssessedRoof_10067623656> .
+<http://ndtp.co.uk/data#AssessRoofInsulation_10067623656_20240330> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#DetermineRoofInsulationLocation> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10067623656> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoof> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10067623656> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#Building_10067623656> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10067623656_20240330> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#AllAssessedRoof_10067623656_20240330> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10067623656_20240330> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoof> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10067623656_20240330> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#StructureUnitState_10067623656_20240330> .
+<http://ndtp.co.uk/data#AssessRoofInsulation_10067623656_20240330> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#EPCAssessment_10067623656_20240330> .
+<http://ndtp.co.uk/data#AssessRoofInsulation_10067623656_20240330> <http://ies.data.gov.uk/ontology/ies-building1#assessedStateForEnergyPerformance> <http://ndtp.co.uk/data#AllAssessedRoofSections_10067623656_20240330> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10067623656> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#AllAssessedRoof_10067623656> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10067623656_20240330> <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#AllAssessedRoofSections_10067623656> .
+<http://ndtp.co.uk/data#AllAssessedRoof_10067623656_20240330> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#RoofRooms> .
+<http://ndtp.co.uk/data#AllAssessedRoofSections_10067623656> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://ies.data.gov.uk/ontology/ies-building1#AllAssessedRoofSection> .
+

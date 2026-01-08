@@ -21,15 +21,18 @@
 #  © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
 #  and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
 
+import codecs
 import csv
+from contextlib import closing
 from json import dumps
 from typing import Iterable
 
+import boto3
 from dotenv import load_dotenv
-from ia_map_lib import AutomaticAdapter, Record, RecordUtils
-from ia_map_lib.config import Configurator
-from ia_map_lib.sinks import KafkaSink
-from ianode_labels import IANodeSecurityLabelsV2, SecurityLabelBuilder
+from telicent_lib import AutomaticAdapter, Record, RecordUtils
+from telicent_lib.access import EDHSecurityLabelsV2, SecurityLabelBuilder
+from telicent_lib.config import Configurator
+from telicent_lib.sinks import KafkaSink
 
 load_dotenv()
 config = Configurator()
@@ -37,16 +40,6 @@ BROKER = config.get(
     "BOOTSTRAP_SERVERS",
     required=True,
     description="Specifies the Kafka Bootstrap Servers to connect to.",
-)
-SASL_USERNAME = config.get(
-    "SASL_USERNAME",
-    required=False,
-    description="The username for the SASL authentication.",
-)
-SASL_PASSWORD = config.get(
-    "SASL_PASSWORD",
-    required=False,
-    description="The password for the SASL authentication.",
 )
 KAFKA_SECURITY_PROTOCOL = config.get(
     "KAFKA_SECURITY_PROTOCOL",
@@ -58,6 +51,16 @@ KAFKA_SASL_MECHANISM = config.get(
     required=False,
     default="PLAIN",
 )
+SASL_USERNAME = config.get(
+    "SASL_USERNAME",
+    required=True,
+    description="The username for the SASL authentication.",
+)
+SASL_PASSWORD = config.get(
+    "SASL_PASSWORD",
+    required=True,
+    description="The password for the SASL authentication.",
+)
 TARGET_TOPIC = config.get(
     "TARGET_TOPIC",
     required=True,
@@ -66,25 +69,45 @@ TARGET_TOPIC = config.get(
 PRODUCER_NAME = config.get(
     "PRODUCER_NAME", required=True, description="Specifies the name of the producer"
 )
-FILENAME = config.get(
-    "FILENAME",
+SOURCE_NAME = config.get(
+    "SOURCE_NAME",
     required=True,
-    description="The path along with the filename of the csv file to be processed.",
+    description="Specifies the source that the data has originated from",
 )
-
-LIMIT = config.get(
-    "LIMIT",
+AWS_REGION = config.get(
+    "AWS_REGION", required=True, description="The region where the s3 bucket exists"
+)
+S3_ENDPOINT = config.get(
+    "S3_ENDPOINT",
     required=False,
-    description="A limit for the numbers of records to stream to Kafka.",
-    required_type=int,
-    converter=int,
+    description="The s3 endpoint for local development and testing.",
+)
+S3_BUCKET_NAME = config.get(
+    "S3_BUCKET_NAME",
+    required=False,
+    description="The s3 bucket where the object to adapt exists.",
+)
+S3_FILENAME = config.get(
+    "S3_FILENAME",
+    required=True,
+    description="The object key of the file to adapt to kafka.",
+)
+AWS_ACCESS_KEY_ID = config.get(
+    "AWS_ACCESS_KEY_ID",
+    required=False,
+    description="The aws access key id for local development and testing.",
+)
+AWS_SECRET_ACCESS_KEY = config.get(
+    "AWS_SECRET_ACCESS_KEY",
+    required=False,
+    description="The aws secret access key for local development and testing.",
 )
 
 permitted_nationalities = ["GBR", "NZL"]
 default_security_label = (
     SecurityLabelBuilder()
     .add_multiple(
-        IANodeSecurityLabelsV2.PERMITTED_NATIONALITIES.value, *permitted_nationalities
+        EDHSecurityLabelsV2.PERMITTED_NATIONALITIES.value, *permitted_nationalities
     )
     .build()
 )
@@ -101,18 +124,13 @@ kafka_config = {
     "allow.auto.create.topics": True,
 }
 
-if SASL_USERNAME and SASL_PASSWORD:
-    kafka_config["security.protocol"] = "SASL_PLAINTEXT"
-    kafka_config["sasl.mechanism"] = "PLAIN"
-    kafka_config["sasl.username"] = SASL_USERNAME
-    kafka_config["sasl.password"] = SASL_PASSWORD
-
 
 def create_record(data, security_labels):
     return Record(
         RecordUtils.to_headers(
             {
                 "Content-Type": "application/json",
+                "Data-Source": SOURCE_NAME,
                 "Data-Producer": PRODUCER_NAME,
                 "Security-Label": security_labels,
             }
@@ -122,49 +140,35 @@ def create_record(data, security_labels):
     )
 
 
-def generate_records_with_limit() -> Iterable[Record]:
-    with open(FILENAME, "r", encoding="utf-8-sig") as f:
-        reader = csv.DictReader(f)
-
-        counter = 0
-
-        for row in reader:
-            if counter > LIMIT:
-                return
-
-            counter += 1
-            yield create_record(row, default_security_label)
-
-
 def generate_records() -> Iterable[Record]:
-    with open(FILENAME, "r", encoding="utf-8-sig") as f:
-        reader = csv.DictReader(f)
+    if S3_ENDPOINT and AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY:
+        s3_client = boto3.client(
+            "s3",
+            endpoint_url=S3_ENDPOINT,
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        )
+    else:
+        s3_client = boto3.client("s3", region_name=AWS_REGION)
+    obj = s3_client.get_object(Bucket=S3_BUCKET_NAME, Key=S3_FILENAME)
+    obj_body = obj["Body"].read().decode("utf-8").splitlines()
+    rows = csv.DictReader(obj_body)
 
-        for row in reader:
-            yield create_record(row, default_security_label)
+    for row in rows:
+        yield create_record(row, default_security_label)
 
 
 # Create a sink and the adapter
 sink = KafkaSink(TARGET_TOPIC, kafka_config=kafka_config)
-adapter_with_limit = AutomaticAdapter(
-    target=sink,
-    adapter_function=generate_records_with_limit,
-    name=PRODUCER_NAME,
-    has_reporter=False,
-    has_error_handler=False,
-    has_data_catalog=False,
-)
+
 adapter = AutomaticAdapter(
     target=sink,
     adapter_function=generate_records,
     name=PRODUCER_NAME,
+    source_name=SOURCE_NAME,
     has_reporter=False,
     has_error_handler=False,
-    has_data_catalog=False,
 )
 
 # Call run() to run the action
-if LIMIT > 0:
-    adapter_with_limit.run()
-else:
-    adapter.run()
+adapter.run()
