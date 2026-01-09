@@ -57,11 +57,7 @@ jobs:
     needs: [versioning]
     steps:
       - name: Checkout Code
-<<<<<<< HEAD
-        uses: actions/checkout@v5
-=======
         uses: actions/checkout@v6
->>>>>>> develop
 
       - name: Generate SPDX SBOM
         run: |
@@ -87,11 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-<<<<<<< HEAD
-        uses: actions/checkout@v5
-=======
         uses: actions/checkout@v6
->>>>>>> develop
         with:
           fetch-depth: 0
 
@@ -108,11 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download SBOM Artifact
-<<<<<<< HEAD
-        uses: actions/download-artifact@v5
-=======
         uses: actions/download-artifact@v7
->>>>>>> develop
         with:
           name: sbom
 
