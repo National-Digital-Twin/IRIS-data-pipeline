@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.12
 
 RUN apt-get update && \
     apt-get --no-install-recommends install -y git build-essential && \
@@ -7,16 +7,14 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY ../src/ngd_kafka_mapper.py .
-COPY infrastructure/docker-context/generic_mappers/ ./generic_mappers
+COPY src/mapper.py .
+COPY src/mapping_function.py .
+COPY custom_mappers ./custom_mappers
 
-COPY ../requirements.txt .
+COPY requirements.txt .
 
-RUN --mount=type=secret,id=pat_token \
-    export GITHUB_ACCESS_TOKEN=$(cat /run/secrets/pat_token) && \
-    pip install --no-cache-dir --upgrade -r requirements.txt && \
-    pip install -e ./generic_mappers
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 USER mapperuser
 
-CMD ["python", "./ngd_kafka_mapper.py"]
+CMD ["python", "mapper.py"]

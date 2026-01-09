@@ -1,2 +1,7 @@
-node-lib @ git+https://${GITHUB_ACCESS_TOKEN}@github.com/National-Digital-Twin/node-lib.git@bugfix/non-req/kafka-sink-issue
+rdflib
+telicent-ies-tool==1.0.2
+telicent-lib==2.0.1
 python-dotenv
+setuptools
+pytest
+importlib

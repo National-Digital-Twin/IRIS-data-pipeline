@@ -1,7 +1,8 @@
-prepare-context:
-	mkdir -p infrastructure/docker-context
-	cp -r ../../generic_mappers ./infrastructure/docker-context/generic_mappers
 docker-build:
-	docker build --secret id=pat_token,env=GITHUB_ACCESS_TOKEN -t ngd-property-mapper --no-cache -f infrastructure/Dockerfile .
+	cp -r ../../custom_mappers/ ./
+	docker build -t ${IMAGE_TAG} --no-cache -f infrastructure/Dockerfile .
+	rm -rf custom_mappers
 docker-run:
-	docker run --rm --name ngd-property-mapper -e BOOTSTRAP_SERVERS=${BOOTSTRAP_SERVERS} -e SOURCE_TOPIC=${SOURCE_TOPIC} -e SOURCE_TOPIC_GROUP_ID=${SOURCE_TOPIC_GROUP_ID} -e TARGET_TOPIC=${TARGET_TOPIC} --network "host" ngd-property-mapper
+	docker run --rm --name os-ngd-building-mapper -e BOOTSTRAP_SERVERS=${BOOTSTRAP_SERVERS} -e KAFKA_SECURITY_PROTOCOL=${KAFKA_SECURITY_PROTOCOL} -e KAFKA_SASL_MECHANISM=${KAFKA_SASL_MECHANISM} -e SASL_USERNAME=${SASL_USERNAME} -e SASL_PASSWORD=${SASL_PASSWORD} -e SOURCE_TOPIC=${SOURCE_TOPIC} -e SOURCE_TOPIC_GROUP_ID=${SOURCE_TOPIC_GROUP_ID} -e TARGET_TOPIC=${TARGET_TOPIC} --network "host" ${IMAGE_TAG}
+test:
+	pytest src/tests/ -v -s

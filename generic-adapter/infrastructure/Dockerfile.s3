@@ -9,8 +9,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ../../utils .
-COPY ../src/s3-producer.py .
+COPY ${SOURCE_FILE} .
+COPY src/s3_producer.py .
 
 USER adapteruser
 

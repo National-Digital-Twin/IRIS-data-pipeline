@@ -1,31 +1,13 @@
 # SPDX-License-Identifier: Apache-2.0
 # © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
 # and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
- 
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
 
 import ast
-from typing import Optional, Tuple
 from decimal import Decimal, InvalidOperation
-import os
+from typing import Optional, Tuple
 
-from rdflib import BNode, Literal, URIRef, Graph
+from rdflib import BNode, Graph, Literal, URIRef
 from rdflib.namespace import RDF, XSD
-
-
-# Keep debug off during tests to avoid file I/O
-DEBUG_MODE = False
 
 # Namespaces
 ies_ns = "http://informationexchangestandard.org/ont/ies#"
@@ -34,6 +16,7 @@ data_ns = "http://ndtp.co.uk/data#"
 qudt_ns = "http://qudt.org/schema/qudt/"
 unit_ns = "http://qudt.org/vocab/unit/"
 quantitykind_ns = "http://qudt.org/vocab/quantitykind/"
+
 
 def _bind_namespaces(g: Graph) -> None:
     g.namespace_manager.bind("building", ies_building_ns)
@@ -125,7 +108,13 @@ def _shape_class(value: str) -> str:
 def _add_quantity_bnode(g: Graph, number_lit: Literal) -> BNode:
     qty = BNode()
     g.add((qty, RDF.type, URIRef(_build_uri(qudt_ns, "Quantity"))))
-    g.add((qty, URIRef(_build_uri(qudt_ns, "hasQuantityKind")), URIRef(_build_uri(quantitykind_ns, "Area"))))
+    g.add(
+        (
+            qty,
+            URIRef(_build_uri(qudt_ns, "hasQuantityKind")),
+            URIRef(_build_uri(quantitykind_ns, "Area")),
+        )
+    )
     g.add((qty, URIRef(_build_uri(qudt_ns, "unit")), URIRef(_build_uri(unit_ns, "M2"))))
     g.add((qty, URIRef(_build_uri(qudt_ns, "value")), number_lit))
     return qty
@@ -134,24 +123,57 @@ def _add_quantity_bnode(g: Graph, number_lit: Literal) -> BNode:
 def _add_surface_area_bnode(g: Graph, value_lit: Literal) -> BNode:
     surface = BNode()
     g.add((surface, RDF.type, URIRef(_build_uri(ies_building_ns, "SurfaceArea"))))
-    g.add((surface, URIRef(_build_uri(ies_building_ns, "hasQuantity")), _add_quantity_bnode(g, value_lit)))
+    g.add(
+        (
+            surface,
+            URIRef(_build_uri(ies_building_ns, "hasQuantity")),
+            _add_quantity_bnode(g, value_lit),
+        )
+    )
     return surface
 
 
-def _add_aspect(g: Graph, roof_state_uri: str, osid: str, date_suffix: str, label: str, number_str: str) -> None:
+def _add_aspect(
+    g: Graph,
+    roof_state_uri: str,
+    osid: str,
+    date_suffix: str,
+    label: str,
+    number_str: str,
+) -> None:
     value = _to_number(number_str)
     if value is None:
         return  # skip if empty
     value_lit, _ = value
-    aspect_type = f"{label}FacingRoofSectionSum" if label != "AreaIndeterminable" else "AreaIndeterminableRoofSectionSum"
+    aspect_type = (
+        f"{label}FacingRoofSectionSum"
+        if label != "AreaIndeterminable"
+        else "AreaIndeterminableRoofSectionSum"
+    )
     if label == "AreaIndeterminable":
-        subject = _build_uri(data_ns, f"BuildingAreaIndeterminable_{osid}_{date_suffix}")
+        subject = _build_uri(
+            data_ns, f"BuildingAreaIndeterminable_{osid}_{date_suffix}"
+        )
     else:
-        subject = _build_uri(data_ns, f"Building{label}FacingRoofSections_{osid}_{date_suffix}")
+        subject = _build_uri(
+            data_ns, f"Building{label}FacingRoofSections_{osid}_{date_suffix}"
+        )
     g.add((URIRef(subject), RDF.type, URIRef(_build_uri(ies_building_ns, aspect_type))))
-    g.add((URIRef(subject), URIRef(_build_uri(ies_ns, "isPartOf")), URIRef(roof_state_uri)))
+    g.add(
+        (
+            URIRef(subject),
+            URIRef(_build_uri(ies_ns, "isPartOf")),
+            URIRef(roof_state_uri),
+        )
+    )
     # Attach surface area structure
-    g.add((URIRef(subject), URIRef(_build_uri(ies_building_ns, "hasCombinedSurfaceArea")), _add_surface_area_bnode(g, value_lit)))
+    g.add(
+        (
+            URIRef(subject),
+            URIRef(_build_uri(ies_building_ns, "hasCombinedSurfaceArea")),
+            _add_surface_area_bnode(g, value_lit),
+        )
+    )
 
 
 def _link_uprns(g: Graph, osid: str, uprnreference: str) -> None:
@@ -161,17 +183,19 @@ def _link_uprns(g: Graph, osid: str, uprnreference: str) -> None:
             uprn = e.get("uprn")
             if uprn is None:
                 continue
-            g.add((
-                URIRef(_build_uri(data_ns, f"StructureUnit_{uprn}")),
-                URIRef(_build_uri(ies_ns, "isPartOf")),
-                URIRef(_build_uri(data_ns, f"Building_{osid}")),
-            ))
+            g.add(
+                (
+                    URIRef(_build_uri(data_ns, f"StructureUnit_{uprn}")),
+                    URIRef(_build_uri(ies_ns, "isPartOf")),
+                    URIRef(_build_uri(data_ns, f"Building_{osid}")),
+                )
+            )
     except Exception:
         # if malformed, do nothing
         return
 
 
-def map_record(record: dict) -> str:
+def map_func(record: dict, debug_mode: str) -> str:
     """Map a single NGD building record into a Turtle RDF graph string."""
     g = Graph()
     _bind_namespaces(g)
@@ -180,66 +204,183 @@ def map_record(record: dict) -> str:
     date_suffix = _date_for_record(record)
 
     building_uri = _build_uri(data_ns, f"Building_{osid}")
-    g.add((URIRef(building_uri), RDF.type, URIRef(_build_uri(ies_building_ns, "Building"))))
+    g.add(
+        (
+            URIRef(building_uri),
+            RDF.type,
+            URIRef(_build_uri(ies_building_ns, "Building")),
+        )
+    )
 
     # Roof and state
     roof_uri = _build_uri(data_ns, f"BuildingRoof_{osid}")
     g.add((URIRef(roof_uri), RDF.type, URIRef(_build_uri(ies_building_ns, "Roof"))))
-    g.add((URIRef(roof_uri), URIRef(_build_uri(ies_ns, "isPartOf")), URIRef(building_uri)))
+    g.add(
+        (URIRef(roof_uri), URIRef(_build_uri(ies_ns, "isPartOf")), URIRef(building_uri))
+    )
 
     roof_state_uri = _build_uri(data_ns, f"BuildingRoofState_{osid}_{date_suffix}")
-    g.add((URIRef(roof_state_uri), RDF.type, URIRef(_build_uri(ies_building_ns, "RoofState"))))
-    g.add((URIRef(roof_state_uri), URIRef(_build_uri(ies_ns, "isStateOf")), URIRef(roof_uri)))
+    g.add(
+        (
+            URIRef(roof_state_uri),
+            RDF.type,
+            URIRef(_build_uri(ies_building_ns, "RoofState")),
+        )
+    )
+    g.add(
+        (
+            URIRef(roof_state_uri),
+            URIRef(_build_uri(ies_ns, "isStateOf")),
+            URIRef(roof_uri),
+        )
+    )
 
     material_cls = _material_class(record.get("roofmaterial_primarymaterial", ""))
-    g.add((URIRef(roof_state_uri), URIRef(_build_uri(ies_building_ns, "isMadeOf")), URIRef(_build_uri(ies_building_ns, material_cls))))
+    g.add(
+        (
+            URIRef(roof_state_uri),
+            URIRef(_build_uri(ies_building_ns, "isMadeOf")),
+            URIRef(_build_uri(ies_building_ns, material_cls)),
+        )
+    )
 
     # Solar panel presence as a building state on the Building
     solar_state_uri = _build_uri(data_ns, f"BuildingSolarState_{osid}_{date_suffix}")
-    g.add((URIRef(solar_state_uri), RDF.type, URIRef(_build_uri(ies_building_ns, "BuildingState"))))
-    g.add((URIRef(solar_state_uri), RDF.type, URIRef(_build_uri(ies_building_ns, _solar_class(record.get("roofmaterial_solarpanelpresence", ""))))))
-    g.add((URIRef(solar_state_uri), URIRef(_build_uri(ies_ns, "isStateOf")), URIRef(building_uri)))
+    g.add(
+        (
+            URIRef(solar_state_uri),
+            RDF.type,
+            URIRef(_build_uri(ies_building_ns, "BuildingState")),
+        )
+    )
+    g.add(
+        (
+            URIRef(solar_state_uri),
+            RDF.type,
+            URIRef(
+                _build_uri(
+                    ies_building_ns,
+                    _solar_class(record.get("roofmaterial_solarpanelpresence", "")),
+                )
+            ),
+        )
+    )
+    g.add(
+        (
+            URIRef(solar_state_uri),
+            URIRef(_build_uri(ies_ns, "isStateOf")),
+            URIRef(building_uri),
+        )
+    )
 
     # Directional aspects and area indeterminable
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "East", record.get("roofshapeaspect_areafacingeast_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "North", record.get("roofshapeaspect_areafacingnorth_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "NorthEast", record.get("roofshapeaspect_areafacingnortheast_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "NorthWest", record.get("roofshapeaspect_areafacingnorthwest_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "South", record.get("roofshapeaspect_areafacingsouth_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "SouthEast", record.get("roofshapeaspect_areafacingsoutheast_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "SouthWest", record.get("roofshapeaspect_areafacingsouthwest_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "West", record.get("roofshapeaspect_areafacingwest_m2"))
-    _add_aspect(g, roof_state_uri, osid, date_suffix, "AreaIndeterminable", record.get("roofshapeaspect_areaindeterminable_m2"))
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "East",
+        record.get("roofshapeaspect_areafacingeast_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "North",
+        record.get("roofshapeaspect_areafacingnorth_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "NorthEast",
+        record.get("roofshapeaspect_areafacingnortheast_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "NorthWest",
+        record.get("roofshapeaspect_areafacingnorthwest_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "South",
+        record.get("roofshapeaspect_areafacingsouth_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "SouthEast",
+        record.get("roofshapeaspect_areafacingsoutheast_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "SouthWest",
+        record.get("roofshapeaspect_areafacingsouthwest_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "West",
+        record.get("roofshapeaspect_areafacingwest_m2"),
+    )
+    _add_aspect(
+        g,
+        roof_state_uri,
+        osid,
+        date_suffix,
+        "AreaIndeterminable",
+        record.get("roofshapeaspect_areaindeterminable_m2"),
+    )
 
     # Roof shape state on the Building
     roof_shape_uri = _build_uri(data_ns, f"BuildingRoofShape_{osid}_{date_suffix}")
-    g.add((URIRef(roof_shape_uri), RDF.type, URIRef(_build_uri(ies_building_ns, "RoofState"))))
-    g.add((URIRef(roof_shape_uri), RDF.type, URIRef(_build_uri(ies_building_ns, _shape_class(record.get("roofshapeaspect_shape", ""))))))
-    g.add((URIRef(roof_shape_uri), URIRef(_build_uri(ies_ns, "isStateOf")), URIRef(building_uri)))
+    g.add(
+        (
+            URIRef(roof_shape_uri),
+            RDF.type,
+            URIRef(_build_uri(ies_building_ns, "RoofState")),
+        )
+    )
+    g.add(
+        (
+            URIRef(roof_shape_uri),
+            RDF.type,
+            URIRef(
+                _build_uri(
+                    ies_building_ns,
+                    _shape_class(record.get("roofshapeaspect_shape", "")),
+                )
+            ),
+        )
+    )
+    g.add(
+        (
+            URIRef(roof_shape_uri),
+            URIRef(_build_uri(ies_ns, "isStateOf")),
+            URIRef(building_uri),
+        )
+    )
 
     # Link UPRNs back to building
     _link_uprns(g, osid, record.get("uprnreference", "[]"))
 
-    if DEBUG_MODE:
+    if debug_mode:
         g.serialize(destination=f"{osid}_os_ngd.ttl", format="turtle")
         return ""
 
-    ttl = g.serialize(format="turtle")
-    if os.getenv("PRINT_NGD_TTL", "").lower() in ("1", "true", "yes", "y"):  # opt-in stdout
-        print(f"\n--- NGD TTL for osid={osid} ---\n{ttl}\n--- END NGD TTL ---\n")
-    return ttl
-
-
-if __name__ == "__main__":
-    # Delay import so tests don't require kafka libs
-    from generic_mappers.generic_kafka_mapper import GenericKafkaMapper
-    from dotenv import load_dotenv
-
-    load_dotenv()
-
-    class NgdKafkaMapper(GenericKafkaMapper):
-        def map_record(self, record: dict) -> str:
-            return map_record(record)
-
-    mapper = NgdKafkaMapper()
-    mapper.run_mapper()
+    return g.serialize(format="turtle")
