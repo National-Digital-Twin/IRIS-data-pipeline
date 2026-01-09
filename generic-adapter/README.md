@@ -1,7 +1,11 @@
 # README
 
-A generic adapter is a tool that allows a user to ingest records from a source file in CSV format and stream them
-to a target Kafka topic. Currently the generic adapter has two modes of operation, one is without any integration with AWS S3 using the source file bundled with the image. The other is with AWS S3 integration which expects the user to have either a local S3 service or a remote one with the correct permissions for access.
+A generic adapter is a tool that allows a user to ingest records from a source and stream them
+to a target Kafka topic. Currently the generic adapter has three modes of operation:
+
+1. The first one is where the source is a file in CSV format without any integration with AWS S3 and where the source file is bundled with the image.
+2. The second one is where the source is a file in CSV format with AWS S3 integration which expects the user to have either a local S3 service or a remote one with the correct permissions for access.
+3. The third one is where the source is data already in a Kafka topic. This mode of operation ensures all data in a source Kafka topic is transferred to a target Kafka topic.
 
 ## Pre-requisites
 
@@ -11,8 +15,9 @@ to a target Kafka topic. Currently the generic adapter has two modes of operatio
 ## Build the image
 
 - While in this directory:
-  - Run the command `docker build -t <image-tag> -f infrastructure/Dockerfile .` to build the image for a local run. This will bundle the image with the source file.
-  - Run the command `docker build -t <image-tag> -f infrastructure/Dockerfile.s3 .` to build the image for a local run but with an s3 source
+  - Run the command `docker build -t <image-tag> -f infrastructure/Dockerfile .` to build the image to bundle the image with the source file.
+  - Run the command `docker build -t <image-tag> -f infrastructure/Dockerfile.s3 .` to build the image to use an s3 source.
+  - Run the command `docker build -t <image-tag> -f infrastructure/Dockerfile.kafka .` to build the image for a Kafka topic source.
 
 ## Running locally
 
@@ -31,3 +36,19 @@ to a target Kafka topic. Currently the generic adapter has two modes of operatio
   - TARGET_TOPIC: This is the name of the topic in Kafka where the messages will be adapted (required)
   - SOURCE_NAME: The name of the source that is being adapted (required)
   - PRODUCER_NAME: The name of the adapter instance that is going to adapt the source file to the target topic (required)
+
+To run the Kafka-to-Kafka adapter, you only need these variables defined:
+  - BOOTSTRAP_SERVERS
+  - KAFKA_SECURITY_PROTOCOL (optional, defaults to "SASL_PLAINTEXT")
+  - KAFKA_SASL_MECHANISM (optional, defaults to "PLAIN")
+  - SASL_USERNAME
+  - SASL_PASSWORD
+  - TOPIC_MAPPINGS_FILEPATH: the filepath of the topic mappings JSON file within the container (alternative is for this to be supplied via Airflow UI). The JSON value itself must be in this format:
+`
+  {
+  "topic_mappings": [
+    {"source":"", "source_topic_group_id": "", "target":""},
+    {"source":"", "source_topic_group_id": "", "target":""}
+  ]
+}
+`

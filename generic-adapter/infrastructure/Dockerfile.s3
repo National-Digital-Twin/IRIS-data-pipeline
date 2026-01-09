@@ -6,8 +6,8 @@ RUN groupadd -r adapteruser && useradd -r -g adapteruser adapteruser
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-s3.txt .
+RUN pip install --no-cache-dir -r requirements-s3.txt
 
 COPY ${SOURCE_FILE} .
 COPY src/s3_producer.py .
