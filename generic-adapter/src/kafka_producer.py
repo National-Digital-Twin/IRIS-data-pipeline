@@ -72,7 +72,7 @@ TARGET_BROKER = os.getenv(
 )
 
 if not TARGET_BROKER:
-    logger.info(f"TARGET_BOOTSTRAP_SERVERS not supplied, target Kafka broker will be set to the source Kafka broker.")
+    logger.info("TARGET_BOOTSTRAP_SERVERS not supplied, target Kafka broker will be set to the source Kafka broker.")
 
     TARGET_BROKER=SOURCE_BROKER
     TARGET_SASL_USERNAME=SOURCE_SASL_USERNAME
