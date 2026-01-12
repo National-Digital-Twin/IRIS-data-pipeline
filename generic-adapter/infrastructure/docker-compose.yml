@@ -1,0 +1,31 @@
+services:
+  zookeeper:
+    container_name: zookeeper-b
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2182:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks: 
+      - network_b
+  kafka:
+    container_name: kafka-b
+    image: "bitnamilegacy/kafka:3.6.0"
+    depends_on:
+      - zookeeper
+    ports:
+      - "9093:9092"
+    volumes:
+      - ./kafka-b/server.properties:/bitnami/kafka/config/server.properties
+      - ./kafka-b/producer.properties:/bitnami/kafka/config/producer.properties
+      - ./kafka-b/consumer.properties:/bitnami/kafka/config/consumer.properties
+    environment:
+      - BITNAMI_DEBUG=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks: 
+      - network_b
+  
+networks:
+  network_b:
+    name: kafka_b_net

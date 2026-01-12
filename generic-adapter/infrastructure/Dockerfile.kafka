@@ -9,11 +9,12 @@ COPY requirements-kafka.txt .
 RUN pip install --no-cache-dir -r requirements-kafka.txt
 
 COPY src/kafka_producer.py .
-COPY config/topic_mappings.json .
 
 USER adapteruser
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app
+
+ENV TOPIC_MAPPINGS_FILEPATH=/app/topic_mappings.json
 
 CMD ["python", "./kafka_producer.py"]

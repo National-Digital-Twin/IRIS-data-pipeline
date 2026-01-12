@@ -34,46 +34,105 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-BROKER = os.getenv(
-    "BOOTSTRAP_SERVERS",
-    default=True,
-)
-SASL_USERNAME = os.getenv(
-    "SASL_USERNAME",
+SOURCE_BROKER = os.getenv(
+    "SOURCE_BOOTSTRAP_SERVERS",
     default=None,
 )
-SASL_PASSWORD = os.getenv(
-    "SASL_PASSWORD",
+
+if not SOURCE_BROKER:
+    raise ValueError("SOURCE_BOOTSTRAP_SERVERS is required.")
+
+SOURCE_SASL_USERNAME = os.getenv(
+    "SOURCE_SASL_USERNAME",
     default=None,
 )
-KAFKA_SECURITY_PROTOCOL = os.getenv(
-    "KAFKA_SECURITY_PROTOCOL",
+SOURCE_SASL_PASSWORD = os.getenv(
+    "SOURCE_SASL_PASSWORD",
+    default=None,
+)
+SOURCE_KAFKA_SECURITY_PROTOCOL = os.getenv(
+    "SOURCE_KAFKA_SECURITY_PROTOCOL",
     default="SASL_PLAINTEXT",
 )
-KAFKA_SASL_MECHANISM = os.getenv(
-    "KAFKA_SASL_MECHANISM",
+SOURCE_KAFKA_SASL_MECHANISM = os.getenv(
+    "SOURCE_KAFKA_SASL_MECHANISM",
     default="PLAIN",
 )
+
+logger.info(
+    "Source broker params: " \
+    f"SOURCE_BROKER: {SOURCE_BROKER} "
+    f"SOURCE_KAFKA_SECURITY_PROTOCOL: {SOURCE_KAFKA_SECURITY_PROTOCOL} "
+    f"SOURCE_KAFKA_SASL_MECHANISM: {SOURCE_KAFKA_SASL_MECHANISM} "
+)
+
+TARGET_BROKER = os.getenv(
+    "TARGET_BOOTSTRAP_SERVERS",
+    default=None,
+)
+
+if not TARGET_BROKER:
+    logger.info(f"TARGET_BOOTSTRAP_SERVERS not supplied, target Kafka broker will be set to the source Kafka broker.")
+
+    TARGET_BROKER=SOURCE_BROKER
+    TARGET_SASL_USERNAME=SOURCE_SASL_USERNAME
+    TARGET_SASL_PASSWORD=SOURCE_SASL_PASSWORD
+    TARGET_KAFKA_SECURITY_PROTOCOL=SOURCE_KAFKA_SECURITY_PROTOCOL
+    TARGET_KAFKA_SASL_MECHANISM=SOURCE_KAFKA_SASL_MECHANISM
+    
+else:
+    SOURCE_ENV_NAME = os.getenv(
+        "SOURCE_ENV_NAME",
+        default=None
+    )
+    TARGET_ENV_NAME = os.getenv(
+        "TARGET_ENV_NAME",
+        default=None
+    )
+    TARGET_SASL_USERNAME = os.getenv(
+        "TARGET_SASL_USERNAME",
+        default=None,
+    )
+    TARGET_SASL_PASSWORD = os.getenv(
+        "TARGET_SASL_PASSWORD",
+        default=None,
+    )
+    TARGET_KAFKA_SECURITY_PROTOCOL = os.getenv(
+        "TARGET_KAFKA_SECURITY_PROTOCOL",
+        default="SASL_PLAINTEXT",
+    )
+    TARGET_KAFKA_SASL_MECHANISM = os.getenv(
+        "TARGET_KAFKA_SASL_MECHANISM",
+        default="PLAIN",
+    )
+
+    logger.info(
+        "Target broker params: " \
+        f"TARGET_BROKER: {TARGET_BROKER} "
+        f"TARGET_KAFKA_SECURITY_PROTOCOL: {TARGET_KAFKA_SECURITY_PROTOCOL} "
+        f"TARGET_KAFKA_SASL_MECHANISM: {TARGET_KAFKA_SASL_MECHANISM} "
+    )
+
 AUTO_OFFSET_RESET = os.getenv(
     "AUTO_OFFSET_RESET",
     default="earliest",
 )
-POLL_TIMEOUT_SECONDS = os.getenv(
+POLL_TIMEOUT_SECONDS = float(os.getenv(
     "POLL_TIMEOUT_SECONDS",
     default=1.0,
-)
-IDLE_TIMEOUT_SECONDS = os.getenv(
+))
+IDLE_TIMEOUT_SECONDS = float(os.getenv(
     "IDLE_TIMEOUT_SECONDS",
     default=10,
-)
-COMMIT_INTERVAL = os.getenv(
+))
+COMMIT_INTERVAL = int(os.getenv(
     "COMMIT_INTERVAL",
     default=1000,
-)
-PROGRESS_LOG_INTERVAL = os.getenv(
+))
+PROGRESS_LOG_INTERVAL = int(os.getenv(
     "PROGRESS_LOG_INTERVAL",
     default=25000,
-)
+))
 
 _EXIT = object()
 
@@ -82,7 +141,7 @@ topic_mappings_json = os.getenv("TOPIC_MAPPINGS_JSON", default=None)
 if topic_mappings_json:
     topic_mappings = json.loads(topic_mappings_json)
 else:
-    logging.info("Topic mappings not provided through Airflow config, falling back to JSON file inside container.")
+    logging.info("Topic mappings not provided through Airflow config, falling back to JSON file mounted to the container.")
     
     TOPIC_MAPPINGS_FILEPATH = os.getenv("TOPIC_MAPPINGS_FILEPATH", default=None)
     with open(TOPIC_MAPPINGS_FILEPATH, "r", encoding="utf-8") as f:
@@ -97,11 +156,11 @@ def _merge_headers(headers: List[Tuple[str, bytes | str]] | None, source_topic: 
 
 def _build_consumer_cfg(group_id: str) -> dict:
     return {
-        "bootstrap.servers": BROKER,
-        "security.protocol": KAFKA_SECURITY_PROTOCOL,
-        "sasl.mechanism": KAFKA_SASL_MECHANISM,
-        "sasl.username": SASL_USERNAME,
-        "sasl.password": SASL_PASSWORD,
+        "bootstrap.servers": SOURCE_BROKER,
+        "security.protocol": SOURCE_KAFKA_SECURITY_PROTOCOL,
+        "sasl.mechanism": SOURCE_KAFKA_SASL_MECHANISM,
+        "sasl.username": SOURCE_SASL_USERNAME,
+        "sasl.password": SOURCE_SASL_PASSWORD,
         "group.id": group_id,
         "auto.offset.reset": AUTO_OFFSET_RESET,
         "enable.auto.commit": False,
@@ -110,11 +169,11 @@ def _build_consumer_cfg(group_id: str) -> dict:
 
 def _build_producer_cfg() -> dict:
     return {
-        "bootstrap.servers": BROKER,
-        "security.protocol": KAFKA_SECURITY_PROTOCOL,
-        "sasl.mechanism": KAFKA_SASL_MECHANISM,
-        "sasl.username": SASL_USERNAME,
-        "sasl.password": SASL_PASSWORD,
+        "bootstrap.servers": TARGET_BROKER,
+        "security.protocol": TARGET_KAFKA_SECURITY_PROTOCOL,
+        "sasl.mechanism": TARGET_KAFKA_SASL_MECHANISM,
+        "sasl.username": TARGET_SASL_USERNAME,
+        "sasl.password": TARGET_SASL_PASSWORD,
         "allow.auto.create.topics": True
     }
 
@@ -191,10 +250,13 @@ def run_mapping(source_topic: str, group_id: str, target_topic: str) -> None:
 
         if PROGRESS_LOG_INTERVAL > 0 and processed % PROGRESS_LOG_INTERVAL == 0:
             logger.info("Processed %d records from %s", processed, source_topic)
+            producer.flush()
 
         _commit_if_needed(consumer, processed)
 
-    producer.flush()
+    if processed % PROGRESS_LOG_INTERVAL != 0:
+        producer.flush()
+
     if processed > 0:
         try:
             consumer.commit(asynchronous=False)
@@ -209,10 +271,29 @@ def run_mapping(source_topic: str, group_id: str, target_topic: str) -> None:
         processed,
     )
 
+def _safe(s: str) -> str:
+    return s.replace(":", "_").replace(".", "_").replace(",", "_")
 
 for mapping in topic_mappings["topic_mappings"]:
+    source_topic = mapping["source_topic"]
+    target_topic = mapping["target_topic"]
+
+    ## TODO: replace SOURCE_BROKER and TARGET_BROKER with env variables to be passed in
+    if SOURCE_BROKER != TARGET_BROKER:
+        source_topic_group_id = (
+            f"{source_topic}__to__{target_topic}"
+            f"__src__{_safe(SOURCE_ENV_NAME)}__tgt__{_safe(TARGET_ENV_NAME)}"
+        )
+    else:
+        source_topic_group_id = (
+            f"{source_topic}__to__{target_topic}"
+        )
+    
+    if SOURCE_BROKER == TARGET_BROKER and source_topic == target_topic:
+        raise ValueError(f"Refusing to copy {source_topic} to itself on the same cluster.")
+
     run_mapping(
-        mapping["source"],
-        mapping["source_topic_group_id"],
-        mapping["target"],
+        source_topic,
+        source_topic_group_id,
+        target_topic,
     )
