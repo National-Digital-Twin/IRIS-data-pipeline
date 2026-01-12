@@ -25,6 +25,7 @@ import json
 import logging
 import time
 from typing import List, Tuple
+import re
 
 from confluent_kafka import Consumer, KafkaError, Producer
 from dotenv import load_dotenv
@@ -133,6 +134,7 @@ PROGRESS_LOG_INTERVAL = int(os.getenv(
     "PROGRESS_LOG_INTERVAL",
     default=25000,
 ))
+SAFE_RE = re.compile(r"[^0-9A-Za-z]+")
 
 _EXIT = object()
 
@@ -271,26 +273,22 @@ def run_mapping(source_topic: str, group_id: str, target_topic: str) -> None:
         processed,
     )
 
-def _safe(s: str) -> str:
-    return s.replace(":", "_").replace(".", "_").replace(",", "_")
-
 for mapping in topic_mappings["topic_mappings"]:
     source_topic = mapping["source_topic"]
     target_topic = mapping["target_topic"]
 
-    ## TODO: replace SOURCE_BROKER and TARGET_BROKER with env variables to be passed in
     if SOURCE_BROKER != TARGET_BROKER:
         source_topic_group_id = (
             f"{source_topic}__to__{target_topic}"
-            f"__src__{_safe(SOURCE_ENV_NAME)}__tgt__{_safe(TARGET_ENV_NAME)}"
+            f"__src__{SAFE_RE.sub("_", SOURCE_ENV_NAME)}__tgt__{SAFE_RE.sub("_", TARGET_ENV_NAME)}"
         )
     else:
         source_topic_group_id = (
             f"{source_topic}__to__{target_topic}"
         )
     
-    if SOURCE_BROKER == TARGET_BROKER and source_topic == target_topic:
-        raise ValueError(f"Refusing to copy {source_topic} to itself on the same cluster.")
+        if source_topic == target_topic:
+            raise ValueError(f"Refusing to copy {source_topic} to itself on the same cluster.")
 
     run_mapping(
         source_topic,

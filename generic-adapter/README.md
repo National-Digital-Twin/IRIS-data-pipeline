@@ -55,8 +55,8 @@ Regardless of the above, you also need to tell the Kafka adapter what data you'd
 `
   {
   "topic_mappings": [
-    {"source":"", "target":""},
-    {"source":"", "target":""}
+    {"source_topic":"", "target_topic":""},
+    {"source_topic":"", "target_topic":""}
   ]
 }
 `
