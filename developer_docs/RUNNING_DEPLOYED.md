@@ -57,6 +57,14 @@ The mapper can be found under the `uprn-lat-long-pipeline/mapper` folder. The ma
 Once the container is built use the command `make docker-run SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password>`.
 The mapper container is not set to be automatically removed once it has done processing. Please remove the container manually using the command `docker rm -f <insert-uprn-lat-long-mapper-container-name>`.
 
+## NGD property pipeline
+
+### Mapper
+
+The mapper can be found under the `ngd-property-pipeline/mapper` folder. The mapper can be run as a docker container. You must build the docker container using the command `make docker-build IMAGE_TAG=<insert image tag here>`.
+Once the container is built use the command `make docker-run BOOTSTRAP_SERVERS=<insert-bootstrap-servers> KAFKA_SECURITY_PROTOCOL=<insert-kafka-security-protocol> KAFKA_SASL_MECHANISM=<insert-kafka-sasl-mechanism> SASL_USERNAME=<insert-sasl-username> SASL_PASSWORD=<insert-sasl-password> SOURCE_TOPIC=<insert-source-topic> SOURCE_TOPIC_GROUP_ID=<insert-source-topic-group-id> TARGET_TOPIC=<insert-target-topic>` <insert-image-tag-for-built-image> .
+The mapper container is not set to be automatically removed once it has done processing. Please remove the container manually using the command `docker rm -f <insert-ngd-property-mapper-container-name>`.
+
 ## Post processing pipeline
 
 The post processing pipeline has been created to create smaller named graphs from the main data so that the `IRIS-visualization` application can lazy load the required data quickly as compared to querying the main graph with millions of triples.
