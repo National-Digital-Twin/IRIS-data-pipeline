@@ -150,8 +150,8 @@ def add_postcode_identifier(record: dict, addressable_location: str) -> None:
     Returns:
         None
     """
-    postcode = record.get("PostcodeLocator")
-    identifier_uri = f"{data_ns}PCODE_{postcode.replace(" ", "_")}"
+    postcode = record.get("Postcode")
+    identifier_uri = f"{data_ns}PCODE_{postcode.replace(' ', '_')}"
     ies.add_triple(identifier_uri, RDF_TYPE, build_ies_uri("PostalCode"))
     ies.add_triple(subject=identifier_uri, predicate=build_ies_uri("representationValue"), obj=postcode, 
                    is_literal=True, literal_type="string")
@@ -171,7 +171,8 @@ def add_addressable_location_identifiers(record: dict, addressable_location: str
     """
     add_typed_identifier(record, addressable_location, "UPRN", ies_building_ns, "UPRN")
     add_typed_identifier(record, addressable_location, "FirstLineOfAddress", ies_ns, "Address")
-    add_typed_field(record, "TOID", ies_ns, "TOID")
+    if record.get("TOID") != '':
+        add_typed_field(record, "TOID", ies_ns, "TOID")
     add_postcode_identifier(record, addressable_location)
     
 

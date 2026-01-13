@@ -6,38 +6,38 @@
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-data:UPRN_100050060776 a building:UPRN ;
-	ies:representationValue "100050060776"^^xsd:string .
+data:UPRN_100100692468 a building:UPRN ;
+	ies:representationValue "100100692468"^^xsd:string .
 	
-data:PCODE_DN14_0AA a ies:PostalCode ;
-	ies:representationValue "DN14 0AA"^^xsd:string .
+data:PCODE_NP19_8GG a ies:PostalCode ;
+	ies:representationValue "NP19 8GG"^^xsd:string .
 	
-data:FirstLineOfAddress_100050060776 a ies:FirstLineOfAddress ;
-    ies:representationValue "Aire View, Gowdall Road, Snaith, Goole, DN14 0AA"^^xsd:string .
+data:FirstLineOfAddress_100100692468 a ies:FirstLineOfAddress ;
+    ies:representationValue "83, VICTORIA AVENUE, NEWPORT, NP19 8GG"^^xsd:string .
 
-data:TOID_100050060776 a ies:TOID ;
-    ies:representationValue "osgb1000002094854531"^^xsd:string .
+data:TOID_100100692468 a ies:TOID ;
+    ies:representationValue "osgb1000027605152"^^xsd:string .
 
-data:AddressableLocation_100050060776 a building:AddressableLocation ;
-	ies:isIdentifiedBy data:UPRN_100050060776,
-		data:PCODE_DN14_0AA,
-		data:FirstLineOfAddress_100050060776 .
+data:AddressableLocation_100100692468 a building:AddressableLocation ;
+	ies:isIdentifiedBy data:UPRN_100100692468,
+		data:PCODE_NP19_8GG,
+		data:FirstLineOfAddress_100100692468 .
 
-data:Location_100050060776 a ies:Location ;
-    ies:isIdentifiedBy data:PCODE_DN14_0AA .
+data:Location_100100692468 a ies:Location ;
+    ies:isIdentifiedBy data:PCODE_NP19_8GG .
 
-data:LocationPoint_100050060776 a ies:PointOnEarthSurface ;
+data:LocationPoint_100100692468 a ies:PointOnEarthSurface ;
     ies:isIdentifiedBy [
             a ies:Latitude ;
-            ies:representationValue "53.69278550200611"^^xsd:string
+            ies:representationValue "51.5923481"^^xsd:string
         ], 
         [
             a ies:Longitude ;
-            ies:representationValue "-1.0319753337442386"^^xsd:string
+            ies:representationValue "-2.9751483"^^xsd:string
         ] ;
     ies:isRepresentedAs _:g1 ;
     geo:hasGeometry _:g1 .
 
 _:g1 a ies:ISO19125-WKT ;
-    ies:representationValue "POINT(-1.0319753337442386 53.69278550200611)"^^geo:wktLiteral ;
-    geo:asWKT "POINT(-1.0319753337442386 53.69278550200611)"^^geo:wktLiteral .
+    ies:representationValue "POINT(-2.9751483 51.5923481)"^^geo:wktLiteral ;
+    geo:asWKT "POINT(-2.9751483 51.5923481)"^^geo:wktLiteral .
