@@ -76,13 +76,13 @@ In this example, this is the topic mappings JSON we will use (stored locally in 
 `
 {
   "topic_mappings": [
-    {"source":"address-profiling-test-2026-01-06-154543-epc-assessment-mapped", "target":"knowledge2-geo-test"},
-    {"source":"address-profiling-test-2026-01-06-154543-floor-mapped", "target":"knowledge2-geo-test"},
-    {"source":"address-profiling-test-2026-01-06-154543-heating-mapped", "target":"heating-v2"},
-    {"source":"address-profiling-test-2026-01-06-154543-roof-mapped", "target":"knowledge2-geo-test"},
-    {"source":"address-profiling-test-2026-01-06-154543-structure-unit-mapped", "target":"knowledge2-geo-test"},
-    {"source":"address-profiling-test-2026-01-06-154543-wall-mapped", "target":"knowledge2-geo-test"},
-    {"source":"address-profiling-test-2026-01-06-154543-window-mapped", "target":"knowledge2-geo-test"}
+    {"source_topic":"address-profiling-test-2026-01-06-154543-epc-assessment-mapped", "target_topic":"knowledge2-geo-test"},
+    {"source_topic":"address-profiling-test-2026-01-06-154543-floor-mapped", "target_topic":"knowledge2-geo-test"},
+    {"source_topic":"address-profiling-test-2026-01-06-154543-heating-mapped", "target_topic":"heating-v2"},
+    {"source_topic":"address-profiling-test-2026-01-06-154543-roof-mapped", "target_topic":"knowledge2-geo-test"},
+    {"source_topic":"address-profiling-test-2026-01-06-154543-structure-unit-mapped", "target_topic":"knowledge2-geo-test"},
+    {"source_topic":"address-profiling-test-2026-01-06-154543-wall-mapped", "target_topic":"knowledge2-geo-test"},
+    {"source_topic":"address-profiling-test-2026-01-06-154543-window-mapped", "target_topic":"knowledge2-geo-test"}
   ]
 }
 `
