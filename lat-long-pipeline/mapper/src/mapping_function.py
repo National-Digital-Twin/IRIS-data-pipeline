@@ -229,7 +229,7 @@ def map_func(record: dict) -> Optional[str]:
         record (dict): A record representing a building.
         
     Returns:
-        Optional[str]: The RDF graph serialized into triples, or None when DEBUG_MODE is True.
+        str: The RDF graph serialized into triples
     """
     ies.clear_graph()
     # first our namespaces
@@ -251,6 +251,6 @@ def map_func(record: dict) -> Optional[str]:
     if DEBUG_MODE:
         ies.graph.serialize(destination=f"{get_uprn(record)}_ll.ttl", format="turtle")
      
-        return None
+        return ''
     record = ies.graph.serialize(format="turtle")
     return record
