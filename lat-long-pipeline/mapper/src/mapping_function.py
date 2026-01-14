@@ -24,6 +24,7 @@
 import ies_tool.ies_tool as ies_tool
 from ies_tool.ies_tool import RDF_TYPE, XSD
 import hashlib
+from typing import Optional
 from rdflib import BNode, Literal, Namespace, URIRef
 
 DEBUG_MODE = False  # output to local file if True
@@ -220,7 +221,7 @@ def add_geographic_mapping(record: dict) -> None:
     ies.graph.add((URIRef(location_point_uri), GEO.hasGeometry, wkt_bnode))
 
 
-def map_func(record: dict) -> str:
+def map_func(record: dict) -> Optional[str]:
     """
     Creates the graph and orchestrates its mappings.
     
@@ -228,7 +229,7 @@ def map_func(record: dict) -> str:
         record (dict): A record representing a building.
         
     Returns:
-        str: The RDF graph serialized into triples.
+        Optional[str]: The RDF graph serialized into triples, or None when DEBUG_MODE is True.
     """
     ies.clear_graph()
     # first our namespaces
@@ -250,6 +251,6 @@ def map_func(record: dict) -> str:
     if DEBUG_MODE:
         ies.graph.serialize(destination=f"{get_uprn(record)}_ll.ttl", format="turtle")
      
-        return
+        return None
     record = ies.graph.serialize(format="turtle")
     return record
