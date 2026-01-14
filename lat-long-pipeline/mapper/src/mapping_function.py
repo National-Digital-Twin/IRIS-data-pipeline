@@ -171,8 +171,7 @@ def add_addressable_location_identifiers(record: dict, addressable_location: str
     """
     add_typed_identifier(record, addressable_location, "UPRN", ies_building_ns, "UPRN")
     add_typed_identifier(record, addressable_location, "FirstLineOfAddress", ies_ns, "Address")
-    if record.get("TOID") != '':
-        add_typed_field(record, "TOID", ies_ns, "TOID")
+    add_typed_field(record, "TOID", ies_ns, "TOID")
     add_postcode_identifier(record, addressable_location)
     
 
