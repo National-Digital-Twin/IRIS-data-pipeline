@@ -21,9 +21,7 @@
 #  © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
 #  and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
 
-import codecs
 import csv
-from contextlib import closing
 from json import dumps
 from typing import Iterable
 
@@ -103,6 +101,8 @@ AWS_SECRET_ACCESS_KEY = config.get(
     description="The aws secret access key for local development and testing.",
 )
 
+FIELD_SIZE_LIMIT = 1000000
+
 permitted_nationalities = ["GBR", "NZL"]
 default_security_label = (
     SecurityLabelBuilder()
@@ -123,6 +123,8 @@ kafka_config = {
     "sasl.password": SASL_PASSWORD,
     "allow.auto.create.topics": True,
 }
+
+csv.field_size_limit(FIELD_SIZE_LIMIT)
 
 
 def create_record(data, security_labels):
