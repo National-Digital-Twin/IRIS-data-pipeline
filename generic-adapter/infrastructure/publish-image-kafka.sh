@@ -1,7 +1,7 @@
 #!/bin/sh
 
 TAG="latest"
-IMAGE="ia/s3-adapter:$TAG"
+IMAGE="data-pipeline-utils/kafka-adapter:$TAG"
 
 if [ -z "$(docker images -q $IMAGE 2> /dev/null)" ]; then
   echo "Image: $IMAGE does not exist, exiting..."

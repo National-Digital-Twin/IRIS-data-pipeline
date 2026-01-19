@@ -124,8 +124,6 @@ kafka_config = {
     "allow.auto.create.topics": True,
 }
 
-csv.field_size_limit(FIELD_SIZE_LIMIT)
-
 
 def create_record(data, security_labels):
     return Record(
@@ -158,6 +156,9 @@ def generate_records() -> Iterable[Record]:
 
     for row in rows:
         yield create_record(row, default_security_label)
+
+
+csv.field_size_limit(FIELD_SIZE_LIMIT)
 
 
 # Create a sink and the adapter
