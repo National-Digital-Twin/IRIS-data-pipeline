@@ -16,9 +16,10 @@
 #  limitations under the License.
 
 from ies_tool.ies_tool import IESTool
-from namespaces import iso8601_ns
+from namespaces import data_ns, iso8601_ns
 from models.structure_unit import StructureUnit
-from utils import (create_stateful_record_uri, 
+from utils import (create_record_uri,
+                   create_stateful_record_uri, 
                    add_ies_building_type_mappings, 
                    build_ies_building_uri, 
                    build_uri, 
@@ -29,8 +30,8 @@ from utils import (create_stateful_record_uri,
                    add_bnode_with_ies_type_and_value,
                    add_attribute_of_state_mapping
                    )
-from rdflib import BNode, URIRef
-from ies_tool.ies_tool import IESTool, RDF_TYPE
+from rdflib import BNode, Literal, URIRef
+from ies_tool.ies_tool import IESTool, RDF_TYPE, XSD
 
 
 class EpcAssessment:
@@ -58,6 +59,7 @@ class EpcAssessment:
         self.add_epc_assessment_mapping(record, structure_unit.state_uri)
         self.add_epc_assessment_result_mapping(record)
         self.add_epc_certificate_mapping(record)
+        self.add_address_match_assessment(record)
         sap_rating_uri = self.add_epc_metric(record, "SAPRating", "SAPRatingValue")
         self.add_epc_metric_calculation(record, "SAPRatingCalculation", sap_rating_uri, structure_unit)
         environmental_impact_rating_uri = self.add_epc_metric(record, "EnvironmentalImpactRating", "EnvironmentalImpactRatingValue")
@@ -113,6 +115,33 @@ class EpcAssessment:
         add_state_mappings(self.ies, epc_certificate_created_uri, [epc_certificate_uri])  
         add_part_mappings(self.ies, epc_certificate_created_uri, [self.uri])
         self.ies.add_triple(epc_certificate_created_uri, build_ies_uri("inPeriod"), self.lodgement_date_uri)
+
+    def add_address_match_assessment(self, record: dict) -> None:
+        """
+        Adds an address match assessment when a match score is available.
+        """
+        match_score = record.get("MatchScore")
+        uprn = record.get("UPRN")
+        if match_score in (None, "") or not uprn:
+            return
+
+        try:
+            score_value = float(match_score)
+        except (TypeError, ValueError):
+            return
+
+        assessment_uri = build_uri(data_ns, f"AddressMatchAssessment_{record['LMK_KEY']}")
+        add_ies_type_mappings(self.ies, assessment_uri, ["AssessToBeTrue"])
+        uprn_uri = create_record_uri(record, "UPRN")
+        self.ies.add_triple(assessment_uri, build_ies_uri("assessed"), uprn_uri)
+        self.ies.add_triple(
+            assessment_uri, 
+            build_ies_uri("confidence"), 
+            str(score_value), 
+            is_literal=True,
+            literal_type="decimal"
+        )
+        self.ies.add_triple(assessment_uri, build_ies_uri("isPartOf"), self.uri)
         
     def add_epc_metric(self, record: dict, field_name: str, metric_ies_name: str) -> str:
         """

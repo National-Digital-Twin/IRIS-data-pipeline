@@ -1,0 +1,67 @@
+<http://ndtp.co.uk/data#EnergyPerformanceAssessmentResult_10023713440_20090130>
+  a <http://ies.data.gov.uk/ontology/ies-building1#EnergyPerformanceAssessmentResult> ;
+  <http://informationexchangestandard.org/ont/ies#isParticipantIn> <http://ndtp.co.uk/data#EPCAssessment_10023713440_20090130> ;
+  <http://ies.data.gov.uk/ontology/ies-building1#lodgementDate> <http://iso8601.iso.org/2009-01-30> .
+
+<http://ndtp.co.uk/data#EPCAssessment_10023713440_20090130>
+  a <http://ies.data.gov.uk/ontology/ies-building1#EPCAssessment> ;
+  <http://ies.data.gov.uk/ontology/ies-building1#assessedStateForEnergyPerformance> <http://ndtp.co.uk/data#StructureUnitState_10023713440_20090130> .
+
+<http://ndtp.co.uk/data#EnergyPerformanceCertificateCreated_10023713440_20090130>
+  a <http://informationexchangestandard.org/ont/ies#Created> ;
+  <http://informationexchangestandard.org/ont/ies#inPeriod> <http://iso8601.iso.org/2009-01-30> ;
+  <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#EPCAssessment_10023713440_20090130> ;
+  <http://informationexchangestandard.org/ont/ies#isStateOf> <http://ndtp.co.uk/data#EnergyPerformanceCertificate_10023713440_20090130> .
+
+<http://ndtp.co.uk/data#EnergyPerformanceCertificate_10023713440_20090130>
+  a <http://ies.data.gov.uk/ontology/ies-building1#UK_DOM_EPC_D> .
+
+<http://ndtp.co.uk/data#EnvironmentalImpactRatingCalculation_10023713440_20090130>
+  a <http://ies.data.gov.uk/ontology/ies-building1#EnvironmentalImpactRatingCalculation> ;
+  <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#EPCAssessment_10023713440_20090130> ;
+  <http://ies.data.gov.uk/ontology/ies-building1#assessedStateForEnergyPerformance> _:N9c55f0cded1c4b9dba5f5abb8fd946e3 .
+
+<http://ndtp.co.uk/data#EnvironmentalImpactRating_10023713440_20090130>
+  a <http://ies.data.gov.uk/ontology/ies-building1#EnvironmentalImpactRating> ;
+  <http://informationexchangestandard.org/ont/ies#allHaveCharacteristic> _:N19b8b90a11b04384a87c0d11aced9ce6 .
+
+_:N19b8b90a11b04384a87c0d11aced9ce6
+  a <http://ies.data.gov.uk/ontology/ies-building1#EnvironmentalImpactRatingValue> ;
+  <http://informationexchangestandard.org/ont/ies#hasValue> _:N417ffaecbc4f4f37b509a2d3ad440106 .
+
+_:N417ffaecbc4f4f37b509a2d3ad440106
+  a <http://informationexchangestandard.org/ont/ies#MeasureValue> ;
+  <http://informationexchangestandard.org/ont/ies#representationValue> "61"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+<http://ndtp.co.uk/data#SAPRatingCalculation_10023713440_20090130>
+  a <http://ies.data.gov.uk/ontology/ies-building1#SAPRatingCalculation> ;
+  <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#EPCAssessment_10023713440_20090130> ;
+  <http://ies.data.gov.uk/ontology/ies-building1#assessedStateForEnergyPerformance> _:N923f8f9af2ff480e90121c5272981ef1 .
+
+<http://ndtp.co.uk/data#SAPRating_10023713440_20090130>
+  a <http://ies.data.gov.uk/ontology/ies-building1#SAPRating> ;
+  <http://informationexchangestandard.org/ont/ies#allHaveCharacteristic> _:N50434fe9349e4e2fbc3af6060d003e42 .
+
+_:N50434fe9349e4e2fbc3af6060d003e42
+  a <http://ies.data.gov.uk/ontology/ies-building1#SAPRatingValue> ;
+  <http://informationexchangestandard.org/ont/ies#hasValue> _:N0b2a1cc89d274ff28ddd6d517279ad54 .
+
+_:N0b2a1cc89d274ff28ddd6d517279ad54
+  a <http://informationexchangestandard.org/ont/ies#MeasureValue> ;
+  <http://informationexchangestandard.org/ont/ies#representationValue> "67"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+<http://ndtp.co.uk/data#AddressMatchAssessment_52356789352009013012054501210652>
+  a <http://informationexchangestandard.org/ont/ies#AssessToBeTrue> ;
+  <http://informationexchangestandard.org/ont/ies#assessed> <http://ndtp.co.uk/data#UPRN_10023713440> ;
+  <http://informationexchangestandard.org/ont/ies#confidence> "0.8"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+  <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#EPCAssessment_10023713440_20090130> .
+
+_:N9c55f0cded1c4b9dba5f5abb8fd946e3
+  a <http://ndtp.co.uk/data#EnvironmentalImpactRating_10023713440_20090130> ;
+  <http://informationexchangestandard.org/ont/ies#isStateOf> <http://ndtp.co.uk/data#StructureUnit_10023713440> ;
+  <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#StructureUnitState_10023713440_20090130> .
+
+_:N923f8f9af2ff480e90121c5272981ef1
+  a <http://ndtp.co.uk/data#SAPRating_10023713440_20090130> ;
+  <http://informationexchangestandard.org/ont/ies#isStateOf> <http://ndtp.co.uk/data#StructureUnit_10023713440> ;
+  <http://informationexchangestandard.org/ont/ies#isPartOf> <http://ndtp.co.uk/data#StructureUnitState_10023713440_20090130> .
