@@ -13,7 +13,7 @@ AWS_ACCOUNT=$(aws sts get-caller-identity --query Account --output text)
 
 aws ecr get-login-password --region $AWS_REGION | sudo docker login --username AWS --password-stdin $AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com
 
-AWS_IMAGE=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE:$TAG
+AWS_IMAGE=$AWS_ACCOUNT.dkr.ecr.$AWS_REGION.amazonaws.com/$IMAGE
 
 sudo docker tag $IMAGE $AWS_IMAGE
 sudo docker push $AWS_IMAGE

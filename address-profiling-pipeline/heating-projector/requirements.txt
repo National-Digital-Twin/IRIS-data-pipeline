@@ -1,5 +1,3 @@
 telicent-lib==2.0.1
 telicent-ies-tool==1.0.2
 python-dotenv
-SQLAlchemy~=2.0.0
-psycopg2-binary~=2.9.10

@@ -1,14 +1,14 @@
 services:
   zookeeper:
     container_name: iris-pipeline-zookeeper
-    image: bitnami/zookeeper:latest
+    image: bitnamilegacy/zookeeper:latest
     ports:
       - "2181:2181"
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
   kafka:
     container_name: iris-pipeline-kafka
-    image: "bitnami/kafka:3.5.1"
+    image: "bitnamilegacy/kafka:3.5.1"
     depends_on:
       - zookeeper
     ports:

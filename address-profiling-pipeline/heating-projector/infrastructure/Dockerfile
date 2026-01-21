@@ -2,7 +2,7 @@ FROM python:3.12
 
 # Create a non-root user and group
 RUN apt-get update && \
-    groupadd -r projectoruser && useradd -r -g projectoruser projectoruser
+	groupadd -r projectoruser && useradd -r -g projectoruser projectoruser
 
 WORKDIR /app
 
