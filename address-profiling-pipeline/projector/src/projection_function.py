@@ -14,7 +14,7 @@ BUILDING_RECORD_EXISTS_QUERY = """
 """
 
 EPC_ASSESSMENT_RECORD_EXISTS_QUERY = """
-    SELECT * FROM iris.epc_assessment WHERE uprn = :uprn AND lodgement_date = :lodgement_date;
+    SELECT * FROM iris.epc_assessment WHERE uprn = :uprn AND lodgement_date = :lodgement_date AND epc_rating = :epc_rating;
 """
 
 INSERT_EPC_ASSESSMENT_RECORD_QUERY = """
@@ -174,9 +174,10 @@ def project_func(connection: Connection, record: dict):
 
     if int(building_record_exists_result.rowcount) == 1:
         lodgement_date = record["LodgementDate"]
+        epc_rating = record["SAPBand"]
         epc_assessment_record_exists_result = connection.execute(
             text(EPC_ASSESSMENT_RECORD_EXISTS_QUERY),
-            {"uprn": uprn, "lodgement_date": lodgement_date},
+            {"uprn": uprn, "lodgement_date": lodgement_date, "epc_rating": epc_rating},
         )
 
         if int(epc_assessment_record_exists_result.rowcount) == 0:
@@ -184,7 +185,7 @@ def project_func(connection: Connection, record: dict):
             epc_assessment_record_params = {
                 "id": str(epc_assessment_id),
                 "uprn": uprn,
-                "epc_rating": record["SAPBand"],
+                "epc_rating": epc_rating,
                 "lodgement_date": lodgement_date,
                 "sap_rating": record["SAPRating"],
                 "expiry_date": get_expiry_date(lodgement_date),

@@ -8,7 +8,7 @@ WORKDIR /app
 
 COPY ../custom_projectors ./custom_projectors
 COPY ../src/projection_function.py .
-COPY ../src/projector.py .
+COPY ../postgres_projector_template.py projector.py
 
 
 COPY ../requirements.txt .

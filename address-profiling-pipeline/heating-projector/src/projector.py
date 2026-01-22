@@ -20,7 +20,7 @@ from projection_function import project_func
 from telicent_lib.config import Configurator
 from telicent_lib.records import Record
 
-from custom_projectors.one_off_projector import OneOffProjector
+from custom_projectors.batched_one_off_projector import BatchedOneOffProjector
 
 load_dotenv()
 config = Configurator()
@@ -111,23 +111,15 @@ kafka_producer_config = {
     "allow.auto.create.topics": True,
 }
 
-heating_triples_batch = []
+
+def unwrap_and_project(records: [Record]) -> None:
+    project_func(
+        SAG_ENDPOINT, HEATING_GRAPH_URI, map(lambda record: record.value, records)
+    )
 
 
-def unwrap_and_project(record: Record) -> None:
-    heating_triples_batch.append(record.value)
-
-    if len(heating_triples_batch) % SAG_UPDATE_FREQUENCY == 0:
-        project_func(SAG_ENDPOINT, HEATING_GRAPH_URI, heating_triples_batch)
-        heating_triples_batch.clear()
-
-
-projector = OneOffProjector(
+projector = BatchedOneOffProjector(
     SOURCE_TOPIC, kafka_consumer_config, kafka_producer_config, unwrap_and_project
 )
 
 projector.run()
-
-if len(heating_triples_batch) > 0:
-    project_func(SAG_ENDPOINT, HEATING_GRAPH_URI, heating_triples_batch)
-    heating_triples_batch.clear()
