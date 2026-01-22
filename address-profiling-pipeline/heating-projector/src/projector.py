@@ -113,9 +113,7 @@ kafka_producer_config = {
 
 
 def unwrap_and_project(records: [Record]) -> None:
-    project_func(
-        SAG_ENDPOINT, HEATING_GRAPH_URI, map(lambda record: record.value, records)
-    )
+    project_func(SAG_ENDPOINT, HEATING_GRAPH_URI, [record.value for record in records])
 
 
 projector = BatchedOneOffProjector(
