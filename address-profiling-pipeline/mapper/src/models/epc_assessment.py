@@ -156,7 +156,7 @@ class EpcAssessment:
             str: The URI of an EPC assessment metric.
         """
         metric_value = record.get(field_name)
-        metric_bnode = add_bnode_with_ies_type_and_value(self.ies, "MeasureValue", int(float(metric_value)))
+        metric_bnode = add_bnode_with_ies_type_and_value(self.ies, "MeasureValue", str(int(float(metric_value))))
         characteristic_bnode = BNode()
         self.ies.graph.add((characteristic_bnode, URIRef(RDF_TYPE), URIRef(build_ies_building_uri(metric_ies_name))))
         self.ies.graph.add((characteristic_bnode, URIRef(build_ies_uri("hasValue")), metric_bnode))
