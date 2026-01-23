@@ -89,7 +89,6 @@ FUEL_TYPE_MAP: dict = {
     "Fuel": "Fuel",
     "Biomass": "Biomass",
     "Coal": "Coal",
-    "Fuel": "Fuel",
     "Electricity": "Electricity",
     "LPG": "LPG",
     "NaturalFuelGas": "NaturalFuelGas",
@@ -227,4 +226,3 @@ def project_func(connection: Connection, record: dict):
             connection.execute(
                 text(INSERT_STRUCTURE_UNIT_RECORD_QUERY), structure_unit_record_params
             )
-    pass
