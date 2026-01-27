@@ -117,7 +117,11 @@ def unwrap_and_project(records: [Record]) -> None:
 
 
 projector = BatchedOneOffProjector(
-    SOURCE_TOPIC, kafka_consumer_config, kafka_producer_config, unwrap_and_project
+    SOURCE_TOPIC,
+    kafka_consumer_config,
+    kafka_producer_config,
+    SAG_UPDATE_FREQUENCY,
+    unwrap_and_project,
 )
 
 projector.run()

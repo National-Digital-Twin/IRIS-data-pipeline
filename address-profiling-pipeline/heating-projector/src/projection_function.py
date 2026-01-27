@@ -10,7 +10,7 @@ HEADERS = {"Content-Type": "application/sparql-update"}
 
 INSERT_QUERY = """
     INSERT DATA {
-        GRAPH <{GRAPH_URI}> {
+        GRAPH {GRAPH_URI} {
             {PAYLOAD}
         }
     }
@@ -19,7 +19,7 @@ INSERT_QUERY = """
 RETRY_STRATEGY = Retry(
     total=3,
     status_forcelist=[429, 500, 502, 503, 504],
-    method_whitelist=["HEAD", "OPTIONS", "POST"],
+    allowed_methods=frozenset(["HEAD", "OPTIONS", "POST"]),
 )
 
 
@@ -33,4 +33,4 @@ def project_func(sag_endpoint: str, heating_graph_uri: str, data: []):
     session.mount("http://", HTTPAdapter(max_retries=RETRY_STRATEGY))
     session.mount("https://", HTTPAdapter(max_retries=RETRY_STRATEGY))
 
-    requests.post(sag_endpoint, data=query.encode("utf-8"), headers=HEADERS)
+    session.post(sag_endpoint, data=query.encode("utf-8"), headers=HEADERS)

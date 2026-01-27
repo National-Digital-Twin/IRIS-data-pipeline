@@ -56,13 +56,15 @@ class BatchedOneOffProjector:
                                 f"Processed {index} records, {total_records_sent_to_dlq} records sent to DLQ, {source.remaining()} records remaining"
                             )
 
+                        if index == total_records_to_project and len(batch) > 0:
+                            total_records_processed += len(batch)
+                            self.projection_function(batch)
+                            batch.clear()
+
                         if (
                             total_records_processed >= total_records_to_project
                             and source.remaining() == 0
                         ):
-                            if len(batch) > 0:
-                                self.projection_function(batch)
-                                batch.clear()
 
                             logger.info(
                                 f"Finished processing all records in {self.source_topic}!"
@@ -72,10 +74,11 @@ class BatchedOneOffProjector:
                     except Exception as err:
                         logger.error(f"Error occured at offset {index}: {err}")
 
-                        for record in batch:
-                            target_dlq.send(record)
+                        for batch_record in batch:
+                            target_dlq.send(batch_record)
                             total_records_sent_to_dlq += 1
-                            batch.clear()
+
+                        batch.clear()
 
                         if (
                             total_records_processed >= total_records_to_project
