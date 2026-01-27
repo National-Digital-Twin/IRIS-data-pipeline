@@ -47,7 +47,7 @@ class BatchedOneOffProjector:
                         batch.append(record)
 
                         if len(batch) % self.batch_size == 0:
-                            total_records_processed += len(batch)
+                            total_records_processed += self.batch_size
                             self.projection_function(batch)
                             batch.clear()
 

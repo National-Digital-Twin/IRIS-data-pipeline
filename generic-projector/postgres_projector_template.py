@@ -20,7 +20,6 @@ from json import loads
 from dotenv import load_dotenv
 from projection_function import project_func
 from sqlalchemy import create_engine
-from sqlalchemy.exc import SQLAlchemyError
 from telicent_lib.config import Configurator
 from telicent_lib.records import Record
 
@@ -131,12 +130,7 @@ def unwrap_and_project(record: Record) -> None:
     data = loads(record.value)
 
     with engine.begin() as conn:
-        try:
-            project_func(conn, data)
-            conn.commit()
-        except SQLAlchemyError as err:
-            conn.rollback()
-            raise err
+        project_func(conn, data)
 
 
 projector = OneOffProjector(
