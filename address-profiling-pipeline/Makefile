@@ -16,10 +16,10 @@ test-mapper:
 
 docker-build-projector:
 	cp -r ../custom_projectors/ ./projector
-	cp -r ../generic-projector/postgres_projector_template.py ./projector
+	cp -r ../generic-projector/batched_postgres_projector_template.py ./projector
 	docker build -t ${IMAGE_TAG} -f projector/infrastructure/Dockerfile projector
 	rm -rf projector/custom_projectors
-	rm projector/postgres_projector_template.py
+	rm projector/batched_postgres_projector_template.py
 
 docker-run-projector:
 	docker run -d --name address-profiling-projector -e BOOTSTRAP_SERVERS=localhost:9092 -e KAFKA_SECURITY_PROTOCOL=${KAFKA_SECURITY_PROTOCOL} -e KAFKA_SASL_MECHANISM=${KAFKA_SASL_MECHANISM} -e SASL_USERNAME=${SASL_USERNAME} -e SASL_PASSWORD=${SASL_PASSWORD} -e SOURCE_TOPIC=${SOURCE_TOPIC} -e SOURCE_TOPIC_GROUP_ID=${SOURCE_TOPIC_GROUP_ID} -e DB_HOST=${DB_HOST} -e DB_PORT=${DB_PORT} -e DB_NAME=${DB_NAME} -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} -e LOG_LEVEL=${LOG_LEVEL} -e DEBUG=${DEBUG} --network "host" ${IMAGE_TAG}
