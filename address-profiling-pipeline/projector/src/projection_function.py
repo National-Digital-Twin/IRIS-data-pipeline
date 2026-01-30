@@ -9,16 +9,8 @@ from dateutil.relativedelta import relativedelta
 from sqlalchemy import text
 from sqlalchemy.engine import Connection
 
-BUILDING_RECORD_EXISTS_QUERY = """
-    SELECT * FROM iris.building WHERE uprn = :uprn;
-"""
-
-EPC_ASSESSMENT_RECORD_EXISTS_QUERY = """
-    SELECT * FROM iris.epc_assessment WHERE uprn = :uprn AND lodgement_date = :lodgement_date AND epc_rating = :epc_rating;
-"""
-
 INSERT_EPC_ASSESSMENT_RECORD_QUERY = """
-    INSERT INTO iris.epc_assessment(
+    INSERT INTO iris.stg_epc_assessment(
         id,
         uprn,
         epc_rating,
@@ -38,7 +30,7 @@ INSERT_EPC_ASSESSMENT_RECORD_QUERY = """
 """
 
 INSERT_STRUCTURE_UNIT_RECORD_QUERY = """
-    INSERT INTO iris.structure_unit(
+    INSERT INTO iris.stg_structure_unit(
         epc_assessment_id,
         type,
         built_form,
@@ -166,63 +158,50 @@ def get_nullable_value(value: str):
 
 def project_func(connection: Connection, record: dict):
     uprn = record["UPRN"]
+    lodgement_date = record["LodgementDate"]
+    epc_rating = record["SAPBand"]
+    epc_assessment_id = uuid4()
 
-    building_record_exists_result = connection.execute(
-        text(BUILDING_RECORD_EXISTS_QUERY), {"uprn": uprn}
+    epc_assessment_record_params = {
+        "id": str(epc_assessment_id),
+        "uprn": uprn,
+        "epc_rating": epc_rating,
+        "lodgement_date": lodgement_date,
+        "sap_rating": record["SAPRating"],
+        "expiry_date": get_expiry_date(lodgement_date),
+    }
+    structure_unit_record_params = {
+        "epc_assessment_id": str(epc_assessment_id),
+        "type": get_nullable_value(record["PropertyType"]),
+        "built_form": get_nullable_value(record["BuiltForm"]),
+        "fuel_type": get_nullable_value(FUEL_TYPE_MAP.get(record["MainFuelType"])),
+        "window_glazing": get_nullable_value(record["MultipleGlazingType"]),
+        "wall_construction": get_nullable_value(
+            WALL_CONSTRUCTION_TYPE_MAP.get(record["WallConstruction"])
+        ),
+        "wall_insulation": get_nullable_value(
+            WALL_INSULATION_TYPE_MAP.get(record["WallInsulationType"])
+        ),
+        "roof_construction": get_nullable_value(
+            ROOF_CONSTRUCTION_TYPE_MAP.get(record["RoofConstruction"])
+        ),
+        "roof_insulation": get_nullable_value(
+            ROOF_INSULATION_TYPE_MAP.get(record["RoofInsulationLocation"])
+        ),
+        "roof_insulation_thickness": get_nullable_value(
+            record["RoofInsulationThickness"]
+        ),
+        "floor_construction": get_nullable_value(
+            FLOOR_CONSTRUCTION_TYPE_MAP.get(record["FloorConstruction"])
+        ),
+        "floor_insulation": get_nullable_value(
+            FLOOR_INSULATION_TYPE_MAP.get(record["FloorInsulation"])
+        ),
+    }
+
+    connection.execute(
+        text(INSERT_EPC_ASSESSMENT_RECORD_QUERY), epc_assessment_record_params
     )
-
-    if int(building_record_exists_result.rowcount) == 1:
-        lodgement_date = record["LodgementDate"]
-        epc_rating = record["SAPBand"]
-        epc_assessment_record_exists_result = connection.execute(
-            text(EPC_ASSESSMENT_RECORD_EXISTS_QUERY),
-            {"uprn": uprn, "lodgement_date": lodgement_date, "epc_rating": epc_rating},
-        )
-
-        if int(epc_assessment_record_exists_result.rowcount) == 0:
-            epc_assessment_id = uuid4()
-            epc_assessment_record_params = {
-                "id": str(epc_assessment_id),
-                "uprn": uprn,
-                "epc_rating": epc_rating,
-                "lodgement_date": lodgement_date,
-                "sap_rating": record["SAPRating"],
-                "expiry_date": get_expiry_date(lodgement_date),
-            }
-            structure_unit_record_params = {
-                "epc_assessment_id": str(epc_assessment_id),
-                "type": get_nullable_value(record["PropertyType"]),
-                "built_form": get_nullable_value(record["BuiltForm"]),
-                "fuel_type": get_nullable_value(
-                    FUEL_TYPE_MAP.get(record["MainFuelType"])
-                ),
-                "window_glazing": get_nullable_value(record["MultipleGlazingType"]),
-                "wall_construction": get_nullable_value(
-                    WALL_CONSTRUCTION_TYPE_MAP.get(record["WallConstruction"])
-                ),
-                "wall_insulation": get_nullable_value(
-                    WALL_INSULATION_TYPE_MAP.get(record["WallInsulationType"])
-                ),
-                "roof_construction": get_nullable_value(
-                    ROOF_CONSTRUCTION_TYPE_MAP.get(record["RoofConstruction"])
-                ),
-                "roof_insulation": get_nullable_value(
-                    ROOF_INSULATION_TYPE_MAP.get(record["RoofInsulationLocation"])
-                ),
-                "roof_insulation_thickness": get_nullable_value(
-                    record["RoofInsulationThickness"]
-                ),
-                "floor_construction": get_nullable_value(
-                    FLOOR_CONSTRUCTION_TYPE_MAP.get(record["FloorConstruction"])
-                ),
-                "floor_insulation": get_nullable_value(
-                    FLOOR_INSULATION_TYPE_MAP.get(record["FloorInsulation"])
-                ),
-            }
-
-            connection.execute(
-                text(INSERT_EPC_ASSESSMENT_RECORD_QUERY), epc_assessment_record_params
-            )
-            connection.execute(
-                text(INSERT_STRUCTURE_UNIT_RECORD_QUERY), structure_unit_record_params
-            )
+    connection.execute(
+        text(INSERT_STRUCTURE_UNIT_RECORD_QUERY), structure_unit_record_params
+    )
