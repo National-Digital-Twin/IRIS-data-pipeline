@@ -21,41 +21,8 @@ import json
 from sqlalchemy import text
 from sqlalchemy.engine import Connection
 
-EXISTING_EPC_RECORD_QUERY = """
-    SELECT 1 FROM iris.epc_assessment e
-    LEFT JOIN iris.structure_unit s ON s.epc_assessment_id = e.id
-    WHERE e.uprn = :uprn;
-"""
-
-EXISTING_STRUCTURE_UNIT_RECORD_QUERY = """
-    SELECT 1 FROM iris.structure_unit WHERE uprn = :uprn;
-"""
-
-EXISTING_BUILDING_RECORD_QUERY = """
-    SELECT 1 FROM iris.building WHERE uprn = :uprn;
-"""
-
-UPDATE_STRUCTURE_UNIT_RECORD_QUERY = """
-    UPDATE iris.structure_unit s SET
-        has_roof_solar_panels = :has_roof_solar_panels,
-        roof_material = :roof_material,
-        roof_aspect_area_facing_north_m2 = :roof_aspect_area_facing_north_m2,
-        roof_aspect_area_facing_east_m2 = :roof_aspect_area_facing_east_m2,
-        roof_aspect_area_facing_south_m2 = :roof_aspect_area_facing_south_m2,
-        roof_aspect_area_facing_west_m2 = :roof_aspect_area_facing_west_m2,
-        roof_aspect_area_facing_north_east_m2 = :roof_aspect_area_facing_north_east_m2,
-        roof_aspect_area_facing_south_east_m2 = :roof_aspect_area_facing_south_east_m2,
-        roof_aspect_area_facing_south_west_m2 = :roof_aspect_area_facing_south_west_m2,
-        roof_aspect_area_facing_north_west_m2 = :roof_aspect_area_facing_north_west_m2,
-        roof_aspect_area_indeterminable_m2 = :roof_aspect_area_indeterminable_m2,
-        roof_shape = :roof_shape
-    FROM iris.epc_assessment e
-    WHERE s.epc_assessment_id = e.id
-    AND e.uprn = :uprn;
-"""
-
 INSERT_STRUCTURE_UNIT_RECORD_QUERY = """
-    INSERT INTO iris.structure_unit(
+    INSERT INTO iris.stg_os_ngd_building_structure_unit(
         has_roof_solar_panels,
         roof_material,
         roof_aspect_area_facing_north_m2,
@@ -115,71 +82,56 @@ def get_nullable_numerical_field(record: dict, field: str):
         return 0
 
 
-def project_func(connection: Connection, record: dict) -> str:
+def project_func(connection: Connection, records: [dict]) -> str:
     """
     Projects a record into the database
 
     Args:
-        record (dict): A record representing a building.
+        records ([dict]): A list of records with each record representing a building.
 
     Returns:
         str: The RDF graph serialized into triples.
     """
 
-    uprns = get_uprns(record)
-    for uprn in uprns:
-        params = {
-            "uprn": uprn,
-            "has_roof_solar_panels": has_solar_panels(record),
-            "roof_material": record["roofmaterial_primarymaterial"],
-            "roof_aspect_area_facing_north_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingnorth_m2"
-            ),
-            "roof_aspect_area_facing_east_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingeast_m2"
-            ),
-            "roof_aspect_area_facing_south_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingsouth_m2"
-            ),
-            "roof_aspect_area_facing_west_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingwest_m2"
-            ),
-            "roof_aspect_area_facing_north_east_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingnortheast_m2"
-            ),
-            "roof_aspect_area_facing_south_east_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingsoutheast_m2"
-            ),
-            "roof_aspect_area_facing_south_west_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingsouthwest_m2"
-            ),
-            "roof_aspect_area_facing_north_west_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areafacingnorthwest_m2"
-            ),
-            "roof_aspect_area_indeterminable_m2": get_nullable_numerical_field(
-                record, "roofshapeaspect_areaindeterminable_m2"
-            ),
-            "roof_shape": record["roofshapeaspect_shape"],
-        }
-        query = None
+    params = []
 
-        existing_epc_record = connection.execute(
-            text(EXISTING_EPC_RECORD_QUERY), {"uprn": uprn}
-        )
-        existing_structure_unit_record = connection.execute(
-            text(EXISTING_STRUCTURE_UNIT_RECORD_QUERY), {"uprn": uprn}
-        )
-        if (
-            existing_epc_record.rowcount > 0
-            or existing_structure_unit_record.rowcount > 0
-        ):
-            query = text(UPDATE_STRUCTURE_UNIT_RECORD_QUERY)
-        else:
-            existing_building_record = connection.execute(
-                text(EXISTING_BUILDING_RECORD_QUERY), {"uprn": uprn}
+    for record in records:
+        uprns = get_uprns(record)
+        for uprn in uprns:
+            params.append(
+                {
+                    "uprn": uprn,
+                    "has_roof_solar_panels": has_solar_panels(record),
+                    "roof_material": record["roofmaterial_primarymaterial"],
+                    "roof_aspect_area_facing_north_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingnorth_m2"
+                    ),
+                    "roof_aspect_area_facing_east_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingeast_m2"
+                    ),
+                    "roof_aspect_area_facing_south_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingsouth_m2"
+                    ),
+                    "roof_aspect_area_facing_west_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingwest_m2"
+                    ),
+                    "roof_aspect_area_facing_north_east_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingnortheast_m2"
+                    ),
+                    "roof_aspect_area_facing_south_east_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingsoutheast_m2"
+                    ),
+                    "roof_aspect_area_facing_south_west_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingsouthwest_m2"
+                    ),
+                    "roof_aspect_area_facing_north_west_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areafacingnorthwest_m2"
+                    ),
+                    "roof_aspect_area_indeterminable_m2": get_nullable_numerical_field(
+                        record, "roofshapeaspect_areaindeterminable_m2"
+                    ),
+                    "roof_shape": record["roofshapeaspect_shape"],
+                }
             )
-            if existing_building_record.rowcount == 1:
-                query = text(INSERT_STRUCTURE_UNIT_RECORD_QUERY)
 
-        if query is not None:
-            connection.execute(query, params)
+    connection.execute(text(INSERT_STRUCTURE_UNIT_RECORD_QUERY), params)
