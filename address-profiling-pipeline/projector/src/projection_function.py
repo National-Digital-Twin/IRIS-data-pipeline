@@ -16,7 +16,8 @@ INSERT_EPC_ASSESSMENT_RECORD_QUERY = """
         epc_rating,
         lodgement_date,
         sap_rating,
-        expiry_date
+        expiry_date,
+        match_score
     )
     VALUES
     (
@@ -25,7 +26,8 @@ INSERT_EPC_ASSESSMENT_RECORD_QUERY = """
         :epc_rating,
         :lodgement_date,
         :sap_rating,
-        :expiry_date
+        :expiry_date,
+        :match_score
     );
 """
 
@@ -155,6 +157,14 @@ def get_nullable_value(value: str):
     else:
         return value
 
+def parse_match_score(record: dict):
+    raw = record.get("MatchScore")
+    if raw in (None, ""):
+        return None
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return None
 
 def project_func(connection: Connection, records: [dict]):
     epc_assessment_records_params = []
@@ -165,6 +175,7 @@ def project_func(connection: Connection, records: [dict]):
         lodgement_date = record["LodgementDate"]
         epc_rating = record["SAPBand"]
         epc_assessment_id = uuid4()
+        epc_match_score = parse_match_score(record)
 
         epc_assessment_records_params.append(
             {
@@ -174,6 +185,7 @@ def project_func(connection: Connection, records: [dict]):
                 "lodgement_date": lodgement_date,
                 "sap_rating": record["SAPRating"],
                 "expiry_date": get_expiry_date(lodgement_date),
+                "match_score": epc_match_score
             }
         )
         structure_unit_records_params.append(
