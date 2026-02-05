@@ -21,6 +21,7 @@
 #  © Crown Copyright 2025. This work has been developed by the National Digital Twin Programme
 #  and is legally attributed to the Department for Business and Trade (UK) as the governing entity.
 
+import codecs
 import csv
 from json import dumps
 from typing import Iterable
@@ -151,8 +152,9 @@ def generate_records() -> Iterable[Record]:
     else:
         s3_client = boto3.client("s3", region_name=AWS_REGION)
     obj = s3_client.get_object(Bucket=S3_BUCKET_NAME, Key=S3_FILENAME)
-    obj_body = obj["Body"].read().decode("utf-8").splitlines()
-    rows = csv.DictReader(obj_body)
+    obj_body = obj["Body"]
+    stream = codecs.getreader("utf-8")(obj_body)
+    rows = csv.DictReader(stream)
 
     for row in rows:
         yield create_record(row, default_security_label)
